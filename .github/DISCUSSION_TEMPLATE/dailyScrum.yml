@@ -40,15 +40,3 @@ body:
       options:
         - label: 1번째
         - label: 2번째
-  - type : textarea
-    id: Help
-    attributes :
-      label: ❓ 3. 문제점 및 도움 요청 (Any blockers or help needed?) 
-      value : |
-        - 🔹
-  - type : textarea
-    id: Link
-    attributes :
-      label: 🔗 알게된 사실 및 유용한 참고 관련 링크 (Links)
-      value : |
-        - 🔹  
