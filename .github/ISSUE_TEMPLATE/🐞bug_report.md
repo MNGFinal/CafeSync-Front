@@ -1,5 +1,5 @@
 ---
-name: bug_report
+name: "\U0001F41Ebug_report"
 about: 버그 및 이슈 제보 템플릿
 title: "예시) \U0001F41E버그 - [25.01.01] 게시판 조회 버그"
 labels: "\U0001F5A5️프론트엔드\U0001F5A5️"
