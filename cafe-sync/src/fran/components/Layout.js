@@ -1,14 +1,21 @@
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 
 function Layout() {
+
+  const location = useLocation();
+
+  // /fran(메인 페이지)일 경우 'grid-layout' 추가
+  const isMainPage = location.pathname === "/fran";
+  const contentClass = isMainPage ? "grid-layout" : "content"
+
   return (
     <>
       <Header />
       <div className="middle">
         <Sidebar />
-        <div className="content">
+        <div className={contentClass}>
           <Outlet />
         </div>
       </div>

@@ -8,6 +8,12 @@ import HQLayout from "./hq/components/HQLayout"; // 본사 레이아웃
 
 /* ---------------------------------홈 컴포넌트--------------------------------- */
 import Login from "./home/pages/login/Login";
+import FindId from "./home/pages/find-id/FindId";
+import FindPass from "./home/pages/find-pass/FindPass";
+import FranchiseId from "./home/pages/find-id/FranchiseId";
+import HQId from "./home/pages/find-id/HQId";
+import CompleteId from "./home/pages/find-id/CompleteId";
+import PassModify from "./home/pages/find-pass/PassModify";
 /* --------------------------------------------------------------------------- */
 
 /* ---------------------------------가맹점 컴포넌트----------------------------- */
@@ -56,6 +62,12 @@ function App() {
         {/* ✅ 기본 경로를 /login으로 설정 */}
         <Route path="/" element={<LoginLayout />}>
           <Route index element={<Login />} />
+          <Route path="find-id" element={<FindId />} />
+          <Route path="find-id/franchise" element={<FranchiseId />} />
+          <Route path="find-id/hq" element={<HQId />} />
+          <Route path="find-id/complete" element={<CompleteId />} />
+          <Route path="find-pass" element={<FindPass />} />
+          <Route path="find-pass/modify" element={<PassModify />} />
         </Route>
 
         {/* ✅ 가맹점 라우트 */}

@@ -1,0 +1,34 @@
+.logo {
+  width: 180px;
+  height: auto;
+}
+
+.infoBox {
+  margin-top: 15%;
+}
+
+/* ✅ 로그인 버튼 스타일 */
+.button {
+  width: 220px; /* 버튼 너비 */
+  height: 45px; /* 버튼 높이 */
+  background-color: #6d1b50; /* 진한 와인색 */
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px; /* ✅ 둥근 버튼 */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  margin-top: 19%; /* 버튼과 텍스트 간 간격 */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15); /* ✅ 살짝 떠 보이는 효과 */
+}
+
+/* ✅ 버튼 호버 효과 */
+.button:hover {
+  background-color: #4e1437; /* 호버 시 더 어두운 색 */
+}
+
+.homeButton {
+  text-decoration: none;
+}
