@@ -1,0 +1,50 @@
+/* 선택 박스 스타일 */
+.selectBox {
+  display: flex;
+  position: relative;
+  left: 2%;
+  gap: 6%;
+}
+
+/* 가맹점 & 본사 버튼 스타일 */
+.selectButton {
+  margin-top: 15%;
+  width: 220px;
+  height: 300px;
+  border: 1px solid rgba(99, 8, 72, 1);
+  border-radius: 8px;
+  text-align: center;
+  background-color: white;
+  cursor: pointer;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  /* ✅ Link 태그 기본 스타일 제거 */
+  text-decoration: none;
+  color: inherit;
+  display: flex; 
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.selectButton:hover {
+  transform: scale(1.05); /* 5% 확대 */
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* 헤더 스타일 */
+.header {
+  margin: 10px;
+}
+
+.header h3 {
+  margin-top: 20px;
+}
+
+/* 아이콘 스타일 */
+.icon {
+  margin-top: 24%;
+  width: 180px;
+  height: auto;
+}
