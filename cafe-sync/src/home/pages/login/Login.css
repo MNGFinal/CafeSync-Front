@@ -1,0 +1,115 @@
+/* 로그인 폼을 중앙 정렬 */
+.login-form {
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 가운데 정렬 */
+  text-align: center; /* 로고와 버튼을 중앙 정렬 */
+}
+
+/* 로고 스타일 */
+.login-form-logo {
+  width: 150px;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+/* 입력 필드 컨테이너 */
+.input-group {
+  gap: 10px;
+  position: relative;
+  left: 10%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  margin-bottom: 15px;
+}
+
+/* 라벨 스타일 */
+.login-form label {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+/* 입력 필드 스타일 */
+.login-form input {
+  width: 400px;
+  height: 40px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* 버튼 스타일 */
+.login-form button {
+  width: 150px;
+  height: 45px;
+  margin-top: 11%;
+  background-color: #6d1b50;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-form button:hover {
+  background-color: #4e1437;
+}
+
+/* 아이디 저장 & 찾기 컨테이너 */
+.container {
+  position: relative;
+  left: 10%;
+  width: 100%;
+  display: flex;
+  gap: 23%;
+  align-items: center;
+  font-size: 14px;
+  color: #777;
+  margin-top: 5px;
+}
+
+/* 아이디 저장 체크박스 스타일 */
+.id-save {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.id-save input {
+  width: 15px;
+  height: 15px;
+}
+
+.id-save label {
+  font-size: 14px;
+  color: #555;
+}
+
+/* 아이디 찾기, 비밀번호 찾기 링크 스타일 */
+.find-box {
+  display: flex;
+  gap: 10px;
+}
+
+.find-box a {
+  text-decoration: none;
+  color: #777;
+  font-size: 14px;
+}
+
+.find-box a:hover {
+  text-decoration: underline;
+}
+
+/* 구분자 스타일 */
+.find-box a:not(:last-child)::after {
+  content: "|";
+  margin-left: 10px;
+  color: #ccc;
+}

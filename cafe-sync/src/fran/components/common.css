@@ -1,0 +1,151 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.header {
+  width: 100%;
+  height: 70px;
+  background-color: white;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.logo {
+  max-width: 200px;
+  height: auto;
+}
+
+.fran-name {
+  flex: 1;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #333;
+  cursor: pointer;
+  padding: 10px 15px;
+  transition: 0.3s;
+}
+
+.logout-btn:hover {
+  color: red;
+}
+
+/* ✅ 레이아웃 설정 */
+.middle {
+  display: flex;
+}
+
+.sidebar {
+  width: 100px;
+  background-color: #222;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-top: 15px;
+  padding-bottom: 20px;
+  position: relative;
+}
+
+.menu-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 0;
+  color: white;
+  text-decoration: none;
+  transition: background 0.3s;
+  position: relative;
+  cursor: pointer;
+}
+
+.menu-item:hover {
+  background-color: #444;
+}
+
+.menu-item img {
+  width: 35px;
+  height: 35px;
+  margin-bottom: 5px;
+  filter: invert(1);
+}
+
+.menu-item span {
+  font-size: 12px;
+}
+
+/* ✅ 서브메뉴 스타일 */
+.submenu {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateX(-20px) translateY(-50%); /* ✅ 처음에는 왼쪽에 숨김 */
+  background-color: #222;
+  border-radius: 5px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  white-space: nowrap;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s ease;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden; /* ✅ 완전히 숨김 */
+}
+
+/* ✅ 마우스 호버 시 서브메뉴 표시 */
+.menu-item:hover .submenu {
+  opacity: 1;
+  transform: translateX(0) translateY(-50%); /* ✅ 왼쪽에서 오른쪽으로 이동 */
+  pointer-events: auto;
+  visibility: visible;
+}
+
+/* ✅ 서브메뉴 안의 텍스트 중앙 정렬 */
+.submenu a {
+  color: white;
+  text-decoration: none;
+  padding: 10px 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.submenu a:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+/* ✅ 컨텐츠 영역 스타일 */
+.content {
+  margin: 20px;
+  width: 1780px;
+  height: 835px;
+  background-color: white;
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.08),
+    0px -6px 12px rgba(0, 0, 0, 0.05), 6px 0px 12px rgba(0, 0, 0, 0.05),
+    -6px 0px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* ✅ 페이지 헤더 스타일 */
+.page-header {
+  width: 100%;
+  height: 40px;
+  color: white;
+  background-color: rgba(99, 8, 72, 1);
+}
+
+.page-header h3 {
+  padding: 8px;
+}
