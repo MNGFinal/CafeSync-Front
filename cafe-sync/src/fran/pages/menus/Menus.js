@@ -1,7 +1,13 @@
-import MenusLayout from '../menus/MenusLayout'
+
+import MenusLayout from '../menus/MenusLayout';
+import MenusList from '../menus/MenuList';
+import MenuModal from '../menus/MenuModal';
+
 
 
 function Menus() {
+
+
 
 
 
@@ -10,8 +16,10 @@ function Menus() {
       <div className="page-header">
         <h3>메뉴 관리</h3>
       </div>
-      <MenusLayout>
-      </MenusLayout>
+      <MenusLayout />
+      <MenusList />
+      {/* <MenuModal /> */}
+
     </>
   );
 }
