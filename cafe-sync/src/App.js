@@ -23,8 +23,9 @@ import Menus from "./fran/pages/menus/Menus";
 import Slip from "./fran/pages/slip/Slip";
 import Complain from "./fran/pages/complain/Complain";
 import Employee from "./fran/pages/employee/Employee";
-import Notice from "./fran/pages/notice/Notice";
 import Chat from "./fran/pages/chat/Chat";
+import Notice from "./fran/pages/notice/Notice";
+import NoticeRegist from "./fran/pages/notice/NoticeRegist";
 import BaristaNote from "./fran/pages/barista-note/BaristaNote";
 import Stats from "./fran/pages/stats/Stats";
 import FranInventory from "./fran/pages/inventory/FranInventory";
@@ -52,6 +53,7 @@ import HQBaristaNote from "./hq/pages/barista-note/HQBaristaNote";
 import HQStats from "./hq/pages/stats/HQStats";
 import HQRegist from "./hq/pages/menus/HQRegist";
 import HQDiscontinue from "./hq/pages/menus/HQDiscontinue";
+
 
 /* -------------------------------------------------------------------------- */
 
@@ -85,6 +87,7 @@ function App() {
           <Route path="schedule" element={<Schedule />} />
           <Route path="dayoff" element={<DayOff />} />
           <Route path="notice" element={<Notice />} />
+          <Route path="notice/regist" element={<NoticeRegist/>} />
           <Route path="chat" element={<Chat />} />
           <Route path="barista-note" element={<BaristaNote />} />
           <Route path="stats" element={<Stats />} />
