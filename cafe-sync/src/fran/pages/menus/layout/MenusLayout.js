@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import style from './Menus.module.css';
+import style from '../page/Menus.module.css';
 
 function MenusLayout() {
     const [categoryTab, setCategoryTab] = useState("커피");

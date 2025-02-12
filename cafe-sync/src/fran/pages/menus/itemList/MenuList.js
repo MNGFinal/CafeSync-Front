@@ -1,6 +1,6 @@
-import styles from '../menus/Menus.module.css';
+import styles from '../itemList/MenuList';
 import { useState } from 'react';
-import MenuModal from '../menus/MenuModal';
+import MenuModal from '../page/Menus.module.css';
 
 function MenuList() {
 

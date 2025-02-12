@@ -1,7 +1,7 @@
 
-import MenusLayout from '../menus/MenusLayout';
-import MenusList from '../menus/MenuList';
-import MenuModal from '../menus/MenuModal';
+import MenusLayout from '../layout/MenusLayout';
+import MenusList from '../itemList/MenuList';
+// import MenuModal from '../modal/MenuModal';
 
 
 
