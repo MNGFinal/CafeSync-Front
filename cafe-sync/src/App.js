@@ -35,6 +35,10 @@ import Duty from "./fran/pages/slip/Duty";
 import Income from "./fran/pages/slip/Income";
 import Schedule from "./fran/pages/employee/Schedule";
 import DayOff from "./fran/pages/employee/DayOff";
+import CoffeeList from "./fran/pages/menus/itemList/CoffeeList";
+import DessertList from "./fran/pages/menus/itemList/DessertList";
+import DrinkList from "./fran/pages/menus/itemList/DrinkList";
+import GoodsList from "./fran/pages/menus/itemList/GoodsList";
 /* -------------------------------------------------------------------------- */
 
 /* ---------------------------------본사 컴포넌트----------------------------- */
@@ -81,7 +85,14 @@ function App() {
             <Route path="inventory" element={<Inventory />} />
             <Route path="fran-inventory" element={<FranInventory />} />
             <Route path="orders" element={<Orders />} />
-            <Route path="menus" element={<Menus />} />
+
+            <Route path="/fran/menus/:category" element={<Menus />}>
+              <Route path="coffee" element={<CoffeeList />}></Route>
+              <Route path="drink" element={<DrinkList />}></Route>
+              <Route path="dessert" element={<DessertList />}></Route>
+              <Route path="goods" element={<GoodsList />}></Route>
+            </Route>
+
             <Route path="slip" element={<Slip />} />
             <Route path="duty" element={<Duty />} />
             <Route path="income" element={<Income />} />

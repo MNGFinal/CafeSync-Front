@@ -51,7 +51,13 @@
 /* 버튼에 마우스 올렸을 때 스타일 */
 .menuBtn:hover {
     /* 보라색 테두리 */
-    border: 1px solid #5B0A47;
+    border: 1px solid #bf83b0;
+    color: white;
+    background-color: #bf83b0;
+    /* 연보라색 */
+
+    transition: all 0.3s ease;
+
 }
 
 /* ------------------------------------------- */
@@ -102,20 +108,4 @@
     border-radius: 3px;
     /* 버튼 내부 여백 (위아래 3px, 좌우 20px) */
     padding: 3px 20px;
-}
-
-/* ------------------------------------------- */
-/* 메뉴 사진 */
-.menuIcon {
-    width: 350px;
-    height: auto;
-}
-
-/* 카테고리 선택 시 위에 뜨는 폰트 */
-.categoryContent {
-    /* 글씨 크기 */
-    color: rgb(60, 60, 60);
-    font-size: 25px;
-    font-weight: bold;
-    margin-left: 100px;
 }

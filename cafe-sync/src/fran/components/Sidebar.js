@@ -31,7 +31,7 @@ function Sidebar() {
         )}
       </div>
 
-      <Link to="/fran/menus" className="menu-item">
+      <Link to="/fran/menus/coffee" className="menu-item">
         <img src="/images/icons/coffee.png" alt="메뉴 관리" />
         <span>메뉴 관리</span>
       </Link>
