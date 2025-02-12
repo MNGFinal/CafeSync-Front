@@ -4,7 +4,6 @@ import st from "./Main.module.css";
 function Main() {
   return (
     <>
-      {/* <h1>메인 화면</h1> */}
       <div className={`noticeSection ${st.sec}`}>
         <Link to="/fran/notice">공지사항</Link>
         <hr/>
