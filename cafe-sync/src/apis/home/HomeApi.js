@@ -33,12 +33,14 @@ export const loginUser = async (form) => {
 
     console.log("🔄 변환된 authority:", authority);
 
+    // ✅ storeCode도 Redux와 세션 스토리지에 저장
     const userData = {
       accessToken: data.accessToken,
       refreshToken: data.refreshToken,
       user: {
         authority: authority,
         jobCode: data.jobCode,
+        storeCode: data.storeCode, // ✅ storeCode 추가
       },
     };
 
