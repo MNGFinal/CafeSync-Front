@@ -139,7 +139,7 @@
 }
 
 /* ✅ 메인 화면 스타일 */
-.grid-layout {
+.hq-grid-layout {
   width: 1820px;
   height: 880px;
   display: grid;

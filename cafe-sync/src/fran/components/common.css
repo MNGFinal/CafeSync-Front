@@ -145,9 +145,18 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
+  grid-template-areas:
+    "notice schedule"
+    "inven stats";
   gap: 20px;
   padding: 20px;
 }
+
+/* ✅ 메인 화면 내 영역 스타일 - grid 지정 */
+.noticeSection { grid-area: notice; }
+.scheduleSection { grid-area: schedule; }
+.invenSection { grid-area: inven; }
+.statsSection { grid-area: stats; }
 
 /* ✅ 페이지 헤더 스타일 */
 .page-header {
