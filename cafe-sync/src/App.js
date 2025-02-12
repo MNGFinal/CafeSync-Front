@@ -119,6 +119,7 @@ function App() {
           </Route>
         </Route>
 
+
         {/* ✅ 테스트 페이지 라우트 추가 */}
         <Route path="/register" element={<RegisterTest />} />
       </Routes>
