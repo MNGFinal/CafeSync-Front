@@ -1,7 +1,65 @@
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux"; // ✅ Redux 사용
+import { loginUser } from "../../../apis/home/HomeApi";
 import "./Login.css";
-import { Link } from "react-router-dom";
 
 function Login() {
+  const [form, setForm] = useState({ userId: "", userPass: "" });
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { user, accessToken } = useSelector((state) => state.auth); // ✅ Redux에서 사용자 정보 & 토큰 가져오기
+
+  // 🔹 자동 로그인 (Redux에 사용자 정보 & 토큰이 존재할 때만 실행)
+  useEffect(() => {
+    if (user && user.authority !== "UNKNOWN" && accessToken) {
+      // ✅ authority가 UNKNOWN이면 실행 안함
+      console.log("✅ 자동 로그인 상태 유지 중:", user);
+      handleNavigation(user.authority, user.jobCode);
+    }
+  }, [user, accessToken]); // ✅ Redux 상태가 변경될 때 실행
+
+  // 🔹 입력 값 변경 핸들러
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  // 🔹 로그인 요청 핸들러
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      console.log("🔄 로그인 요청 시작");
+      const userData = await loginUser(form); // ✅ 로그인 API 호출
+
+      console.log("✅ 로그인 성공: ", userData);
+      handleNavigation(userData.authority, userData.jobCode);
+    } catch (error) {
+      console.error("🚨 로그인 오류:", error);
+      alert(error.message || "서버 오류가 발생했습니다. 다시 시도해주세요.");
+    }
+  };
+
+  // 🔹 권한 및 직급 코드에 따른 페이지 이동
+  const handleNavigation = (authority, jobCode) => {
+    console.log("🔑 권한 확인:", authority, "📌 직급 코드:", jobCode);
+
+    if (authority === "ADMIN" && jobCode >= 1 && jobCode <= 11) {
+      console.log("🏢 본사 페이지로 이동 (/hq)");
+      navigate("/hq");
+    } else if (
+      (authority === "ADMIN" || authority === "USER") &&
+      (jobCode === 21 || jobCode === 22)
+    ) {
+      console.log("🏪 가맹점 페이지로 이동 (/fran)");
+      navigate("/fran");
+    } else {
+      console.warn("🚨 접근 권한이 없음");
+      alert("접근 권한이 없습니다.");
+    }
+  };
+
   return (
     <div className="login-form">
       <header>
@@ -12,33 +70,47 @@ function Login() {
         />
       </header>
 
-      <div className="input-group">
-        <label htmlFor="username">아이디</label>
-        <input type="text" id="username" placeholder="아이디를 입력하세요" />
-      </div>
-
-      <div className="input-group">
-        <label htmlFor="password">비밀번호</label>
-        <input
-          type="password"
-          id="password"
-          placeholder="비밀번호를 입력하세요"
-        />
-      </div>
-
-      <div className="container">
-        <div className="id-save">
-          <input type="checkbox" id="id-save" />
-          <label htmlFor="id-save">아이디 저장</label>
+      <form onSubmit={handleSubmit}>
+        <div className="input-group">
+          <label htmlFor="userId">아이디</label>
+          <input
+            type="text"
+            id="userId"
+            name="userId"
+            placeholder="아이디를 입력하세요"
+            value={form.userId}
+            onChange={handleChange}
+          />
         </div>
 
-        <div className="find-box">
-          <Link to="/find-id">아이디 찾기</Link>
-          <Link to="/find-pass">비밀번호 찾기</Link>
+        <div className="input-group">
+          <label htmlFor="userPass">비밀번호</label>
+          <input
+            type="password"
+            id="userPass"
+            name="userPass"
+            placeholder="비밀번호를 입력하세요"
+            value={form.userPass}
+            onChange={handleChange}
+          />
         </div>
-      </div>
 
-      <button className="submit">로그인</button>
+        <div className="container">
+          <div className="id-save">
+            <input type="checkbox" id="id-save" />
+            <label htmlFor="id-save">아이디 저장</label>
+          </div>
+
+          <div className="find-box">
+            <Link to="/find-id">아이디 찾기</Link>
+            <Link to="/find-pass">비밀번호 찾기</Link>
+          </div>
+        </div>
+
+        <button type="submit" className="submit">
+          로그인
+        </button>
+      </form>
     </div>
   );
 }

@@ -1,9 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ProtectedRoute from "./home/pages/protected-route/ProtectedRoute";
 
 /* ---------------------------------레이아웃------------------------------------ */
-import LoginLayout from "./home/components/HomeLayout"; // 홈 레이아웃
-import Layout from "./fran/components/Layout"; // 가맹점 레이아웃
-import HQLayout from "./hq/components/HQLayout"; // 본사 레이아웃
+import LoginLayout from "./home/components/HomeLayout";
+import Layout from "./fran/components/Layout";
+import HQLayout from "./hq/components/HQLayout";
 /* ---------------------------------------------------------------------------- */
 
 /* ---------------------------------홈 컴포넌트--------------------------------- */
@@ -23,8 +24,9 @@ import Menus from "./fran/pages/menus/Menus";
 import Slip from "./fran/pages/slip/Slip";
 import Complain from "./fran/pages/complain/Complain";
 import Employee from "./fran/pages/employee/Employee";
-import Notice from "./fran/pages/notice/Notice";
 import Chat from "./fran/pages/chat/Chat";
+import Notice from "./fran/pages/notice/Notice";
+import NoticeRegist from "./fran/pages/notice/NoticeRegist";
 import BaristaNote from "./fran/pages/barista-note/BaristaNote";
 import Stats from "./fran/pages/stats/Stats";
 import FranInventory from "./fran/pages/inventory/FranInventory";
@@ -55,6 +57,8 @@ import HQDiscontinue from "./hq/pages/menus/HQDiscontinue";
 
 /* -------------------------------------------------------------------------- */
 
+import RegisterTest from "./test/RegisterTest";
+
 function App() {
   return (
     <Router>
@@ -69,6 +73,7 @@ function App() {
           <Route path="find-pass" element={<FindPass />} />
           <Route path="find-pass/modify" element={<PassModify />} />
         </Route>
+
 
         {/* ✅ 가맹점 라우트 */}
         <Route path="/fran" element={<Layout />}>
@@ -85,30 +90,58 @@ function App() {
           <Route path="schedule" element={<Schedule />} />
           <Route path="dayoff" element={<DayOff />} />
           <Route path="notice" element={<Notice />} />
+          <Route path="notice/regist" element={<NoticeRegist/>} />
           <Route path="chat" element={<Chat />} />
           <Route path="barista-note" element={<BaristaNote />} />
           <Route path="stats" element={<Stats />} />
+
+        {/* ✅ 보호된 가맹점 라우트 */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/fran" element={<Layout />}>
+            <Route index element={<Main />} />
+            <Route path="inventory" element={<Inventory />} />
+            <Route path="fran-inventory" element={<FranInventory />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="menus" element={<Menus />} />
+            <Route path="slip" element={<Slip />} />
+            <Route path="duty" element={<Duty />} />
+            <Route path="income" element={<Income />} />
+            <Route path="complain" element={<Complain />} />
+            <Route path="employee" element={<Employee />} />
+            <Route path="schedule" element={<Schedule />} />
+            <Route path="dayoff" element={<DayOff />} />
+            <Route path="notice" element={<Notice />} />
+            <Route path="chat" element={<Chat />} />
+            <Route path="barista-note" element={<BaristaNote />} />
+            <Route path="stats" element={<Stats />} />
+          </Route>
+
         </Route>
 
-        {/* ✅ 본사 라우트 */}
-        <Route path="/hq" element={<HQLayout />}>
-          <Route index element={<HQMain />} />
-          <Route path="fran-inventory" element={<HQFranInventory />} />
-          <Route path="vendor" element={<HQVendor />} />
-          <Route path="orders" element={<HQOrders />} />
-          <Route path="menus" element={<HQMenus />} />
-          <Route path="menus/regist" element={<HQRegist />} />
-          <Route path="discontinue-menus" element={<HQDiscontinue />} />
-          <Route path="slip" element={<HQSlip />} />
-          <Route path="duty" element={<HQDuty />} />
-          <Route path="income" element={<HQIncome />} />
-          <Route path="plan" element={<HQPlan />} />
-          <Route path="mgment" element={<HQMgment />} />
-          <Route path="notice" element={<HQNotice />} />
-          <Route path="chat" element={<HQChat />} />
-          <Route path="barista-note" element={<HQBaristaNote />} />
-          <Route path="stats" element={<HQStats />} />
+        {/* ✅ 보호된 본사 라우트 */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/hq" element={<HQLayout />}>
+            <Route index element={<HQMain />} />
+            <Route path="fran-inventory" element={<HQFranInventory />} />
+            <Route path="vendor" element={<HQVendor />} />
+            <Route path="orders" element={<HQOrders />} />
+            <Route path="menus" element={<HQMenus />} />
+            <Route path="menus/regist" element={<HQRegist />} />
+            <Route path="discontinue-menus" element={<HQDiscontinue />} />
+            <Route path="slip" element={<HQSlip />} />
+            <Route path="duty" element={<HQDuty />} />
+            <Route path="income" element={<HQIncome />} />
+            <Route path="plan" element={<HQPlan />} />
+            <Route path="mgment" element={<HQMgment />} />
+            <Route path="notice" element={<HQNotice />} />
+            <Route path="chat" element={<HQChat />} />
+            <Route path="barista-note" element={<HQBaristaNote />} />
+            <Route path="stats" element={<HQStats />} />
+          </Route>
         </Route>
+
+        {/* ✅ 테스트 페이지 라우트 추가 */}
+        <Route path="/register" element={<RegisterTest />} />
       </Routes>
     </Router>
   );
