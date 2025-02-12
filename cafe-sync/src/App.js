@@ -94,6 +94,7 @@ function App() {
           <Route path="chat" element={<Chat />} />
           <Route path="barista-note" element={<BaristaNote />} />
           <Route path="stats" element={<Stats />} />
+        </Route>
 
         {/* ✅ 보호된 가맹점 라우트 */}
         <Route element={<ProtectedRoute />}>
