@@ -1,0 +1,92 @@
+.cal {
+    padding: 30px;
+    min-height: 800px;
+}
+
+/* 일요일 빨간색 */
+:global(.fc-daygrid-day.fc-day-sun a) {
+    color: red !important;
+}
+
+/* 토요일 파란색 */
+:global(.fc-daygrid-day.fc-day-sat a) {
+    color: blue !important;
+}
+
+/* 날짜 행 높이 기본... */
+:global(.fc-daygrid-day-frame) {
+    height: 100px !important;
+} 
+
+/* 월별 뷰에서 날짜 행 높이 설정 */
+/* :global(.fc-view-dayGridMonth .fc-daygrid-day-frame) {
+    height: 110px !important;
+}  */
+
+/* 주별 뷰에서 날짜 행 높이 설정 */
+/* :global(.fc-view-timeGridWeek .fc-daygrid-day-frame) {
+    height: 650px !important;
+} */
+
+/* 날짜 숫자 위치 왼쪽 정렬 */
+:global(.fc-daygrid-day-top) {
+    flex-direction: row !important;
+}
+
+/* 일정표 툴 바 */
+:global(.fc-toolbar.fc-header-toolbar) {
+    margin: 0;
+    font-size: 14px;
+    color: #2D2D2D;
+}
+
+/* 툴바의 버튼 */
+:global(.fc-toolbar-chunk .fc-button) {
+    background-color: white;
+    color: #9D9D9D;
+    border: 2px solid #9D9D9D;
+    font-size: 14px;
+    padding: 3px 8px;
+    font-weight: bolder;
+}
+
+/* 툴바 선택중 버튼 스타일 */
+:global(.fc-button-primary:not(:disabled).fc-button-active), 
+:global(.fc-button-primary:not(:disabled):active) {
+    background-color: #9D9D9D !important;
+    border-color: #9D9D9D !important;
+}
+
+/* 툴바 사용 불가 버튼 스타일 */
+:global(.fc-toolbar-chunk .fc-button:disabled) {
+    color: #f7f7f7;
+    background-color: #2D2D2D;
+    border: 2px solid #2D2D2D;
+}
+
+/* 툴바 사용 불가 버튼 hover 시 스타일 주지 않기 */
+:global(.fc-toolbar-chunk .fc-button:disabled:hover) {
+    background-color: #9D9D9D;
+}
+
+/* 툴바 버튼 포커스 시 그림자 제거 */
+:global(.fc-toolbar-chunk .fc-button:focus) {
+    box-shadow: none;
+}
+
+/* 툴바 버튼 hover 시 */
+:global(.fc-toolbar-chunk .fc-button:hover) {
+    background-color: #9D9D9D;
+    border: 2px solid #9D9D9D;
+}
+
+/* 날짜변경 화살표 아이콘 */
+:global(.fc-button-primary span) {
+    font-weight: 500;
+    font-size: 28px;
+}
+
+/* 날짜 Cell 프레임 */
+:global(.fc-daygrid-day-frame) {
+    padding: 2px;
+}
