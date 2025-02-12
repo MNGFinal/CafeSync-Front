@@ -20,7 +20,7 @@ import PassModify from "./home/pages/find-pass/PassModify";
 /* ---------------------------------가맹점 컴포넌트----------------------------- */
 import Main from "./fran/pages/main/Main";
 import Inventory from "./fran/pages/inventory/Inventory";
-import Menus from "./fran/pages/menus/Menus";
+import Menus from "./fran/pages/menus/page/Menus";
 import Slip from "./fran/pages/slip/Slip";
 import Complain from "./fran/pages/complain/Complain";
 import Employee from "./fran/pages/employee/Employee";

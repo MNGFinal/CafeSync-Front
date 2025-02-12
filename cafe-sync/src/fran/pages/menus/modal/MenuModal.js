@@ -1,4 +1,4 @@
-import style from '../menus/MenuModal.module.css';
+import style from '../modal/MenuModal.module';
 
 
 export const MenuModal = () => {
