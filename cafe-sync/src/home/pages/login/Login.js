@@ -6,15 +6,24 @@ import "./Login.css";
 
 function Login() {
   const [form, setForm] = useState({ userId: "", userPass: "" });
+  const [isRemember, setIsRemember] = useState(false); // ✅ 아이디 저장 체크 여부
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { user, accessToken } = useSelector((state) => state.auth); // ✅ Redux에서 사용자 정보 & 토큰 가져오기
 
+  // 🔹 컴포넌트 마운트 시 로컬 스토리지에서 아이디 불러오기
+  useEffect(() => {
+    const savedUserId = localStorage.getItem("savedUserId");
+    if (savedUserId) {
+      setForm((prevForm) => ({ ...prevForm, userId: savedUserId }));
+      setIsRemember(true);
+    }
+  }, []);
+
   // 🔹 자동 로그인 (Redux에 사용자 정보 & 토큰이 존재할 때만 실행)
   useEffect(() => {
     if (user && user.authority !== "UNKNOWN" && accessToken) {
-      // ✅ authority가 UNKNOWN이면 실행 안함
       console.log("✅ 자동 로그인 상태 유지 중:", user);
       handleNavigation(user.authority, user.jobCode);
     }
@@ -25,7 +34,17 @@ function Login() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // 🔹 로그인 요청 핸들러
+  // 🔹 아이디 저장 체크박스 변경 핸들러
+  const handleCheckboxChange = (e) => {
+    setIsRemember(e.target.checked);
+
+    if (e.target.checked) {
+      localStorage.setItem("savedUserId", form.userId); // ✅ 체크하면 아이디 저장
+    } else {
+      localStorage.removeItem("savedUserId"); // ✅ 체크 해제하면 아이디 삭제
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -33,18 +52,26 @@ function Login() {
       console.log("🔄 로그인 요청 시작");
       const userData = await loginUser(form); // ✅ 로그인 API 호출
 
-      console.log("✅ 로그인 성공: ", userData);
-      handleNavigation(userData.authority, userData.jobCode);
+      console.log("✅ 로그인 성공 (백엔드 응답 데이터):", userData); // 🚨 job 데이터 확인용 추가!
+
+      if (isRemember) {
+        localStorage.setItem("savedUserId", form.userId); // ✅ 체크 상태일 때 아이디 저장
+      } else {
+        localStorage.removeItem("savedUserId"); // ✅ 체크 해제하면 아이디 삭제
+      }
+
+      // ✅ `userData.job?.jobCode` 값이 없으면 기본값 0으로 설정
+      const jobCode =
+        userData.job && userData.job.jobCode ? userData.job.jobCode : null;
+
+      handleNavigation(userData.authority, jobCode);
     } catch (error) {
       console.error("🚨 로그인 오류:", error);
       alert(error.message || "서버 오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
 
-  // 🔹 권한 및 직급 코드에 따른 페이지 이동
   const handleNavigation = (authority, jobCode) => {
-    console.log("🔑 권한 확인:", authority, "📌 직급 코드:", jobCode);
-
     if (authority === "ADMIN" && jobCode >= 1 && jobCode <= 11) {
       console.log("🏢 본사 페이지로 이동 (/hq)");
       navigate("/hq");
@@ -54,9 +81,6 @@ function Login() {
     ) {
       console.log("🏪 가맹점 페이지로 이동 (/fran)");
       navigate("/fran");
-    } else {
-      console.warn("🚨 접근 권한이 없음");
-      alert("접근 권한이 없습니다.");
     }
   };
 
@@ -97,7 +121,12 @@ function Login() {
 
         <div className="container">
           <div className="id-save">
-            <input type="checkbox" id="id-save" />
+            <input
+              type="checkbox"
+              id="id-save"
+              checked={isRemember}
+              onChange={handleCheckboxChange}
+            />
             <label htmlFor="id-save">아이디 저장</label>
           </div>
 

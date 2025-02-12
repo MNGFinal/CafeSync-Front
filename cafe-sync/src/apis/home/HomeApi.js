@@ -13,34 +13,36 @@ export const loginUser = async (form) => {
     if (!response.ok) {
       const errorText = await response.text();
       console.error("🚨 로그인 실패 응답:", errorText);
-      throw new Error("일치하는 정보가 없습니다!");
+      throw new Error("일치하는 정보가 없습니다");
     }
 
     const data = await response.json();
     console.log("✅ 로그인 성공 (백엔드 응답 데이터):", data);
 
-    // ✅ authority 변환 적용
-    if (typeof data.authority === "undefined") {
+    // ✅ authority 변환 적용 (user 객체 내부에서 가져옴)
+    if (!data.user || typeof data.user.authority === "undefined") {
       console.error("🚨 authority 값이 없습니다! 백엔드 응답을 확인하세요.");
     }
 
-    const authority =
-      data.authority === 1
-        ? "ADMIN"
-        : data.authority === 2
-        ? "USER"
-        : "UNKNOWN"; // ✅ 변환 로직 확인
+    const authorityMap = {
+      1: "ADMIN",
+      2: "USER",
+    };
+
+    const authority = authorityMap[data.user.authority] || "UNKNOWN"; // ✅ 변환 로직 수정
 
     console.log("🔄 변환된 authority:", authority);
 
-    // ✅ storeCode도 Redux와 세션 스토리지에 저장
     const userData = {
       accessToken: data.accessToken,
       refreshToken: data.refreshToken,
       user: {
-        authority: authority,
-        jobCode: data.jobCode,
-        storeCode: data.storeCode, // ✅ storeCode 추가
+        userId: data.user.userId, // ✅ 사용자 ID 추가
+        authority: authority, // ✅ 수정된 authority 저장
+        jobCode: data.user?.job?.jobCode || 0, // ✅ jobCode 값이 없으면 기본값 0
+        job: data.user?.job || { jobCode: 0, jobName: "직급 없음" }, // ✅ job 객체 기본값 추가
+        employee: data.user?.employee || null, // ✅ 직원 정보 저장
+        franchise: data.user?.franchise || null, // ✅ 가맹점 정보 저장
       },
     };
 
