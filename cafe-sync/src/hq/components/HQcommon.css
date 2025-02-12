@@ -138,6 +138,25 @@
     -6px 0px 12px rgba(0, 0, 0, 0.05);
 }
 
+/* ✅ 메인 화면 스타일 */
+.grid-layout {
+  width: 1820px;
+  height: 880px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas:
+    "notice plan"
+    "stats stats";
+  gap: 20px;
+  padding: 20px;
+}
+
+/* ✅ 메인 화면 내 영역 스타일 - grid 지정 */
+.noticeSection { grid-area: notice; }
+.planSection { grid-area: plan; }
+.statsSection { grid-area: stats; }
+
 /* ✅ 페이지 헤더 스타일 */
 .page-header {
   width: 100%;

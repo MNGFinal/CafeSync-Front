@@ -6,7 +6,7 @@ function Layout() {
 
   const location = useLocation();
 
-  // /fran(메인 페이지)일 경우 'grid-layout' 추가
+  // /fran(메인 페이지)일 경우 className 'grid-layout'로 설정
   const isMainPage = location.pathname === "/fran";
   const contentClass = isMainPage ? "grid-layout" : "content"
 
