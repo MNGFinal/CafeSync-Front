@@ -1,0 +1,15 @@
+/* ------------------------------------------- */
+/* 메뉴 사진 */
+.menuIcon {
+    width: 350px;
+    height: auto;
+}
+
+/* 카테고리 선택 시 위에 뜨는 폰트 */
+.categoryContent {
+    /* 글씨 크기 */
+    color: rgb(60, 60, 60);
+    font-size: 25px;
+    font-weight: bold;
+    margin-left: 100px;
+}

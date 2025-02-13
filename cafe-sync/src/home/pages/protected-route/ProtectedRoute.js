@@ -5,11 +5,7 @@ const ProtectedRoute = () => {
   const { accessToken, user } = useSelector((state) => state.auth);
   const location = useLocation();
 
-  console.log("🔐 [ProtectedRoute] 현재 Redux 상태:", {
-    accessToken,
-    user,
-    location: location.pathname,
-  });
+
 
   // ✅ 로그인 안 한 경우 → 로그인 페이지로 이동
   if (!accessToken || !user) {
