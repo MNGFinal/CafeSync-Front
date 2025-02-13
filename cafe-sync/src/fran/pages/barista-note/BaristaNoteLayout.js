@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
+import { getAllNotes } from '../../../apis/brista-note/baristaNoteApi'; // API 함수 임포트
 import style from './Note.module.css';
 
 function BaristaNoteLayout() {
     // 모달창의 상태 관리
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [noteTitle, setNoteTitle] = useState(''); // 새로운 상태 추가: 제목 입력값 관리
+    const [notes, setNotes] = useState([]); // 노트 데이터를 관리하는 상태
 
     // 모달창 열기
     const openModal = () => {
@@ -20,6 +22,21 @@ function BaristaNoteLayout() {
     const handleTitleChange = (e) => {
         setNoteTitle(e.target.value);
     };
+
+    useEffect(() => {
+        const fetchNotes = async () => {
+            try {
+                console.log("Fetching notes...");
+                const data = await getAllNotes(); // API 호출
+                console.log("Fetched notes: ", data); // 데이터 출력
+                setNotes(data); // 받아온 데이터를 상태에 저장
+            } catch (error) {
+                console.error('Failed to fetch notes:', error);
+            }
+        };
+    
+        fetchNotes();
+    }, []);
 
     return (
         <>
@@ -39,7 +56,20 @@ function BaristaNoteLayout() {
                 </div>
 
                 <div className={style.baristaNoteData}>
-                    {/* 여기에 바리스타 노트 데이터가 들어갑니다. */}
+                {/* 노트 데이터를 화면에 표시 */}
+                {notes.length > 0 ? (
+                    notes.map((note) => (
+                    <div key={note.noteCode} className={style.infoRow}>
+                        <div className={style.infoItem}>{note.noteCode}</div>
+                        <div className={style.infoItem}>{note.noteTitle}</div>
+                        <div className={style.infoItem}>{note.userId}</div>
+                        <div className={style.infoItem}>{note.noteDate}</div>
+                        <div className={style.infoItem}>0</div> {/* 조회수는 0으로 설정 */}
+                    </div>
+                    ))
+                ) : (
+                    <div>노트가 없습니다.</div>
+                )}
                 </div>
             </div>
 
