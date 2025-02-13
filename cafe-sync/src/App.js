@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Outlet,
+} from "react-router-dom";
 import ProtectedRoute from "./home/pages/protected-route/ProtectedRoute";
 
 /* ---------------------------------레이아웃------------------------------------ */
@@ -93,11 +98,16 @@ function App() {
             <Route path="fran-inventory" element={<FranInventory />} />
             <Route path="orders" element={<Orders />} />
 
-            <Route path="/fran/menus/:category" element={<Menus />}>
-              <Route path="coffee" element={<CoffeeList />}></Route>
-              <Route path="drink" element={<DrinkList />}></Route>
-              <Route path="dessert" element={<DessertList />}></Route>
-              <Route path="goods" element={<GoodsList />}></Route>
+            <Route path="menus" element={<Menus />}>
+              {/* ✅ "menus/:category"에서 Outlet을 통해 컴포넌트가 렌더링됨 */}
+              <Route path=":category" element={<Outlet />}>
+                <Route index element={<CoffeeList />} />{" "}
+                {/* 기본값으로 CoffeeList 표시 */}
+                <Route path="coffee" element={<CoffeeList />} />
+                <Route path="drink" element={<DrinkList />} />
+                <Route path="dessert" element={<DessertList />} />
+                <Route path="goods" element={<GoodsList />} />
+              </Route>
             </Route>
 
             <Route path="slip" element={<Slip />} />
