@@ -1,4 +1,4 @@
-import styles from '../itemList/MenuList';
+import style from '../itemList/MenuList.module.css';
 import { useState } from 'react';
 import MenuModal from '../page/Menus.module.css';
 
@@ -20,7 +20,7 @@ function MenuList() {
                 <img
                     src="/images/menu/iceAmericano.jpg"
                     alt="아이스"
-                    className={styles.menuIcon}
+                    className={style.menuIcon}
                     onClick={openModal}
 
                 />
