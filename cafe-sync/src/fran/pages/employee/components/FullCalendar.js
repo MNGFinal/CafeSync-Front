@@ -5,7 +5,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import st from './FullCalendar.module.css'
 
 class MyCalendar extends Component {
-
+/*
   constructor(props) {
     super(props);
     this.calendarRef = React.createRef(); // React Ref 객체 생성
@@ -60,7 +60,7 @@ class MyCalendar extends Component {
       });
     }
   };
-
+*/
   render() {
     return (
       <div className={`${st.cal} test-class`}>            
