@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import styles from "./Menus.module.css";
+import styles from "../../../pages/menus/page/Menus.module.css";
 
-function MenuList() {
+function CoffeeList() {
   const { category } = useParams();
   const [list, setList] = useState([]);
 
@@ -22,7 +22,8 @@ function MenuList() {
         const response = await fetch(
           `http://localhost:8080/api/fran/menus/${categoryCode}`
         );
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        if (!response.ok)
+          throw new Error(`HTTP error! Status: ${response.status}`);
 
         const data = await response.json();
         setList(data);
@@ -53,4 +54,4 @@ function MenuList() {
   );
 }
 
-export default MenuList;
+export default CoffeeList;
