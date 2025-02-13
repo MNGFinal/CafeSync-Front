@@ -15,7 +15,7 @@
 
 /* 날짜 행 높이 기본... */
 :global(.fc-daygrid-day-frame) {
-    height: 100px !important;
+    height: 108px !important;
 } 
 
 /* 월별 뷰에서 날짜 행 높이 설정 */

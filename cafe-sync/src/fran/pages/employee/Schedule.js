@@ -1,4 +1,4 @@
-import MyCalendar from "./FullCalendar";
+import MyCalendar from "./components/FullCalendar";
 
 function Schedule() {
   return (
