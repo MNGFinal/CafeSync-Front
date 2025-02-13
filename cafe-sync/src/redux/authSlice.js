@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+// ✅ 세션에서 사용자 정보 안전하게 가져오는 함수
 const getSessionUser = () => {
   try {
     const userData = sessionStorage.getItem("user");
@@ -10,10 +11,11 @@ const getSessionUser = () => {
   }
 };
 
+// ✅ 초기 상태 (백엔드 데이터를 받아오기 전까지는 `null`)
 const initialState = {
-  accessToken: sessionStorage.getItem("accessToken") || null,
-  refreshToken: sessionStorage.getItem("refreshToken") || null,
-  user: getSessionUser(), // ✅ 안전하게 가져오기
+  accessToken: sessionStorage.getItem("accessToken") || "",
+  refreshToken: sessionStorage.getItem("refreshToken") || "",
+  user: getSessionUser(), // ✅ 백엔드 데이터를 그대로 유지
 };
 
 const authSlice = createSlice({
@@ -23,25 +25,14 @@ const authSlice = createSlice({
     setCredentials: (state, action) => {
       console.log("🔵 [setCredentials] 액션 실행됨:", action.payload);
 
-      const authority =
-        action.payload.user.authority === 1
-          ? "ADMIN"
-          : action.payload.user.authority === 2
-          ? "USER"
-          : "UNKNOWN";
-
       state.accessToken = action.payload.accessToken;
       state.refreshToken = action.payload.refreshToken;
-      state.user = {
-        ...action.payload.user,
-        authority, // ✅ 변환된 authority 적용
-      };
+      state.user = action.payload.user; // ✅ 백엔드에서 받은 데이터를 그대로 저장
 
-      console.log("✅ Redux 상태 저장됨:", state);
+      console.log("✅ Redux 상태 저장됨 (user):", state.user);
 
-      // ✅ 세션 스토리지에도 저장
-      sessionStorage.setItem("accessToken", action.payload.accessToken);
-      sessionStorage.setItem("refreshToken", action.payload.refreshToken);
+      sessionStorage.setItem("accessToken", state.accessToken);
+      sessionStorage.setItem("refreshToken", state.refreshToken);
       sessionStorage.setItem("user", JSON.stringify(state.user));
 
       console.log("✅ 세션 스토리지 저장 완료:", {
@@ -52,16 +43,16 @@ const authSlice = createSlice({
     },
     logout: (state) => {
       console.log("🚪 [logout] 액션 실행됨");
-      state.accessToken = null;
-      state.refreshToken = null;
-      state.user = null;
 
-      // ✅ 로그아웃 시 세션 스토리지에서도 삭제
+      state.accessToken = "";
+      state.refreshToken = "";
+      state.user = null; // ✅ 로그아웃 시 `null`로 초기화
+
       sessionStorage.removeItem("accessToken");
       sessionStorage.removeItem("refreshToken");
       sessionStorage.removeItem("user");
 
-      console.log("✅ 세션 스토리지 삭제 완료");
+      console.log("✅ 세션 스토리지에서 인증 정보 삭제 완료");
     },
   },
 });
