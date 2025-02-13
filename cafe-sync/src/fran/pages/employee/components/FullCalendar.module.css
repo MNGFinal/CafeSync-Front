@@ -13,20 +13,42 @@
     color: blue !important;
 }
 
-/* 날짜 행 높이 기본... */
-:global(.fc-daygrid-day-frame) {
+/* 월별 뷰에서 날짜 행 높이 설정 */
+:global(.fc-dayGridMonth-view .fc-daygrid-day-frame) {
     height: 108px !important;
 } 
 
-/* 월별 뷰에서 날짜 행 높이 설정 */
-/* :global(.fc-view-dayGridMonth .fc-daygrid-day-frame) {
-    height: 110px !important;
-}  */
+:global(.fc-dayGridMonth-view .fc-daygrid-event-harness) { width: 100px; }
+
+:global(.fc-dayGridMonth-view .fc-daygrid-day-events) { 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+    padding-top: 20px;
+}
+
+:global(.fc-dayGridMonth-view .fc-daygrid-day-events:empty) {
+    display: none !important;
+}
+
+:global(.fc-dayGridMonth-view .fc-daygrid-event-harness:empty) {
+    display: none !important;
+}
+
+:global(.fc-dayGridWeek-view .fc-daygrid-dot-event) { 
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: px;
+    margin-bottom: 3px;
+}
 
 /* 주별 뷰에서 날짜 행 높이 설정 */
-/* :global(.fc-view-timeGridWeek .fc-daygrid-day-frame) {
-    height: 650px !important;
-} */
+:global(.fc-dayGridWeek-view .fc-daygrid-day-frame) {
+    height: 653px !important;
+}
 
 /* 날짜 숫자 위치 왼쪽 정렬 */
 :global(.fc-daygrid-day-top) {
@@ -90,3 +112,37 @@
 :global(.fc-daygrid-day-frame) {
     padding: 2px;
 }
+
+/* 일정 구분별 색 설정 */
+:global(.division-1) {
+    /* 오픈 */ 
+    background-color: #BDC0F1; 
+    color: black; 
+    
+} 
+:global(.division-2) { background-color: #F1E7BD; color: black; } /* 미들 */
+:global(.division-3) { background-color: #F1BDBD; color: black; } /* 마감 */
+:global(.division-4) { background-color: #C9F1BD; color: black; } /* 휴가 */
+:global(.fc-dayGridMonth-view .custom-event-month) { 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    padding: 0 3px;
+    margin-bottom: 2px;
+    color: black; 
+    width: 100%;
+    height: 100%;
+}
+
+/* :global(.fc-dayGridWeek-view .fc-event .custom-event-week) { 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    padding: 10px;
+    margin-bottom: 2px;
+    color: black; 
+    width: 100%;
+    height: 100%;
+} */
