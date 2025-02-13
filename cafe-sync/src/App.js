@@ -79,7 +79,14 @@ function App() {
         </Route>
 
         {/* ✅ 보호된 가맹점 라우트 */}
-        <Route element={<ProtectedRoute />}>
+        <Route
+          element={
+            <ProtectedRoute
+              allowedRoles={["ADMIN", "USER"]}
+              allowedJobCodes={[21, 22]}
+            />
+          }
+        >
           <Route path="/fran" element={<Layout />}>
             <Route index element={<Main />} />
             <Route path="inventory" element={<Inventory />} />
@@ -105,11 +112,17 @@ function App() {
             <Route path="barista-note" element={<BaristaNote />} />
             <Route path="stats" element={<Stats />} />
           </Route>
-
         </Route>
 
         {/* ✅ 보호된 본사 라우트 */}
-        <Route element={<ProtectedRoute />}>
+        <Route
+          element={
+            <ProtectedRoute
+              allowedRoles={["ADMIN"]}
+              allowedJobCodes={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]}
+            />
+          }
+        >
           <Route path="/hq" element={<HQLayout />}>
             <Route index element={<HQMain />} />
             <Route path="fran-inventory" element={<HQFranInventory />} />
@@ -129,7 +142,6 @@ function App() {
             <Route path="stats" element={<HQStats />} />
           </Route>
         </Route>
-
 
         {/* ✅ 테스트 페이지 라우트 추가 */}
         <Route path="/register" element={<RegisterTest />} />
