@@ -3,12 +3,13 @@ import store from "../../redux/store";
 
 // 🔹 보호된 API 요청 함수 (JWT 포함 + 자동 갱신 기능)
 export const fetchWithAuth = async (url, options = {}) => {
-  const { accessToken, refreshToken } = store.getState().auth; // ✅ Redux에서 Access & Refresh Token 가져오기
+  let { accessToken, refreshToken } = store.getState().auth; // ✅ Redux에서 Access & Refresh Token 가져오기
 
   try {
     let headers = {
       ...options.headers,
       Authorization: `Bearer ${accessToken}`, // ✅ JWT Access Token 포함
+      "Content-Type": "application/json",
     };
 
     let response = await fetch(url, {
@@ -24,7 +25,7 @@ export const fetchWithAuth = async (url, options = {}) => {
       console.warn("🔄 Access Token 만료됨, 자동 갱신 요청");
 
       const refreshResponse = await fetch(
-        "http://localhost:8080/api/refresh-token",
+        "http://localhost:8080/api/auth/refresh",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -45,6 +46,9 @@ export const fetchWithAuth = async (url, options = {}) => {
           })
         );
 
+        // ✅ 새로운 토큰을 sessionStorage에 저장
+        sessionStorage.setItem("accessToken", newTokenData.accessToken);
+
         // ✅ 갱신된 토큰으로 다시 요청 실행
         headers.Authorization = `Bearer ${newTokenData.accessToken}`;
         response = await fetch(url, {
@@ -54,6 +58,7 @@ export const fetchWithAuth = async (url, options = {}) => {
       } else {
         console.error("🚨 Refresh Token도 만료됨, 다시 로그인 필요");
         store.dispatch(logout()); // ✅ Redux 상태 초기화 (로그아웃 처리)
+        sessionStorage.clear(); // ✅ 세션 스토리지 초기화
         throw new Error("토큰 갱신 실패, 다시 로그인하세요.");
       }
     }

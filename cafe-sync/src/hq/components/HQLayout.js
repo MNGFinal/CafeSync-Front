@@ -8,7 +8,7 @@ function HQLayout() {
 
   // /hq(메인 페이지)일 경우 className 'grid-layout'로 설정
   const isMainPage = location.pathname === "/hq";
-  const contentClass = isMainPage ? "grid-layout" : "content"
+  const contentClass = isMainPage ? "hq-grid-layout" : "content"
 
   return (
     <>
