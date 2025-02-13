@@ -1,4 +1,4 @@
-import { setCredentials, logout } from "../../redux/authSlice";
+import { setCredentials } from "../../redux/authSlice";
 import store from "../../redux/store";
 import { fetchWithAuth } from "./fetchWithAuth"; // ✅ fetchWithAuth 추가
 
