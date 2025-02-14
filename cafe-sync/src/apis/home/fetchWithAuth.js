@@ -3,7 +3,8 @@ import store from "../../redux/store";
 
 // 🔹 보호된 API 요청 함수 (JWT 포함 + 자동 갱신 기능)
 export const fetchWithAuth = async (url, options = {}) => {
-  let { accessToken, refreshToken } = store.getState().auth; // ✅ Redux에서 Access & Refresh Token 가져오기
+  let { accessToken, refreshToken } = store.getState().auth;
+  console.log("🛠 Redux에서 가져온 토큰:", { accessToken, refreshToken });
 
   try {
     let headers = {
@@ -11,6 +12,8 @@ export const fetchWithAuth = async (url, options = {}) => {
       Authorization: `Bearer ${accessToken}`, // ✅ JWT Access Token 포함
       "Content-Type": "application/json",
     };
+
+    console.log("🛠 요청 헤더:", headers);
 
     let response = await fetch(url, {
       ...options,

@@ -1,0 +1,85 @@
+/* 모달 배경 (오버레이) */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* 모달 컨텐츠 */
+.modalContent {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 350px;
+  text-align: center;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* 헤더 스타일 */
+h2 {
+  margin-bottom: 16px;
+  font-size: 20px;
+  color: #333;
+}
+
+/* 리스트 스타일 */
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 200px; /* 스크롤 추가 */
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+/* 리스트 아이템 */
+.list li {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+/* 리스트 아이템 호버 효과 */
+.list li:hover {
+  background: #f0f0f0;
+  font-weight: bold;
+}
+
+/* 닫기 버튼 */
+.closeButton {
+  margin-top: 15px;
+  padding: 8px 16px;
+  border: none;
+  background: #d9534f;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: background 0.2s ease-in-out;
+}
+
+.closeButton:hover {
+  background: #c9302c;
+}
+
+/* 애니메이션 효과 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
