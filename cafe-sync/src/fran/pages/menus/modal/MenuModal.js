@@ -1,37 +1,27 @@
-import style from '../modal/MenuModal.module';
+import style from './MenuModal.module.css';
 
-
-export const MenuModal = () => {
-
+const MenuModal = ({ menu, onClose }) => {
     return (
-        <div className={style.Overlay}>
-            <div className={style.cartContainer}>
+        <div className={style.Overlay} onClick={onClose}>
+            <div className={style.cartContainer} onClick={(e) => e.stopPropagation()}>
+                <button className={style.closeButton} onClick={onClose}>✖</button>
 
-                <button>✖</button>
-
-                <span>카테고리 이름</span>
+                <span className={style.category}>{menu.category}</span>
                 <hr /><br />
-                <span>이미지</span><br />
+                <img src={menu.menuImage} alt={menu.menuNameKo} className={style.menuImage} /><br />
                 <br /><br /><br />
-                <span>아이스 아메리카노</span><br />
-                <span>Americano</span>
+                <span className={style.menuName}>{menu.menuNameKo}</span><br />
+                <span className={style.menuNameEN}>{menu.menuNameEN}</span>
                 <hr />
-                <span>내용 설명</span>
+                <span className={style.menuDetail}>{menu.menuDetail}</span>
                 <hr />
-
-
 
                 <button className={style.addCart} type="button">
                     Sold Out
                 </button>
             </div>
-
         </div>
-
-
     );
 };
-
-
 
 export default MenuModal;
