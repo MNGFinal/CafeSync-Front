@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import CategoryButtons from "./CategoryButtons";
 import styles from "./Menus.module.css";
+import MenuModal from "../modal/MenuModal";
 
 function Menus() {
   return (

@@ -1,189 +1,95 @@
-/* 🟢 모달 창 배경 스타일 */
 .Overlay {
     position: fixed;
-    /* 화면 전체를 덮도록 고정 */
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(0, 0, 0, 0.4);
-    /* 반투명 검정 배경 */
-    z-index: 9999;
-    /* 다른 요소들보다 위에 위치 */
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
 }
 
-/* 🟢 모달 창 스타일 */
 .cartContainer {
-    background-color: #ffffff;
-    /* 흰색 배경 */
-    width: 600px;
-    /* 가로 크기 */
-    height: 600px;
-    /* 세로 크기 */
-    border: 1px solid #cccccc;
-    /* 테두리 색상 */
-    border-radius: 10px;
-    /* 둥근 모서리 */
-    padding: 20px;
-    /* 내부 여백 */
-    font-weight: 600;
-    /* 글씨 두께 */
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-    /* 그림자 효과 */
-    position: fixed;
-    /* 화면 중앙에 고정 */
-    z-index: 100;
-    /* 다른 요소들보다 위에 위치 */
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    /* 정확히 가운데 정렬 */
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    position: relative;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* 🟢 제품명 스타일 */
-.productName {
-    display: inline-block;
-    /* 인라인 요소지만 크기 조절 가능 */
-    font-size: 14px;
-    /* 글씨 크기 */
+.closeButton {
     position: absolute;
-    /* 부모 요소(cartContainer)를 기준으로 절대 위치 */
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
 }
 
-/* 🟢 제품 가격 스타일 */
-.productPrice {
-    font-size: 14px;
-    /* 글씨 크기 */
-    position: absolute;
-    /* 부모 요소(cartContainer)를 기준으로 절대 위치 */
-    left: 20px;
-    /* 왼쪽 여백 */
-    top: 60px;
-    /* 위쪽 여백 */
-}
-
-/* 🟢 수량 조절 박스 스타일 */
-.count {
-    width: 70px;
-    /* 가로 크기 */
-    height: 20px;
-    /* 세로 크기 */
-    border: 1px solid #cccccc;
-    /* 테두리 색상 */
-    position: absolute;
-    /* 부모 요소(cartContainer)를 기준으로 절대 위치 */
-    right: 20px;
-    /* 오른쪽 여백 */
-    top: 50px;
-    /* 위쪽 여백 */
-    padding: 2px 0;
-    /* 내부 여백 */
-}
-
-/* 🟢 "-" 버튼 스타일 */
-.minus {
-    position: absolute;
-    /* 부모 요소(count)를 기준으로 절대 위치 */
-    left: 10%;
-    /* 왼쪽 정렬 */
-}
-
-/* 🟢 수량 표시 숫자 스타일 */
-.number {
-    position: absolute;
-    /* 부모 요소(count)를 기준으로 절대 위치 */
-    left: 45%;
-    /* 중앙 정렬 */
-}
-
-/* 🟢 "+" 버튼 스타일 */
-.plus {
-    position: absolute;
-    /* 부모 요소(count)를 기준으로 절대 위치 */
-    right: 10%;
-    /* 오른쪽 정렬 */
-}
-
-/* 🟢 총 합계 텍스트 스타일 */
-.total {
-    display: inline-block;
-    /* 인라인 요소지만 크기 조절 가능 */
-    position: absolute;
-    /* 부모 요소(cartContainer)를 기준으로 절대 위치 */
-    left: 20px;
-    /* 왼쪽 여백 */
-    top: 100px;
-    /* 위쪽 여백 */
-    font-size: 14px;
-    /* 글씨 크기 */
-}
-
-/* 🟢 총 가격 스타일 */
-.totalPrice {
-    font-size: 22px;
-    /* 글씨 크기 */
-    font-weight: 600;
-    /* 글씨 두께 */
-    display: inline-block;
-    /* 인라인 요소지만 크기 조절 가능 */
-    position: absolute;
-    /* 부모 요소(cartContainer)를 기준으로 절대 위치 */
-    right: 20px;
-    /* 오른쪽 여백 */
-    top: 50%;
-    /* 중앙 정렬 */
-}
-
-/* 🟢 취소 버튼 스타일 */
-.cancle {
-    position: absolute;
-    /* 부모 요소(cartContainer)를 기준으로 절대 위치 */
-    left: 20px;
-    /* 왼쪽 여백 */
-    bottom: 20px;
-    /* 하단 여백 */
-    width: 120px;
-    /* 버튼 크기 */
-    padding: 7px 0;
-    /* 내부 여백 */
-    background-color: white;
-    /* 배경 색상 */
-    color: #0f6cfc;
-    /* 글씨 색상 */
-    font-weight: 600;
-    /* 글씨 두께 */
-    border: 1px solid #0f6cfc;
-    /* 테두리 색상 */
-    border-radius: 5px;
-    /* 둥근 모서리 */
-}
-
-/* 🟢 Sold Out 버튼 스타일 */
-.addCart {
-    position: absolute;
-    /* 부모 요소(cartContainer)를 기준으로 절대 위치 */
-    bottom: 20px;
-    /* 하단 여백 */
-    left: 50%;
-    /* 부모 요소 기준 왼쪽에서 50% 위치 */
-    transform: translateX(-50%);
-    /* 자신의 너비 절반만큼 왼쪽으로 이동 → 중앙 정렬 */
-    width: 100px;
-    /* 버튼 크기 */
-    padding: 7px;
-    /* 내부 여백 */
-    background-color: #5B0A47;
-    /* 배경 색상 */
-    color: white;
-    /* 글씨 색상 */
+.category {
+    font-size: 18px;
     font-weight: bold;
-    /* 글씨 두께 */
-    border: 1px solid #5B0A47;
-    /* 테두리 색상 */
+    margin-bottom: 10px;
+    display: block;
+}
+
+.menuImage {
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    margin: 15px 0;
+}
+
+.menuName {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.menuNameEN {
+    font-size: 16px;
+    color: gray;
+    margin-bottom: 15px;
+}
+
+.menuDetail {
+    font-size: 14px;
+    color: black;
+    margin: 15px 0;
+    line-height: 1.6;
+    white-space: pre-line;
+}
+
+.addCart {
+    background: #6A1B9A;
+    color: white;
+    padding: 12px;
+    border: none;
     border-radius: 5px;
-    /* 둥근 모서리 */
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-    /* 그림자 효과*/
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+    font-size: 16px;
+}
+
+.addCart.soldOut {
+    background: #6A1B9A;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.addCart:hover {
+    background: #4A148C;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 15px 0;
 }

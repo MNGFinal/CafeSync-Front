@@ -1,82 +1,160 @@
 /* 전체 카테고리 버튼 영역 */
 .categoryContainer {
   display: flex;
+  flex-direction: column;
+  /* 세로 정렬 */
   align-items: center;
+  /* 중앙 정렬 */
   gap: 10px;
-  margin-bottom: 20px;
-  border-bottom: 1px solid lightgray;
-  padding-bottom: 33px;
+  /* 버튼 간격 */
+  margin-top: 50px;
+  /* 상단 여백 */
+  margin-bottom: 10px;
+  /* 하단 여백 */
+  padding-bottom: 20px;
+  /* 하단 패딩 */
 }
 
-/* 버튼 기본 스타일 */
+/* 버튼을 감싸는 컨테이너 */
+.buttonContainer {
+  display: flex;
+  /* 가로 정렬 */
+  gap: 15px;
+  /* 버튼 사이 간격 */
+}
+
+/* 개별 카테고리 버튼 스타일 */
 .categoryButton {
-  width: 180px;
-  height: 50px;
+  display: flex;
+  justify-content: center;
+  /* 가로 중앙 정렬 */
+  align-items: center;
+  /* 세로 중앙 정렬 */
+  width: 135px;
+  /* 버튼 너비 */
+  height: 40px;
+  /* 버튼 높이 */
   background: white;
-  border: 2px solid #ddd;
-  color: black;
+  /* 기본 배경색 */
+  border: 1px solid #ddd;
+  /* 테두리 */
+  color: rgb(40, 40, 40);
+  /* 글씨 색상 */
   padding: 10px 20px;
+  /* 내부 여백 */
   border-radius: 8px;
-  font-size: 20px;
+  /* 모서리 둥글게 */
+  font-size: 18px;
+  /* 글씨 크기 */
   font-weight: bold;
+  /* 글씨 두껍게 */
   cursor: pointer;
+  /* 클릭 가능하도록 포인터 표시 */
   transition: all 0.2s ease-in-out;
+  /* 부드러운 전환 효과 */
 }
 
 /* 활성화된 버튼 스타일 */
 .categoryButton.active {
   background: #590d34;
+  /* 활성화된 버튼 배경색 */
   color: white;
+  /* 글씨 색상 변경 */
   border-color: #590d34;
+  /* 테두리 색상 변경 */
 }
 
-/* 버튼 hover 효과 */
+/* 버튼 hover(마우스 올릴 때) 효과 */
 .categoryButton:hover {
   background: #590d34;
+  /* 배경색 변경 */
   color: white;
+  /* 글씨 색상 변경 */
   border-color: #590d34;
+  /* 테두리 색상 변경 */
 }
 
-/* 검색창 스타일 */
+/* 검색창 스타일 (버튼 아래 위치) */
 .searchContainer {
   display: flex;
+  /* 가로 정렬 */
   align-items: center;
+  /* 세로 중앙 정렬 */
   gap: 5px;
-  position: relative;
-  left: 17%;
-  margin-top: 1%;
+  /* 검색 입력창과 버튼 사이 간격 */
+  margin-top: 20px;
+  /* 위쪽 여백 */
+  margin-left: auto;
+  /* 왼쪽 여백 자동 조정 */
+  margin-right: 5%;
+  /* 오른쪽 여백 (위치 조정 가능) */
 }
 
+/* 검색 입력창 스타일 */
 .searchInput {
   border: 1px solid #ddd;
+  /* 테두리 */
   border-radius: 5px;
+  /* 모서리 둥글게 */
   padding: 8px 12px;
+  /* 내부 여백 */
   font-size: 14px;
+  /* 글씨 크기 */
   outline: none;
+  /* 클릭 시 외곽선 제거 */
   width: 200px;
+  /* 입력창 너비 */
   height: 35px;
+  /* 입력창 높이 */
 }
 
+/* 검색 버튼 스타일 */
 .searchButton {
   background: #590d34;
+  /* 버튼 배경색 */
   color: white;
+  /* 글씨 색상 */
   border: none;
+  /* 테두리 제거 */
   padding: 8px 15px;
+  /* 내부 여백 */
   border-radius: 5px;
+  /* 모서리 둥글게 */
   font-size: 14px;
+  /* 글씨 크기 */
   cursor: pointer;
+  /* 클릭 가능하도록 포인터 표시 */
   font-weight: bold;
+  /* 글씨 두껍게 */
   transition: all 0.2s ease-in-out;
+  /* 부드러운 전환 효과 */
 }
 
+/* 검색 버튼 hover(마우스 올릴 때) 효과 */
 .searchButton:hover {
   background: #7d144e;
+  /* 버튼 배경색 변경 */
 }
 
-.buttonContainer {
-  display: flex;
-  position: relative;
-  left: 30%;
-  margin-top: 30px;
-  gap: 15px;
+/* 검색창 위에 선 추가 */
+.divider {
+  width: 100%;
+  /* 전체 가로 길이 */
+  border: none;
+  border-top: 1px solid #ddd;
+  /* 1px 회색 선 */
+  margin: 20px 0;
+  /* 위아래 여백 */
+}
+
+
+.menuItem img {
+  width: 120px;
+  /* 원하는 너비 */
+  height: 120px;
+  /* 원하는 높이 */
+  object-fit: cover;
+  /* 이미지 비율 유지하면서 컨테이너에 맞춤 */
+  border-radius: 10px;
+  /* 둥근 모서리 (선택 사항) */
 }
