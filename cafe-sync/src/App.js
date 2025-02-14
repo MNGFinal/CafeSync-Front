@@ -118,6 +118,7 @@ function App() {
             <Route path="schedule" element={<Schedule />} />
             <Route path="dayoff" element={<DayOff />} />
             <Route path="notice" element={<Notice />} />
+            <Route path="notice/notice-regist" element={<NoticeRegist/>}/>
             <Route path="chat" element={<Chat />} />
             <Route path="barista-note" element={<BaristaNote />} />
             <Route path="stats" element={<Stats />} />
