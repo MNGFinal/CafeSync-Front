@@ -1,6 +1,7 @@
 .icon {
   width: 30px;
   height: auto;
+  margin-bottom: 20px;
 }
 
 .header {
@@ -17,7 +18,7 @@
 .container {
   position: relative;
   left: 10%;
-  margin-top: 15%;
+  margin-top: 11%;
   width: 400px;
   height: auto; /* 높이 자동 조정 */
   padding: 20px;
@@ -36,7 +37,7 @@
 
 /* 라벨 스타일 */
 .inputBox label {
-  width: 43px;
+  width: 56px;
   text-align: left;
   font-size: 14px;
   font-weight: bold;

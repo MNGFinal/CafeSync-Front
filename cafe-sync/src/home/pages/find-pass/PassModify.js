@@ -1,23 +1,26 @@
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import styles from "./PassModify.module.css";
-import { Link } from "react-router-dom";
+import { updatePassword } from "../../../apis/home/findAPI"; // ✅ 비밀번호 변경 API 호출
 
 function PassModify() {
-  // ✅ 상태 변수
+  const location = useLocation();
+  const navigate = useNavigate();
+  const userId = location.state?.userId || ""; // ✅ 넘어온 userId 값 가져오기
+
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [message, setMessage] = useState(""); // ✅ 비밀번호 확인 메시지
-  const [messageColor, setMessageColor] = useState(""); // ✅ 메시지 색상
-  const [passwordValid, setPasswordValid] = useState(false); // ✅ 비밀번호 유효성 체크
-  const [lengthError, setLengthError] = useState(false); // ✅ 길이 제한 에러 상태
+  const [message, setMessage] = useState("");
+  const [messageColor, setMessageColor] = useState("");
+  const [passwordValid, setPasswordValid] = useState(false);
+  const [lengthError, setLengthError] = useState(false);
 
-  // ✅ 비밀번호 유효성 검사 (영문 + 숫자 + 특수문자 포함, 8~14자)
+  // ✅ 비밀번호 유효성 검사
   const validatePassword = (value) => {
-    if (value.length > 14) return; // ✅ 14자 초과 입력 방지
-
+    if (value.length > 14) return;
     setPassword(value);
-    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+]).{8,14}$/;
 
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+]).{8,14}$/;
     if (value.length === 0) {
       setPasswordValid(false);
       setLengthError(false);
@@ -26,20 +29,23 @@ function PassModify() {
       setLengthError(true);
     } else {
       setLengthError(false);
-      if (!passwordRegex.test(value)) {
-        setPasswordValid(false);
-      } else {
-        setPasswordValid(true);
-      }
+      setPasswordValid(passwordRegex.test(value));
+    }
+
+    // ✅ 비밀번호 입력값이 변경될 때마다 확인 비밀번호와 비교
+    if (confirmPassword.length > 0) {
+      checkPasswordMatch(confirmPassword, value);
+    } else {
+      setMessage(""); // ✅ 위쪽 비밀번호 입력값이 바뀌면 메시지 초기화
     }
   };
 
   // ✅ 비밀번호 일치 여부 확인
-  const checkPasswordMatch = (value) => {
-    setConfirmPassword(value);
+  const checkPasswordMatch = (confirmValue, mainPassword = password) => {
+    setConfirmPassword(confirmValue);
 
-    if (password && value) {
-      if (password === value) {
+    if (mainPassword && confirmValue) {
+      if (mainPassword === confirmValue) {
         setMessage("비밀번호가 일치합니다.");
         setMessageColor("green");
       } else {
@@ -47,7 +53,28 @@ function PassModify() {
         setMessageColor("red");
       }
     } else {
-      setMessage(""); // 입력이 없을 때 메시지 제거
+      setMessage(""); // ✅ 비밀번호가 입력되지 않은 경우 메시지 초기화
+    }
+  };
+
+  const handlePasswordChange = async () => {
+    if (!passwordValid || password !== confirmPassword) {
+      alert("⚠️ 비밀번호가 일치하지 않거나 유효하지 않습니다.");
+      return;
+    }
+
+    try {
+      const result = await updatePassword(userId, password);
+
+      if (result.success) {
+        alert("✅ 비밀번호가 변경되었습니다! 로그인 페이지로 이동합니다.");
+        navigate("/");
+      } else {
+        alert(`${result.message}`);
+      }
+    } catch (error) {
+      console.error("비밀번호 변경 오류:", error);
+      alert("❌ 서버 오류로 인해 비밀번호 변경에 실패했습니다.");
     }
   };
 
@@ -58,21 +85,18 @@ function PassModify() {
       </header>
 
       <div className={styles.container}>
-        {/* 비밀번호 입력 */}
         <div className={styles.inputBox}>
           <label>비밀번호</label>
           <input
             type="password"
             placeholder="새 비밀번호를 입력해주세요"
             value={password}
-            onChange={(e) => validatePassword(e.target.value)} // ✅ 비밀번호 유효성 검사 실행
-            maxLength={14} // ✅ 14자 초과 입력 방지
+            onChange={(e) => validatePassword(e.target.value)}
+            maxLength={14}
           />
-          {/* ✅ 기본 안내 문구 (회색) */}
           <p className={styles.helperText}>
             영문, 숫자, 특수문자 포함 8자~14자로 입력해주세요.
           </p>
-          {/* ✅ 조건 미달일 경우 오류 메시지 (빨간색) */}
           {lengthError && (
             <p className={styles.warningText}>
               비밀번호는 8자 이상 14자 이하로 입력해야 합니다.
@@ -85,14 +109,13 @@ function PassModify() {
           )}
         </div>
 
-        {/* 비밀번호 확인 입력 */}
         <div className={styles.inputBox}>
           <label>비밀번호 확인</label>
           <input
             type="password"
             placeholder="다시 한 번 새 비밀번호를 입력해주세요"
             value={confirmPassword}
-            onChange={(e) => checkPasswordMatch(e.target.value)} // ✅ 비밀번호 확인
+            onChange={(e) => checkPasswordMatch(e.target.value)}
           />
           {message && (
             <p
@@ -105,22 +128,21 @@ function PassModify() {
         </div>
       </div>
 
-      {/* ✅ 확인 & 취소 버튼 정렬 */}
       <div className={styles.buttonGroup}>
-        <Link to="/" className={styles.selectButton}>
-          <button
-            className={`${styles.button} ${styles.confirmButton}`}
-            disabled={!passwordValid || password !== confirmPassword}
-          >
-            변경
-          </button>
-        </Link>
+        <button
+          className={`${styles.button} ${styles.confirmButton}`}
+          onClick={handlePasswordChange}
+          disabled={!passwordValid || password !== confirmPassword}
+        >
+          변경
+        </button>
 
-        <Link to="/" className={styles.selectButton}>
-          <button className={`${styles.button} ${styles.cancelButton}`}>
-            취소
-          </button>
-        </Link>
+        <button
+          className={`${styles.button} ${styles.cancelButton}`}
+          onClick={() => navigate("/")} // ✅ 클릭 시 페이지 이동
+        >
+          취소
+        </button>
       </div>
     </>
   );

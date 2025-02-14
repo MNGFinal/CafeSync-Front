@@ -1,95 +1,132 @@
-// import React, { Component } from 'react';
-// import FullCalendar from '@fullcalendar/react';
-// import dayGridPlugin from '@fullcalendar/daygrid';
-// import interactionPlugin from "@fullcalendar/interaction";
-// import st from './FullCalendar.module.css'
+import React, { useEffect, useState, useRef } from 'react';
+import { useSelector } from "react-redux";
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import st from './FullCalendar.module.css'
 
-// class MyCalendar extends Component {
-// /*
-//   constructor(props) {
-//     super(props);
-//     this.calendarRef = React.createRef(); // React Ref 객체 생성
-//     this.state = {
-//       event: [], // 일정 데이터를 저장할 상태
-//     }
-//   }
+const MyCalendar = () => {
+  const franCode = useSelector(
+    (state) => state.auth?.user?.franchise?.franCode ?? null
+  );
+  const [events, setEvents] = useState([]);
+  const calendarRef = useRef();
 
-//   // 컴포넌트가 마운트될 때 백엔드에서 일정 데이터 가지고 오기
-//   componentDidMount() {
-//     this.fetchSchedules(200);   // 우선 확인용 200, 이후에는 공란
-//   }
+  // 이벤트가 바뀔 때마다
+  useEffect(() => {
+    if (franCode) {
+      fetchSchedules();
+    }
+  }, [franCode]);
 
-//   // 일정 조회 (백엔드에서 가지고 오기)
-//   fetchSchedules = async (franCode) => {
-//     console.log('franCode?', franCode);
-//     try {
-//       // franCode를 URL에 포함시켜 fetch 요청
-//       const response = await fetch(`http://localhost:8080/api/fran/schedule/regist/${franCode}`);
-//       console.log(response);
-//       if (!response.ok) {
-//         throw new Error("서버 응답 실패!");
-//       }
-//       const data = await response.json();
-//       console.log('data?', data);
+  // 스케줄 조회 함수
+  const fetchSchedules = async () => {
+    console.log("🔍 조회할 스케줄 franCode:", franCode);
+    if (!franCode) return;
 
-//       // FullCalendar 형식으로 변환
-//       const formattedEvents = data.map((schedule) => ({
-//         id: schedule.scheduleCode,
-//         title: this.getScheduleType(schedule.scheduleDivision),
-//         date: schedule.scheduleDate,
-//         emp: schedule.empCode,
-//       }));
-//       this.setState({events: formattedEvents});   // 상태 업데이트
-//     } catch (error) {
-//       console.log("조회 오류:", error);
-//     }
-//   } 
+    try {
+      const response = await fetch(`http://localhost:8080/api/fran/schedule/${franCode}`);
 
-//   getScheduleType = (division) => {
-//     const scheduleTypes = ["휴가", "오픈", "미들", "마감"];
-//     return scheduleTypes[division] || "알 수 없음";
-//   }
-  
-//   addEventHandler = () => {
-//     const title = prompt('일정 제목을 입력하세요:');
-//     if (title) {
-//       this.calendarRef.getApi().addEvent({
-//         title,
-//         start: new Date(),
-//         allDay: true,
-//       });
-//     }
-//   };
-// */
-//   render() {
-//     return (
-//       <div className={`${st.cal} test-class`}>            
-//         <FullCalendar 
-//           ref={this.calendarRef} // ✅ Ref 연결
-//           plugins={[ dayGridPlugin, interactionPlugin ]}
-//           initialView="dayGridWeek"
-//           height="800px"
-//           contentHeight="auto"
-//           locale={'ko'}
-//           headerToolbar={{
-//             start: "prev next today",
-//             center: "title",
-//             end: "addEventBtn dayGridMonth dayGridWeek",
-//           }}
-//           customButtons={{
-//             addEventBtn: {
-//               text: '스케줄 등록',
-//               click: this.addEventHandler,
-//             },
-//           }}
-//           events={this.state.events}    // 일정 데이터 적용
-//           dayCellContent={(arg) => {
-//             // 날짜만 반환하도록 설정
-//             return `${arg.date.getDate()}`;
-//           }}
-//         />
-//       </div>
-//     );
-//   }
-// }
-// export default MyCalendar;
+      if (!response.ok) {throw new Error("서버 응답 실패");}
+
+      const data = await response.json();
+      console.log("✅ 기본 조회된 스케줄:", data);
+
+      // FullCalendar 이벤트 형식으로 변환 - 기본
+      const formattedEvents = data.map((schedule) => ({
+        id: schedule.scheduleCode,
+        title: `${getScheduleType(schedule.scheduleDivision)} - ${schedule.empCode}`,
+        date: schedule.scheduleDate,
+        emp: schedule.empCode,
+        extendedProps: {
+          scheduleDivision: schedule.scheduleDivision
+        },
+        classNames: [`division-${schedule.scheduleDivision}`],
+      }));
+      console.log('조회된 이벤트?', formattedEvents);
+      
+      setEvents(formattedEvents);
+    } catch (error) {
+      console.error("조회 오류!!", error);
+    }
+  };
+
+  // 일정 타입 변환 함수
+  const getScheduleType = (division) => {
+    const scheduleTypes = ["", "오픈", "미들", "마감", "휴가"];
+    return scheduleTypes[division] || "알 수 없음";
+  };
+
+  return (
+    <div className={`${st.cal} test-class`}>            
+      <FullCalendar 
+        ref={calendarRef} // Ref 연결
+        plugins={[ dayGridPlugin, 
+          // timeGridPlugin, 
+          interactionPlugin ]}
+        initialView="dayGridWeek"
+        height="740px"
+        locale={'ko'}
+        headerToolbar={{
+          start: "prev next today",
+          center: "title",
+          end: "addEventBtn dayGridMonth dayGridWeek",
+        }}
+        customButtons={{
+          addEventBtn: {
+            text: '스케줄 등록',
+            // click: this.addEventHandler,
+          },
+        }}
+        events={events}
+        views={{
+          dayGridMonth: {   // 월별
+            dayMaxEventRows: 3, // 한 날짜 칸에 최대 3개 일정
+            eventDisplay: 'list-item',
+            eventContent: (arg) => {
+              console.log('이벤트 ExtendedProps?', arg.event.extendedProps);
+              const divisionClass = `division-${arg.event.extendedProps.scheduleDivision}`;
+              
+              return (
+                <div className="custom-event-month" title={arg.event.extendedProps.description}>
+                <span className={divisionClass}>{arg.event.title}</span>
+              </div>
+              );
+            }
+          },
+          timeGridWeek: {   // 주별
+            dayMaxEventRows: false, // 한 날짜 칸에 일정이 여러 개 표시되도록
+            eventContent: (arg) => {
+              const divisionClass = `division-${arg.event.extendedProps.scheduleDivision}`;
+              console.log('title?',arg.event.title);
+              return (
+                <div className="custom-event-week">
+                  <span className={divisionClass}>{arg.event.title}</span>
+                </div>
+              );
+            },
+          },
+        }}
+
+        // 일정별 스타일 적용
+        eventClassNames={(arg) => {
+          // scheduleDivision 값에 따라 다른 색상 지정
+          const division = arg.event.extendedProps.scheduleDivision;
+          switch (division) {
+            case 1: return ['open-event'];
+            case 2: return ['middle-event'];
+            case 3: return ['close-event'];
+            case 4: return ['vacation-event'];
+            default: return [];
+          }
+        }}
+        dayCellContent={(arg) => {
+          // 날짜만 반환하도록 설정
+          return `${arg.date.getDate()}`;
+        }}
+      />
+    </div>
+  )
+}
+export default MyCalendar;

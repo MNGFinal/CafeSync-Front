@@ -16,7 +16,7 @@
 .container {
   position: relative;
   left: 10%;
-  margin-top: 10%;
+  margin-top: 6%;
   width: 400px;
   height: auto; /* 높이 자동 조정 */
   padding: 20px;
@@ -33,9 +33,13 @@
   width: 100%;
 }
 
+.inputBox {
+  margin-top: 20px;
+}
+
 /* 라벨 스타일 */
 .inputBox label {
-  width: 43px;
+  width: 56px;
   text-align: left;
   font-size: 14px;
   font-weight: bold;
@@ -87,7 +91,7 @@
 .buttonGroup {
   display: flex;
   gap: 20px;
-  margin-top: 9%;
+  margin-top: 15%;
   justify-content: center;
 }
 

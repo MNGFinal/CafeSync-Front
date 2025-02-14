@@ -1,7 +1,10 @@
 import styles from "./CompleteId.module.css";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 function CompleteId() {
+  const location = useLocation();
+  const userId = location.state?.userId || "알 수 없음";
+
   return (
     <>
       <img
@@ -10,8 +13,8 @@ function CompleteId() {
         className={styles.logo}
       />
       <div className={styles.infoBox}>
-        <h2>OOO님의</h2>
-        <h2>아이디는 OOO 입니다</h2>
+        <h2>회원님의 아이디는</h2>
+        <h2 className={styles.userId}>{userId} 입니다</h2>
       </div>
 
       <Link to="/" className={styles.homeButton}>
