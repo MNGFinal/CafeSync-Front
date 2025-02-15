@@ -2,15 +2,16 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useSelector } from "react-redux";
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import st from './FullCalendar.module.css'
+import ScheduleAdd from './ScheduleAdd';
+import st from '../styles/FullCalendar.module.css'
 
 const MyCalendar = () => {
   const franCode = useSelector(
     (state) => state.auth?.user?.franchise?.franCode ?? null
   );
   const [events, setEvents] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const calendarRef = useRef();
 
   // 이벤트가 바뀔 때마다
@@ -76,7 +77,7 @@ const MyCalendar = () => {
         customButtons={{
           addEventBtn: {
             text: '스케줄 등록',
-            // click: this.addEventHandler,
+            click: () => setIsModalOpen(true),
           },
         }}
         events={events}
@@ -85,7 +86,7 @@ const MyCalendar = () => {
             dayMaxEventRows: 3, // 한 날짜 칸에 최대 3개 일정
             eventDisplay: 'list-item',
             eventContent: (arg) => {
-              console.log('이벤트 ExtendedProps?', arg.event.extendedProps);
+              // console.log('이벤트 ExtendedProps?', arg.event.extendedProps);
               const divisionClass = `division-${arg.event.extendedProps.scheduleDivision}`;
               
               return (
@@ -126,6 +127,8 @@ const MyCalendar = () => {
           return `${arg.date.getDate()}`;
         }}
       />
+      {/* 스케줄 등록 모달 */}
+      <ScheduleAdd isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
     </div>
   )
 }
