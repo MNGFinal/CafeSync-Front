@@ -1,6 +1,8 @@
 import style from './MenuModal.module.css';
 
 const MenuModal = ({ menu, onClose }) => {
+
+    console.log("메뉴에 뭐가들었니?",menu);
     return (
         <div className={style.Overlay} onClick={onClose}>
             <div className={style.cartContainer} onClick={(e) => e.stopPropagation()}>
