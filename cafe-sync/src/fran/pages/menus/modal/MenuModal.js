@@ -1,6 +1,15 @@
+import { useState } from 'react';
 import style from './MenuModal.module.css';
 
+
 const MenuModal = ({ menu, onClose }) => {
+
+    const [soldOut, setSoldOut] = useState("false"); 
+
+    // Sold Out 버튼을 눌렀을 때 sold아웃 처리
+    const onClickHandler = () => {
+        setSoldOut(true);
+    }
 
     console.log("메뉴에 뭐가들었니?",menu);
     return (
@@ -18,7 +27,10 @@ const MenuModal = ({ menu, onClose }) => {
                 <span className={style.menuDetail}>{menu.menuDetail}</span>
                 <hr />
 
-                <button className={style.addCart} type="button">
+                <button
+                className={style.addCart} type="button"
+                onClick={onClickHandler}
+                >
                     Sold Out
                 </button>
             </div>
