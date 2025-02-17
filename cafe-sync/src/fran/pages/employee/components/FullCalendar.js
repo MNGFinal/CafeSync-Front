@@ -2,16 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-// import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from "@fullcalendar/interaction";
-import st from "./FullCalendar.module.css";
-
-import FullCalendar from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
-
-// import timeGridPlugin from '@fullcalendar/timegrid';
-
-import interactionPlugin from '@fullcalendar/interaction';
 import ScheduleAdd from './ScheduleAdd';
 import st from '../styles/FullCalendar.module.css'
 
@@ -51,9 +42,8 @@ const MyCalendar = () => {
       // FullCalendar 이벤트 형식으로 변환 - 기본
       const formattedEvents = data.map((schedule) => ({
         id: schedule.scheduleCode,
-        title: `${getScheduleType(schedule.scheduleDivision)} - ${
-          schedule.empCode
-        }`,
+        title: `${getScheduleType(schedule.scheduleDivision)} - ${schedule.empCode
+          }`,
         date: schedule.scheduleDate,
         emp: schedule.empCode,
         extendedProps: {
@@ -157,7 +147,7 @@ const MyCalendar = () => {
         }}
       />
       {/* 스케줄 등록 모달 */}
-      <ScheduleAdd isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
+      <ScheduleAdd isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
     </div>
   );
 };
