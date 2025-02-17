@@ -100,9 +100,6 @@
     border-right: none;
 }
 
-.infoRow:first-child{
-}
-
 /* 바리스타 노트 데이터 스타일 */
 .baristaNoteData {
     font-size: 16px;
