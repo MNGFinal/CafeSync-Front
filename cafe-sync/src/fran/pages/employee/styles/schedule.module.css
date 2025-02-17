@@ -1,0 +1,42 @@
+h2 {
+    font-size: 1.5rem;
+}
+
+.scheduleAddBody {
+    padding: 10px;
+}
+
+.scheduleAddBody > h3 {
+    margin: 20px 0 10px 0;
+}
+
+.span {
+    margin-right: 20px;
+    font-size: 16px;
+    font-weight: bolder;
+}
+
+.workers {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.addWorkerBtn {
+    background-color: #630848;
+    color: white;
+    border-radius: 100px;
+    padding: 2px 5px;
+    margin-left: 10px;
+    border: 2px solid #630848;
+}
+
+.delWorkerBtn {
+    background-color: white;
+    color: gray;
+    border-radius: 100px;
+    padding: 2px 4px;
+    margin-left: 5px;
+    border: 2px solid gray;
+    font-weight: bold;
+}
