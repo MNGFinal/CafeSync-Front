@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { getFranInventoryList } from "../../../apis/inventory/inventoryApi";
 import styles from "./Inventory.module.css";
+import generatePDF from "../../../config/generatePDF";
+import SModal from "../../../components/SModal"; // ✅ 이동 후 경로 수정
+import modalStyle from "../../../components/ModalButton.module.css";
+import { Player } from "@lottiefiles/react-lottie-player"; // ✅ Lottie 애니메이션 추가
 
 function Inventory() {
   const franCode = useSelector(
@@ -13,6 +17,9 @@ function Inventory() {
   const [showExpiringSoon, setShowExpiringSoon] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
   const [searchText, setSearchText] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [lottieAnimation, setLottieAnimation] = useState("");
 
   useEffect(() => {
     if (!franCode) return;
@@ -90,6 +97,24 @@ function Inventory() {
     setFilteredInventory(updatedInventory);
   };
 
+  const handleGeneratePDF = async () => {
+    if (selectedItems.length === 0) {
+      setLottieAnimation("/animations/warning.json"); // ⚠️ 경고 애니메이션
+      setModalMessage("선택된 항목이 없습니다. 최소 한 개를 선택하세요.");
+      setIsModalOpen(true);
+      return;
+    }
+
+    const selectedData = filteredInventory.filter((item) =>
+      selectedItems.includes(item.inventory.invenCode)
+    );
+
+    await generatePDF(selectedData);
+    setLottieAnimation("/animations/success-check.json"); // ✅ 성공 애니메이션
+    setModalMessage("PDF 파일이 성공적으로 생성되었습니다!");
+    setIsModalOpen(true);
+  };
+
   return (
     <>
       <div className="page-header">
@@ -104,7 +129,9 @@ function Inventory() {
             onChange={handleSearchChange}
             className={styles.searchbox}
           />
-          <button className={styles.pdfButton}>PDF 파일 추출</button>
+          <button className={styles.pdfButton} onClick={handleGeneratePDF}>
+            PDF 파일 추출
+          </button>
           <button className={styles.updateButton}>수량 저장</button>
           <button className={styles.disposeButton}>유통기한 임박 폐기</button>
         </div>
@@ -255,6 +282,30 @@ function Inventory() {
           </tbody>
         </table>
       </div>
+      {/* ✅ 모달 추가 (애니메이션 포함) */}
+      <SModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        buttons={[
+          {
+            text: "확인",
+            onClick: () => setIsModalOpen(false),
+            className: modalStyle.confirmButtonS,
+          },
+        ]}
+      >
+        <div style={{ textAlign: "center" }}>
+          <Player
+            autoplay
+            loop={false} // ✅ 애니메이션 반복 X
+            keepLastFrame={true} // ✅ 애니메이션이 끝나도 마지막 프레임 유지
+            src={lottieAnimation} // ✅ 동적으로 변경됨
+            style={{ height: "100px", width: "100px", margin: "0 auto" }}
+          />
+          <br />
+          <p>{modalMessage}</p>
+        </div>
+      </SModal>
     </>
   );
 }
