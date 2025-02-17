@@ -6,11 +6,19 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import st from "./FullCalendar.module.css";
 
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import ScheduleAdd from './ScheduleAdd';
+import st from '../styles/FullCalendar.module.css'
+
+
 const MyCalendar = () => {
   const franCode = useSelector(
     (state) => state.auth?.user?.franchise?.franCode ?? null
   );
   const [events, setEvents] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const calendarRef = useRef();
 
   // 이벤트가 바뀔 때마다
@@ -85,6 +93,8 @@ const MyCalendar = () => {
           addEventBtn: {
             text: "스케줄 등록",
             // click: this.addEventHandler,
+            text: '스케줄 등록',
+            click: () => setIsModalOpen(true),
           },
         }}
         events={events}
@@ -143,6 +153,8 @@ const MyCalendar = () => {
           return `${arg.date.getDate()}`;
         }}
       />
+      {/* 스케줄 등록 모달 */}
+      <ScheduleAdd isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
     </div>
   );
 };
