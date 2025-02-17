@@ -91,3 +91,23 @@
         /* 모바일에서는 2개씩 */
     }
 }
+
+.menuCard {
+    position: relative;
+    /* 부모 요소에 상대적 위치 추가 */
+}
+
+.soldOutImage {
+    position: absolute;
+    /* 절대 위치 지정 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    /* 메뉴 카드에 맞게 크기 조정 */
+    height: 100%;
+    /* 메뉴 카드에 맞게 크기 조정 */
+    object-fit: contain;
+    /* 이미지 비율 유지 */
+    z-index: 2;
+    /* 다른 요소 위에 표시 */
+}

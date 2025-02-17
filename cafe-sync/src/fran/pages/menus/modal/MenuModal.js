@@ -1,17 +1,44 @@
-import { useState } from 'react';
+import { useState, useEffect } from "react";
 import style from './MenuModal.module.css';
 
+const MenuModal = ({ menu, onClose, toggleSoldOut }) => {
+    const [soldOut, setSoldOut] = useState(menu.orderableStatus);
 
-const MenuModal = ({ menu, onClose }) => {
-
-    const [soldOut, setSoldOut] = useState("false"); 
-
-    // Sold Out 버튼을 눌렀을 때 sold아웃 처리
+    // Sold Out 버튼을 눌렀을 때 soldOut 처리
     const onClickHandler = () => {
-        setSoldOut(true);
-    }
+        setSoldOut(!soldOut);
+        toggleSoldOut(menu.menuCode); // 부모 컴포넌트에 상태 변경 요청
+    };
 
-    console.log("메뉴에 뭐가들었니?",menu);
+    useEffect(() => {
+        const updateMenuSoldOut = async () => {
+            try {
+                const response = await fetch(`http://localhost:8080/api/fran/menus/${menu.menuCode}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        ...menu,
+                        orderableStatus: !soldOut, // 'soldOut' 상태에 맞게 판매 여부 수정
+                    }),
+                });
+
+                if (response.ok) {
+                    console.log("메뉴 상태가 성공적으로 업데이트되었습니다.");
+                } else {
+                    console.error("서버 요청 실패:", response);
+                }
+            } catch (error) {
+                console.error("에러 발생:", error);
+            }
+        };
+
+        if (soldOut !== false) { // soldOut 상태가 true로 변경되었을 때만 서버에 요청
+            updateMenuSoldOut();
+        }
+    }, [soldOut]);  // soldOut 상태가 변경될 때마다 실행
+
     return (
         <div className={style.Overlay} onClick={onClose}>
             <div className={style.cartContainer} onClick={(e) => e.stopPropagation()}>
@@ -28,11 +55,13 @@ const MenuModal = ({ menu, onClose }) => {
                 <hr />
 
                 <button
-                className={style.addCart} type="button"
-                onClick={onClickHandler}
+                    className={style.addCart}
+                    type="button"
+                    onClick={onClickHandler}
                 >
                     Sold Out
                 </button>
+
             </div>
         </div>
     );
