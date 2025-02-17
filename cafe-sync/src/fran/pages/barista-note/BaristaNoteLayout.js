@@ -1,25 +1,29 @@
-import React, { useState } from 'react';
+// src/fran/pages/BaristaNote.js
+
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import style from './Note.module.css';
+import { callBaristNotesAPI } from '../../../apis/brista-note/baristaNoteApi';
+import { GET_NOTES } from '../../../modules/NoteModule.js';
+
 
 function BaristaNoteLayout() {
-    // 모달창의 상태 관리
+
+    const dispatch = useDispatch();
+    const notes = useSelector((state) => state.noteReducer.data);
+    const noteList = Array.isArray(notes) ? notes : [];
+    console.log(notes);
+
+    useEffect(() => {
+        dispatch(callBaristNotesAPI());  // ✅ 이렇게 호출해야 함
+    }, [dispatch]);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [noteTitle, setNoteTitle] = useState(''); // 새로운 상태 추가: 제목 입력값 관리
+    const [noteTitle, setNoteTitle] = useState('');
 
-    // 모달창 열기
-    const openModal = () => {
-        setIsModalOpen(true);
-    };
-
-    // 모달창 닫기
-    const closeModal = () => {
-        setIsModalOpen(false);
-    };
-
-    // 제목 변경 함수
-    const handleTitleChange = (e) => {
-        setNoteTitle(e.target.value);
-    };
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
+    const handleTitleChange = (e) => setNoteTitle(e.target.value);
 
     return (
         <>
@@ -39,22 +43,34 @@ function BaristaNoteLayout() {
                 </div>
 
                 <div className={style.baristaNoteData}>
-                    {/* 여기에 바리스타 노트 데이터가 들어갑니다. */}
+                    {/* noteList가 배열일 때만 .map()을 호출 */}
+                    {noteList.length > 0 ? (
+                        noteList.map((note) => (
+                            <div key={note.noteCode} className={style.infoRow}>
+                                <div className={style.infoItem}>{note.noteCode}</div>
+                                <div className={style.infoItem}>{note.noteTitle}</div>
+                                <div className={style.infoItem}>{note.userId}</div>
+                                <div className={style.infoItem}>{note.noteDate}</div>
+                                <div className={style.infoItem}>{note.viewCount || 0}</div>
+                            </div>
+                        ))
+                    ) : (
+                        <div>데이터가 없습니다.</div>
+                    )}
                 </div>
             </div>
 
-            {/* 모달창 */}
             {isModalOpen && (
                 <div className={style.modalOverlay}>
                     <div className={style.modalContent}>
                         <div className={style.modalContentContainer}>
-                        <input
-                            type="text"
-                            value={noteTitle}
-                            onChange={handleTitleChange}
-                            className={style.modalTitleInput}
-                            placeholder="제목을 입력하세요"
-                        />
+                            <input
+                                type="text"
+                                value={noteTitle}
+                                onChange={handleTitleChange}
+                                className={style.modalTitleInput}
+                                placeholder="제목을 입력하세요"
+                            />
                         </div>
                         <hr />
                         <div className={style.fileUpload}>
