@@ -8,7 +8,7 @@ function NoticeLayout(){
             <div className={style.upperBox}>
                 <input className={style.inputBox} type="text" placeholder="게시글검색" />
                 <button className={style.searchButton}>검색</button>
-                <Link to="/fran/notice/regist">
+                <Link to="/fran/notice/notice-regist">
                 <button className={style.registButton}>등록</button>
                 </Link>
             </div>
