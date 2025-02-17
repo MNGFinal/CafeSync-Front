@@ -8,10 +8,11 @@ import { GET_NOTES } from '../../../modules/NoteModule.js';
 
 
 function BaristaNoteLayout() {
+
     const dispatch = useDispatch();
-    const notes = useSelector((state) => state.noteReducer);
-    console.log("notes",notes);
-    const noteList = Array.isArray(notes) ? notes.data : [];  // 배열이 아니면 빈 배열로 초기화
+    const notes = useSelector((state) => state.noteReducer.data);
+    const noteList = Array.isArray(notes) ? notes : [];
+    console.log(notes);
 
     useEffect(() => {
         dispatch(callBaristNotesAPI());  // ✅ 이렇게 호출해야 함
@@ -47,7 +48,7 @@ function BaristaNoteLayout() {
                         noteList.map((note) => (
                             <div key={note.noteCode} className={style.infoRow}>
                                 <div className={style.infoItem}>{note.noteCode}</div>
-                                <div className={style.infoItem}>{note.title}</div>
+                                <div className={style.infoItem}>{note.noteTitle}</div>
                                 <div className={style.infoItem}>{note.userId}</div>
                                 <div className={style.infoItem}>{note.noteDate}</div>
                                 <div className={style.infoItem}>{note.viewCount || 0}</div>

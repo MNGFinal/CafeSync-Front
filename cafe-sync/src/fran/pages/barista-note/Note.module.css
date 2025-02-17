@@ -83,7 +83,7 @@
     justify-content: space-between;
     font-size: 14px;
     font-weight: bold;
-    
+    border: none;
     padding-bottom: 5px; /* 경계선과 텍스트 간의 여백 */
 }
 
@@ -100,21 +100,22 @@
     border-right: none;
 }
 
+.infoRow:first-child{
+}
+
 /* 바리스타 노트 데이터 스타일 */
 .baristaNoteData {
     font-size: 16px;
     color: #333;
     margin-top: 10px;
-    border-left : 1px solid #ccc;
-    border-bottom : 1px solid #ccc;
 }
+
 
 .NoticeData {
     font-size: 16px;
     color: #333;
     margin-top: 10px;
-    border-left : 1px solid #ccc;
-    border-bottom : 1px solid #ccc;
+
 }
 
 /*----------------------------모달창--------------------------------*/
