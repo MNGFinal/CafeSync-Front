@@ -1,5 +1,7 @@
 import { useState } from "react";
 import Modal from "../../../../components/Modal";
+import {useState} from "react";
+import Modal from "../../../../components/Modal"
 
 const ScheduleAdd = ({ isModalOpen, setIsModalOpen }) => {
   // const [isModalOpen, setIsModalOpen] = useState(false);      // 모달 여닫기 관리

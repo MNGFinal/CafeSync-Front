@@ -3,8 +3,8 @@ import { useSelector } from "react-redux";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import ScheduleAdd from "./ScheduleAdd"; // ✅ 스케줄 등록 모달
-import st from "../styles/FullCalendar.module.css"; // ✅ 스타일 import (하나만 유지)
+import st from "./FullCalendar.module.css";
+import ScheduleAdd from './ScheduleAdd';
 
 const MyCalendar = () => {
   const franCode = useSelector(
