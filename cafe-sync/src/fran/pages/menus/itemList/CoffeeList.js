@@ -15,7 +15,6 @@ function MenuList() {
   // soldOut 상태 관리
   const [soldOutMenus, setSoldOutMenus] = useState(new Set());
 
-
   useEffect(() => {
     async function fetchMenus() {
       // 카테고리 별 코드 매핑
