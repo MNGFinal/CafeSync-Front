@@ -17,13 +17,20 @@ function BaristaNoteLayout() {
     useEffect(() => {
         dispatch(callBaristNotesAPI());  // ✅ 이렇게 호출해야 함
     }, [dispatch]);
-
+    
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [noteTitle, setNoteTitle] = useState('');
+    const [selectedNote, setSelectedNote] = useState(null);
 
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
     const handleTitleChange = (e) => setNoteTitle(e.target.value);
+    const openDetailModal = (note) => {
+        setSelectedNote(note);
+        setIsDetailModalOpen(true);
+    };
+    const closeDetailModal = () => setIsDetailModalOpen(false);
 
     return (
         <>
@@ -49,7 +56,7 @@ function BaristaNoteLayout() {
                             <div key={note.noteCode} className={style.infoRow}>
                                 <div className={style.infoItem}>{note.noteCode}</div>
                                 <div className={style.infoItem}>{note.noteTitle}</div>
-                                <div className={style.infoItem}>{note.userId}</div>
+                                <div className={style.infoItem}>{note.empName}</div>
                                 <div className={style.infoItem}>{note.noteDate}</div>
                                 <div className={style.infoItem}>{note.viewCount || 0}</div>
                             </div>
@@ -84,6 +91,39 @@ function BaristaNoteLayout() {
                         <div className={style.modalButtons}>
                             <button className={style.saveButton}>저장</button>
                             <button className={style.cancelButton} onClick={closeModal}>취소</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+               {/* 상세보기 모달 */}
+               {isDetailModalOpen && selectedNote && (
+                <div className={style.modalOverlay}>
+                    <div className={style.modalContent}>
+                        <div className={style.modalContentContainer}>
+                            <div className={style.detailRow}>
+                                <div className={style.labelTitle}>제목</div>
+                                <div>{selectedNote.noteTitle}</div>
+                            </div>
+                            <hr />
+                            <div className={style.detailRow}>
+                                <div className={style.labelTitle}>작성자</div>
+                                <div>{selectedNote.empName}</div>
+                            </div>
+                            <div className={style.detailRow}>
+                                <div className={style.labelTitle}>작성일자</div>
+                                <div>{selectedNote.noteDate}</div>
+                            </div>
+                            <div className={style.detailRow}>
+                                <div className={style.labelTitle}>파일 첨부</div>
+                                <div>{selectedNote.fileName || '없음'}</div>
+                            </div>
+                            <div className={style.detailRow}>
+                                <div className={style.labelTitle}>노트 내용</div>
+                                <div>{selectedNote.noteContent}</div>
+                            </div>
+                        </div>
+                        <div className={style.modalButtons}>
+                            <button className={style.returnToList} onClick={closeDetailModal}>목록으로 돌아가기</button>
                         </div>
                     </div>
                 </div>
