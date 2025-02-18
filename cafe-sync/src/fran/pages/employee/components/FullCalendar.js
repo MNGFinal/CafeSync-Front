@@ -38,9 +38,8 @@ const MyCalendar = () => {
 
       const formattedEvents = data.map((schedule) => ({
         id: schedule.scheduleCode,
-        title: `${getScheduleType(schedule.scheduleDivision)} - ${
-          schedule.empCode
-        }`,
+        title: `${getScheduleType(schedule.scheduleDivision)} - ${schedule.empCode
+          }`,
         date: schedule.scheduleDate,
         emp: schedule.empCode,
         extendedProps: {
@@ -128,6 +127,7 @@ const MyCalendar = () => {
         }}
         dayCellContent={(arg) => `${arg.date.getDate()}`}
       />
+      {/* 스케줄 등록 모달 */}
       <ScheduleAdd isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
     </div>
   );
