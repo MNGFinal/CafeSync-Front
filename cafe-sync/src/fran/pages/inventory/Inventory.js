@@ -6,7 +6,10 @@ import generatePDF from "../../../config/generatePDF";
 import SModal from "../../../components/SModal"; // ✅ 이동 후 경로 수정
 import modalStyle from "../../../components/ModalButton.module.css";
 import { Player } from "@lottiefiles/react-lottie-player"; // ✅ Lottie 애니메이션 추가
-import { updateFranInventory } from "../../../apis/inventory/inventoryApi";
+import {
+  updateFranInventory,
+  deleteFranInventory,
+} from "../../../apis/inventory/inventoryApi";
 
 function Inventory() {
   const franCode = useSelector(
@@ -21,6 +24,7 @@ function Inventory() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [lottieAnimation, setLottieAnimation] = useState("");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     if (!franCode) return;
@@ -129,7 +133,7 @@ function Inventory() {
   const handleSaveQuantities = async () => {
     if (selectedItems.length === 0) {
       setLottieAnimation("/animations/warning.json"); // ⚠️ 경고 애니메이션
-      setModalMessage("최소 한 개이상상 체크를 해주세요.");
+      setModalMessage("최소 한 개이상 체크를 해주세요.");
       setIsModalOpen(true);
       return;
     }
@@ -155,6 +159,55 @@ function Inventory() {
     setModalMessage(result.message);
     setIsModalOpen(true);
   };
+
+  const handleDeleteItems = () => {
+    if (selectedItems.length === 0) {
+      setLottieAnimation("/animations/warning.json");
+      setModalMessage("최소 한 개 이상 선택해야 합니다.");
+      setIsModalOpen(true);
+      return;
+    }
+
+    setModalMessage("선택한 항목을 삭제하시겠습니까?");
+    setIsDeleteModalOpen(true); // ✅ 삭제 확인 모달 열기
+  };
+
+  const confirmDelete = async () => {
+    try {
+      // ✅ selectedItems에는 invenCode만 들어 있음 → 이를 filteredInventory에서 찾음
+      const deleteData = filteredInventory
+        .filter((item) => selectedItems.includes(item.inventory.invenCode))
+        .map((item) => ({
+          franInvenCode: item.franInvenCode,
+        }));
+
+      const result = await deleteFranInventory(deleteData);
+
+      if (result.success) {
+        setLottieAnimation("/animations/success-check.json");
+        setModalMessage("선택한 항목이 삭제되었습니다!");
+
+        // ✅ UI에서 삭제된 항목 필터링
+        setFilteredInventory((prev) =>
+          prev.filter(
+            (item) => !selectedItems.includes(item.inventory.invenCode)
+          )
+        );
+        setSelectedItems([]); // 선택 목록 초기화
+      } else {
+        setLottieAnimation("/animations/warning.json");
+        setModalMessage("삭제에 실패했습니다. 다시 시도해주세요.");
+      }
+    } catch (error) {
+      console.error("❌ 삭제 중 오류 발생:", error);
+      setLottieAnimation("/animations/warning.json");
+      setModalMessage("삭제 중 오류가 발생했습니다. 다시 시도해주세요.");
+    }
+
+    setIsDeleteModalOpen(false); // 모달 닫기
+    setIsModalOpen(true);
+  };
+
   return (
     <>
       <div className="page-header">
@@ -171,14 +224,16 @@ function Inventory() {
           />
           <button className={styles.pdfButton} onClick={handleGeneratePDF}>
             PDF 파일 추출
-          <button className={styles.updateButton}>수량 저장</button>
+          </button>{" "}
           <button
             className={styles.updateButton}
             onClick={handleSaveQuantities}
           >
             수량 저장
           </button>
-          <button className={styles.disposeButton}>유통기한 임박 폐기</button>
+          <button className={styles.disposeButton} onClick={handleDeleteItems}>
+            유통기한 임박 폐기
+          </button>
         </div>
         <div className={styles.box2}>
           <button className={styles.stockRequest}>입출고 신청 관리</button>
@@ -355,9 +410,34 @@ function Inventory() {
             loop={false} // ✅ 애니메이션 반복 X
             keepLastFrame={true} // ✅ 애니메이션이 끝나도 마지막 프레임 유지
             src={lottieAnimation} // ✅ 동적으로 변경됨
+            style={{ height: "100px", width: "100px", margin: "0 auto" }}
+          />
+          <br />
+          <p>{modalMessage}</p>
+        </div>
+      </SModal>
+      <SModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        buttons={[
+          {
+            text: "확인",
+            onClick: confirmDelete, // ✅ 삭제 실행
+            className: modalStyle.confirmButtonS,
+          },
+          {
+            text: "취소",
+            onClick: () => setIsDeleteModalOpen(false), // ✅ 모달 닫기
+            className: modalStyle.cancelButtonS,
+          },
+        ]}
+      >
+        <div style={{ textAlign: "center" }}>
+          <Player
+            autoplay
             loop={false}
             keepLastFrame={true}
-            src={lottieAnimation}
+            src="/animations/alert2.json" // ⚠️ 경고 애니메이션
             style={{ height: "100px", width: "100px", margin: "0 auto" }}
           />
           <br />
