@@ -118,5 +118,5 @@ input {
     width: 120px; /* 내용 라벨의 너비 */
     display: inline-block;
     text-align: right;
-    margin-bottom : 380px;
+    /* margin-bottom : 380px; */
 }
