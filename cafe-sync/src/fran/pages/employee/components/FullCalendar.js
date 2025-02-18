@@ -3,8 +3,8 @@ import { useSelector } from "react-redux";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import st from "./FullCalendar.module.css";
-import ScheduleAdd from './ScheduleAdd';
+import st from "../styles/FullCalendar.module.css";
+import ScheduleAdd from "./ScheduleAdd";
 
 const MyCalendar = () => {
   const franCode = useSelector(
@@ -38,8 +38,9 @@ const MyCalendar = () => {
 
       const formattedEvents = data.map((schedule) => ({
         id: schedule.scheduleCode,
-        title: `${getScheduleType(schedule.scheduleDivision)} - ${schedule.empCode
-          }`,
+        title: `${getScheduleType(schedule.scheduleDivision)} - ${
+          schedule.empCode
+        }`,
         date: schedule.scheduleDate,
         emp: schedule.empCode,
         extendedProps: {
