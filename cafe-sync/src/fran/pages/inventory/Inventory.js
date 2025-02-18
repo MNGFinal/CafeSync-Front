@@ -129,7 +129,7 @@ function Inventory() {
   const handleSaveQuantities = async () => {
     if (selectedItems.length === 0) {
       setLottieAnimation("/animations/warning.json"); // ⚠️ 경고 애니메이션
-      setModalMessage("최소 한 개이상상 체크를 해주세요.");
+      setModalMessage("최소 한 개이상 체크를 해주세요.");
       setIsModalOpen(true);
       return;
     }
@@ -171,7 +171,7 @@ function Inventory() {
           />
           <button className={styles.pdfButton} onClick={handleGeneratePDF}>
             PDF 파일 추출
-          <button className={styles.updateButton}>수량 저장</button>
+          </button>{" "}
           <button
             className={styles.updateButton}
             onClick={handleSaveQuantities}
@@ -355,9 +355,6 @@ function Inventory() {
             loop={false} // ✅ 애니메이션 반복 X
             keepLastFrame={true} // ✅ 애니메이션이 끝나도 마지막 프레임 유지
             src={lottieAnimation} // ✅ 동적으로 변경됨
-            loop={false}
-            keepLastFrame={true}
-            src={lottieAnimation}
             style={{ height: "100px", width: "100px", margin: "0 auto" }}
           />
           <br />
