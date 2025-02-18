@@ -86,9 +86,9 @@
 /* ✅ 서브메뉴 스타일 */
 .submenu {
   position: absolute;
-  left: 100%;
+  left: 90px; /* ✅ 사이드바 오른쪽에 붙도록 조정 */
   top: 50%;
-  transform: translateX(-20px) translateY(-50%); /* ✅ 처음에는 왼쪽에 숨김 */
+  transform: translateY(-50%);
   background-color: #222;
   border-radius: 5px;
   padding: 10px;
@@ -100,15 +100,17 @@
   transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s ease;
   opacity: 0;
   pointer-events: none;
-  visibility: hidden; /* ✅ 완전히 숨김 */
+  visibility: hidden;
+  z-index: 200; /* ✅ 서브메뉴가 사이드바 위로 올라오도록 설정 */
 }
 
 /* ✅ 마우스 호버 시 서브메뉴 표시 */
 .menu-item:hover .submenu {
   opacity: 1;
-  transform: translateX(0) translateY(-50%); /* ✅ 왼쪽에서 오른쪽으로 이동 */
+  transform: translateY(-50%);
   pointer-events: auto;
   visibility: visible;
+  z-index: 200; /* ✅ 다른 UI 요소보다 위로 보이게 설정 */
 }
 
 /* ✅ 서브메뉴 안의 텍스트 중앙 정렬 */
@@ -153,10 +155,18 @@
 }
 
 /* ✅ 메인 화면 내 영역 스타일 - grid 지정 */
-.noticeSection { grid-area: notice; }
-.scheduleSection { grid-area: schedule; }
-.invenSection { grid-area: inven; }
-.statsSection { grid-area: stats; }
+.noticeSection {
+  grid-area: notice;
+}
+.scheduleSection {
+  grid-area: schedule;
+}
+.invenSection {
+  grid-area: inven;
+}
+.statsSection {
+  grid-area: stats;
+}
 
 /* ✅ 페이지 헤더 스타일 */
 .page-header {

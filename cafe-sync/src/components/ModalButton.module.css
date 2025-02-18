@@ -1,0 +1,33 @@
+.confirmButtonB, .modifyButtonB, .deleteButtonB {
+    font-size: 15px;
+    padding: 5px 20px;
+    background-color: #630848;
+    border: 2px solid #630848;
+    color: white;
+}
+
+.cancelButtonB {
+    font-size: 15px;
+    padding: 5px 20px;
+    background-color: white;
+    border: 2px solid gray;
+    color: gray;
+}
+
+.confirmButtonS, .modifyButtonS, .deleteButtonS {
+    font-size: 18px;
+    font-weight: bolder;
+    padding: 8px 25px;
+    background-color: #630848;
+    border: 2px solid #630848;
+    color: white;
+}
+
+.cancelButtonS {
+    font-size: 18px;
+    font-weight: bolder;
+    padding: 8px 25px;
+    background-color: white;
+    border: 2px solid gray !important;
+    color: gray;
+}

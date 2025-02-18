@@ -1,0 +1,181 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+}
+
+.pdfButton {
+  background-color: red;
+  color: white;
+}
+
+.pdfButton:hover {
+  background-color: white;
+  color: red;
+  border: 1px solid red;
+}
+
+.updateButton {
+  background-color: rgb(45, 112, 255);
+  color: white;
+}
+
+.updateButton:hover {
+  background-color: white;
+  color: rgb(45, 112, 255);
+  border: 1px solid rgb(45, 112, 255);
+}
+
+.disposeButton {
+  background-color: grey;
+  color: white;
+}
+
+.disposeButton:hover {
+  background-color: white;
+  color: grey;
+  border: 1px solid grey;
+}
+
+.searchbox {
+  width: 250px;
+  border: 1px solid #ccc;
+  outline: none; /* 기본 포커스 스타일 제거 */
+  transition: border 0.3s ease-in-out;
+}
+
+.searchbox:focus {
+  border: 1px solid rgba(99, 8, 72, 1); /* 원하는 색상으로 변경 */
+  box-shadow: 0 0 5px rgba(109, 27, 80, 0.5); /* 부드러운 테두리 효과 */
+}
+
+.box1,
+.box2 {
+  display: flex;
+  gap: 10px;
+}
+
+.box1 input,
+.box1 select {
+  height: 30px;
+  padding: 5px;
+}
+
+.box1 button,
+.box2 button {
+  width: 150px;
+  height: 30px;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.stockRequest {
+  background-color: green;
+  color: white;
+}
+.stockRequest:hover {
+  background-color: white;
+  color: green;
+  border: 1px solid green;
+}
+
+.expiryCheck {
+  background-color: gray;
+  color: white;
+}
+.expiryCheck:hover {
+  background-color: white;
+  color: gray;
+  border: 1px solid gray;
+}
+
+.lowStock {
+  background-color: red;
+  color: white;
+}
+.lowStock:hover {
+  background-color: white;
+  color: red;
+  border: 1px solid red;
+}
+
+.orderRequest {
+  background-color: skyblue;
+  color: white;
+}
+.orderRequest:hover {
+  background-color: white;
+  color: skyblue;
+  border: 1px solid skyblue;
+}
+
+.tableContainer {
+  margin-top: 20px;
+  max-height: 725px; /* 테이블 높이 제한 */
+  overflow-y: auto; /* 세로 스크롤 활성화 */
+  overflow-x: hidden; /* 가로 스크롤 방지 */
+  border: 1px solid #ddd;
+  background-color: white;
+  position: relative; /* 헤더를 고정할 수 있도록 부모 요소 설정 */
+}
+
+/* 🟢 테이블 헤더 고정 */
+.inventoryTable thead {
+  position: sticky;
+  top: 0;
+  background-color: #f4f4f4; /* 헤더 배경색 */
+  z-index: 1; /* 다른 요소 위에 배치 */
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* 헤더 아래 그림자 추가 */
+}
+
+.inventoryTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.inventoryTable th,
+.inventoryTable td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+/* 헤더 스타일 */
+.inventoryTable th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* 제품 사진 */
+.productImage {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+}
+
+/* 선택 없음 */
+.noData {
+  text-align: center;
+  font-weight: bold;
+  color: gray;
+  padding: 20px;
+}
+
+/* ✅ 유통기한 D-7 이하일 때 빨간색 강조 */
+.expiringSoon {
+  color: red;
+  font-weight: bold;
+}
+
+.inputField {
+  width: 60px; /* ✅ 크기 조정 */
+  padding: 4px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}

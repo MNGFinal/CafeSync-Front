@@ -11,8 +11,8 @@
     z-index: 9999;
 }
 
-/* 모달 창 자체의 영역 */
-.modalContent {
+/* 큰 모달 창 자체의 영역 */
+.modalContentB {
     background-color: #ffffff;
     width: 700px;
     height: 700px;
@@ -25,4 +25,45 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+/* 작은 모달 창 자체의 영역 */
+.modalContentS {
+    background-color: #ffffff;
+    width: 450px;
+    min-height: 270px;
+    border: 3px solid #630848;
+    border-radius: 35px;
+    padding: 20px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    position: fixed;
+    z-index: 100;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* 닫기 버튼 */
+.closeButton {
+    border: none;
+    background: transparent;
+    position: absolute;
+    top: 15px;
+    right: 18px;
+    font-size: 1.8rem;
+    cursor: pointer;
+}
+
+/* 버튼 영역 */
+.buttonContainer {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.buttonContainer > button {
+    border-radius: 10px;
+    margin: 20px 10px 0 10px;
+    cursor: pointer;
 }
