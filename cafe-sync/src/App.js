@@ -102,7 +102,7 @@ function App() {
 
             <Route path="menus" element={<Menus />}>
               {/* ✅ "menus/:category"에서 Outlet을 통해 컴포넌트가 렌더링됨 */}
-              <Route path=":category" element={<Outlet />}>
+              <Route path=":category">
                 <Route index element={<CoffeeList />} />{" "}
                 {/* 기본값으로 CoffeeList 표시 */}
                 <Route path="coffee" element={<CoffeeList />} />

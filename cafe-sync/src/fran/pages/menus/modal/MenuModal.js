@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import style from './MenuModal.module.css';
 
 const MenuModal = ({ menu, onClose, setSelectedMenu, fetchMenus }) => {

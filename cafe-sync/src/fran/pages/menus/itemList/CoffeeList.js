@@ -1,45 +1,13 @@
-import { useState, useEffect } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useState } from "react";
 import styles from "./MenuList.module.css";
 import MenuModal from "../modal/MenuModal";
+import { useOutletContext } from "react-router-dom";
 
-function MenuList() {
-  const { category } = useParams();
-  const location = useLocation();
-  const [list, setList] = useState([]);
+function CoffeeList() {
+  const {list, fetchMenus} = useOutletContext();
+
   const [selectedMenu, setSelectedMenu] = useState(null); // 선택한 메뉴 정보 저장
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태
-
-  // 최초 페이지 접근시 조회
-  useEffect(() => {
-    fetchMenus();
-  }, [category]);
-
-  async function fetchMenus() {
-    // 카테고리 별 코드 매핑
-    const categoryMap = {
-      coffee: 1,
-      drink: 2,
-      dessert: 3,
-      goods: 4,
-    };
-
-    // 현재 선택된 카테고리 코드 가져오기
-    const categoryCode = categoryMap[category];
-    if (!categoryCode) return;
-
-    try {
-      // 서버에서 메뉴 데이터 가져오기
-      const response = await fetch(`http://localhost:8080/api/fran/menus/${categoryCode}`);
-      const data = await response.json();
-
-      console.log("서버에서 넘어온 값", data);
-
-      setList(data);
-    } catch (error) {
-      console.error("메뉴 데이터 로딩 실패:", error);
-    }
-  }
 
 
   // 메뉴 클릭 시 모달 열기
@@ -56,8 +24,8 @@ function MenuList() {
 
   return (
     <div className={styles.menuGrid}>
-      {list.length > 0 ? (
-        list.map((menu) => (
+      {list?.length > 0 ? (
+        list?.map((menu) => (
           <div
             key={menu.menuCode}
             className={`${styles.menuCard} ${!menu.orderableStatus ? styles.soldOut : ""}`}
@@ -92,4 +60,4 @@ function MenuList() {
   );
 }
 
-export default MenuList;
+export default CoffeeList;
