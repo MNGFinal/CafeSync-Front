@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { getFranInventoryList } from "../../../apis/inventory/inventoryApi";
 import styles from "./Inventory.module.css";
 import generatePDF from "../../../config/generatePDF";
-import SModal from "../../../components/SModal";
+import SModal from "../../../components/SModal"; // ✅ 이동 후 경로 수정
 import modalStyle from "../../../components/ModalButton.module.css";
 import { Player } from "@lottiefiles/react-lottie-player"; // ✅ Lottie 애니메이션 추가
 import { updateFranInventory } from "../../../apis/inventory/inventoryApi";
@@ -155,7 +155,6 @@ function Inventory() {
     setModalMessage(result.message);
     setIsModalOpen(true);
   };
-
   return (
     <>
       <div className="page-header">
@@ -172,7 +171,7 @@ function Inventory() {
           />
           <button className={styles.pdfButton} onClick={handleGeneratePDF}>
             PDF 파일 추출
-          </button>
+          <button className={styles.updateButton}>수량 저장</button>
           <button
             className={styles.updateButton}
             onClick={handleSaveQuantities}
@@ -353,6 +352,9 @@ function Inventory() {
         <div style={{ textAlign: "center" }}>
           <Player
             autoplay
+            loop={false} // ✅ 애니메이션 반복 X
+            keepLastFrame={true} // ✅ 애니메이션이 끝나도 마지막 프레임 유지
+            src={lottieAnimation} // ✅ 동적으로 변경됨
             loop={false}
             keepLastFrame={true}
             src={lottieAnimation}

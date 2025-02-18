@@ -1,6 +1,21 @@
 import { useState } from "react";
 import Modal from "../../../../components/Modal";
 
+const ScheduleAdd = ({ isModalOpen, setIsModalOpen }) => {
+  // const [isModalOpen, setIsModalOpen] = useState(false);      // 모달 여닫기 관리
+  const [workers, setWorkers] = useState([
+    { worker: "", division: "", key: Date.now() },
+  ]);
+
+  // 근로자 추가
+  const addWorkerHandler = () => {
+    setWorkers([...workers, { worker: "", division: "", key: Date.now() }]);
+  };
+
+  // 근로자 삭제
+  const rmWorkerHandler = (removeKey) => {
+    setWorkers(workers.filter((worker) => worker.key !== removeKey));
+  };
 
 const ScheduleAdd = ({ isModalOpen, setIsModalOpen }) => {
   // const [isModalOpen, setIsModalOpen] = useState(false);      // 모달 여닫기 관리

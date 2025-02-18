@@ -3,9 +3,8 @@ import { useSelector } from "react-redux";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import st from "./FullCalendar.module.css";
 import ScheduleAdd from './ScheduleAdd';
-import st from '../styles/FullCalendar.module.css'
-
 
 const MyCalendar = () => {
   const franCode = useSelector(
