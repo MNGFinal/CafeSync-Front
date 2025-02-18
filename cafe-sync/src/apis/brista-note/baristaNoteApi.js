@@ -36,3 +36,18 @@ export const callBaristNoteDetailAPI = ({noteCode}) => {
         }
     };
 };
+
+export const callSearchNoteAPI = ({search}) => {
+    const requestURL = `http://localhost:8080/api/fran/getAllNotes/search?search=${search}`
+
+    return async (dispatch,getState) => {
+        const result = await fetch(requestURL,{
+            method : 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: '*/*',
+            },
+        }).then((response) => response.json());
+        dispatch({type:GET_NOTES , payload: result.data});
+    };
+};

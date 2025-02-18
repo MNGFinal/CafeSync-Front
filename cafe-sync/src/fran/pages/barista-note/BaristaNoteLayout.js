@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import style from './Note.module.css';
-import { callBaristNotesAPI } from '../../../apis/brista-note/baristaNoteApi';
+import { callBaristNotesAPI , callSearchNoteAPI } from '../../../apis/brista-note/baristaNoteApi';
 
 function BaristaNoteLayout() {
     const dispatch = useDispatch();
@@ -17,9 +17,11 @@ function BaristaNoteLayout() {
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [noteTitle, setNoteTitle] = useState('');
     const [selectedNote, setSelectedNote] = useState(null);
+    const [search, setSearch] = useState(''); 
 
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
+        const handleSearchChange = (e) => setSearch(e.target.value);  // 검색어 변경 함수
     
     const openDetailModal = (note) => {
         setSelectedNote(note);
@@ -28,11 +30,27 @@ function BaristaNoteLayout() {
     const closeDetailModal = () => setIsDetailModalOpen(false);
     const handleTitleChange = (e) => setNoteTitle(e.target.value);
 
+    const handleSearch = () => {
+        if (search.trim()) {
+            // 검색어가 있을 때만 검색 API 호출
+            dispatch(callSearchNoteAPI({ search }));
+        } else {
+            // 검색어가 비어있으면 전체 목록을 불러오기
+            dispatch(callBaristNotesAPI());
+        }
+    };
+
     return (
         <>
             <div className={style.upperBox}>
-                <input className={style.inputBox} type="text" placeholder="게시글검색" />
-                <button className={style.searchButton}>검색</button>
+                <input
+                    className={style.inputBox}
+                    type="text"
+                    placeholder="게시글검색"
+                    value={search}
+                    onChange={handleSearchChange}  // 검색어 변경 시 상태 업데이트
+                />
+                <button className={style.searchButton} onClick={handleSearch}>검색</button>  {/* 검색 버튼 클릭 시 검색 실행 */}
                 <button className={style.registButton} onClick={openModal}>등록</button>
             </div>
 
@@ -111,6 +129,7 @@ function BaristaNoteLayout() {
                             <span>{selectedNote.attachment ? selectedNote.attachment : '없음'}</span>
                         </div>
                         <div className={style.noteContent}>
+
                             <textarea id="noteContent" value={selectedNote.noteDetail} readOnly></textarea>
                         </div>
                         <div className={style.modalButtons}>
