@@ -148,7 +148,10 @@ function App() {
             <Route path="duty" element={<HQDuty />} />
             <Route path="income" element={<HQIncome />} />
             <Route path="plan" element={<HQPlan />} />
-            <Route path="mgment" element={<HQMgment />} />
+            <Route path="mgment" element={<HQMgment />}>
+            
+            </Route>
+
             <Route path="notice" element={<HQNotice />} />
             <Route path="chat" element={<HQChat />} />
             <Route path="barista-note" element={<HQBaristaNote />} />

@@ -29,6 +29,8 @@ function CategoryButtons() {
     }
   };
 
+  console.log('뭐라입력함?', searchQuery);
+
   return (
     <div className={styles.categoryContainer}>
       {/* 카테고리 버튼 */}
