@@ -3,9 +3,8 @@ import { useSelector } from "react-redux";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import st from "./FullCalendar.module.css";
 import ScheduleAdd from './ScheduleAdd';
-import st from '../styles/FullCalendar.module.css'
-
 
 const MyCalendar = () => {
   const franCode = useSelector(
@@ -15,14 +14,12 @@ const MyCalendar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const calendarRef = useRef();
 
-  // 이벤트가 바뀔 때마다
   useEffect(() => {
     if (franCode) {
       fetchSchedules();
     }
   }, [franCode]);
 
-  // 스케줄 조회 함수
   const fetchSchedules = async () => {
     console.log("🔍 조회할 스케줄 franCode:", franCode);
     if (!franCode) return;
@@ -39,7 +36,6 @@ const MyCalendar = () => {
       const data = await response.json();
       console.log("✅ 기본 조회된 스케줄:", data);
 
-      // FullCalendar 이벤트 형식으로 변환 - 기본
       const formattedEvents = data.map((schedule) => ({
         id: schedule.scheduleCode,
         title: `${getScheduleType(schedule.scheduleDivision)} - ${schedule.empCode
@@ -51,7 +47,6 @@ const MyCalendar = () => {
         },
         classNames: [`division-${schedule.scheduleDivision}`],
       }));
-      console.log("조회된 이벤트?", formattedEvents);
 
       setEvents(formattedEvents);
     } catch (error) {
@@ -59,7 +54,6 @@ const MyCalendar = () => {
     }
   };
 
-  // 일정 타입 변환 함수
   const getScheduleType = (division) => {
     const scheduleTypes = ["", "오픈", "미들", "마감", "휴가"];
     return scheduleTypes[division] || "알 수 없음";
@@ -68,12 +62,8 @@ const MyCalendar = () => {
   return (
     <div className={`${st.cal} test-class`}>
       <FullCalendar
-        ref={calendarRef} // Ref 연결
-        plugins={[
-          dayGridPlugin,
-          // timeGridPlugin,
-          interactionPlugin,
-        ]}
+        ref={calendarRef}
+        plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridWeek"
         height="740px"
         locale={"ko"}
@@ -85,16 +75,13 @@ const MyCalendar = () => {
         customButtons={{
           addEventBtn: {
             text: "스케줄 등록",
-            // click: this.addEventHandler,
-            text: '스케줄 등록',
             click: () => setIsModalOpen(true),
           },
         }}
         events={events}
         views={{
           dayGridMonth: {
-            // 월별
-            dayMaxEventRows: 3, // 한 날짜 칸에 최대 3개 일정
+            dayMaxEventRows: 3,
             eventDisplay: "list-item",
             eventContent: (arg) => {
               console.log("이벤트 ExtendedProps?", arg.event.extendedProps);
@@ -111,8 +98,7 @@ const MyCalendar = () => {
             },
           },
           timeGridWeek: {
-            // 주별
-            dayMaxEventRows: false, // 한 날짜 칸에 일정이 여러 개 표시되도록
+            dayMaxEventRows: false,
             eventContent: (arg) => {
               const divisionClass = `division-${arg.event.extendedProps.scheduleDivision}`;
               console.log("title?", arg.event.title);
@@ -124,9 +110,7 @@ const MyCalendar = () => {
             },
           },
         }}
-        // 일정별 스타일 적용
         eventClassNames={(arg) => {
-          // scheduleDivision 값에 따라 다른 색상 지정
           const division = arg.event.extendedProps.scheduleDivision;
           switch (division) {
             case 1:
@@ -141,14 +125,12 @@ const MyCalendar = () => {
               return [];
           }
         }}
-        dayCellContent={(arg) => {
-          // 날짜만 반환하도록 설정
-          return `${arg.date.getDate()}`;
-        }}
+        dayCellContent={(arg) => `${arg.date.getDate()}`}
       />
       {/* 스케줄 등록 모달 */}
       <ScheduleAdd isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
     </div>
   );
 };
+
 export default MyCalendar;
