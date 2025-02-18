@@ -6,6 +6,7 @@ import generatePDF from "../../../config/generatePDF";
 import SModal from "../../../components/SModal"; // ✅ 이동 후 경로 수정
 import modalStyle from "../../../components/ModalButton.module.css";
 import { Player } from "@lottiefiles/react-lottie-player"; // ✅ Lottie 애니메이션 추가
+import { updateFranInventory } from "../../../apis/inventory/inventoryApi";
 
 function Inventory() {
   const franCode = useSelector(
@@ -58,8 +59,11 @@ function Inventory() {
     const diffTime = expiry - today;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 0) return "D-day"; // ✅ 오늘이 유통기한이면 D-day
-    return diffDays > 0 ? `D-${diffDays}` : `D+${Math.abs(diffDays)}`;
+    return diffDays === 0
+      ? "D-day"
+      : diffDays > 0
+      ? `D-${diffDays}`
+      : `D+${Math.abs(diffDays)}`;
   };
 
   // ✅ 재고 부족 필터링 (보유수량 ≤ 권장수량의 1/3)
@@ -75,6 +79,14 @@ function Inventory() {
     setShowLowStock(!showLowStock);
   };
 
+  const isExpiringSoon = (dDay) => {
+    if (!dDay) return false; // 예외 처리
+
+    const dDayNumber = parseInt(dDay.replace(/D[-+]/, ""), 10);
+
+    return dDay.includes("D+") || (dDay.includes("D-") && dDayNumber <= 7);
+  };
+
   // ✅ 유통기한 임박 필터링 (D-7 이하)
   const handleExpiringSoonFilter = () => {
     if (showExpiringSoon) {
@@ -82,8 +94,7 @@ function Inventory() {
     } else {
       const filtered = inventory.filter((item) => {
         const dDayText = getDday(item.inventory.expirationDate);
-        const dDayNumber = parseInt(dDayText.replace("D-", ""), 10);
-        return dDayText === "D-day" || (dDayNumber >= 0 && dDayNumber <= 7);
+        return isExpiringSoon(dDayText); // 🔥 여기서 방금 만든 함수 활용!
       });
       setFilteredInventory(filtered);
     }
@@ -115,6 +126,35 @@ function Inventory() {
     setIsModalOpen(true);
   };
 
+  const handleSaveQuantities = async () => {
+    if (selectedItems.length === 0) {
+      setLottieAnimation("/animations/warning.json"); // ⚠️ 경고 애니메이션
+      setModalMessage("최소 한 개이상상 체크를 해주세요.");
+      setIsModalOpen(true);
+      return;
+    }
+
+    // 선택된 항목 필터링
+    const updatedData = filteredInventory
+      .filter((item) => selectedItems.includes(item.inventory.invenCode))
+      .map((item) => ({
+        franInvenCode: item.franInvenCode,
+        stockQty: item.stockQty,
+        orderQty: item.orderQty,
+        recommQty: item.recommQty,
+      }));
+
+    // API 호출
+    const result = await updateFranInventory(updatedData);
+
+    setLottieAnimation(
+      result.success
+        ? "/animations/success-check.json"
+        : "/animations/warning.json"
+    );
+    setModalMessage(result.message);
+    setIsModalOpen(true);
+  };
   return (
     <>
       <div className="page-header">
@@ -131,8 +171,13 @@ function Inventory() {
           />
           <button className={styles.pdfButton} onClick={handleGeneratePDF}>
             PDF 파일 추출
-          </button>
           <button className={styles.updateButton}>수량 저장</button>
+          <button
+            className={styles.updateButton}
+            onClick={handleSaveQuantities}
+          >
+            수량 저장
+          </button>
           <button className={styles.disposeButton}>유통기한 임박 폐기</button>
         </div>
         <div className={styles.box2}>
@@ -189,8 +234,13 @@ function Inventory() {
             {filteredInventory.length > 0 ? (
               filteredInventory.map((item, index) => {
                 const dDay = getDday(item.inventory.expirationDate);
-                const isExpiringSoon =
-                  dDay === "D-day" || parseInt(dDay.replace("D-", ""), 10) <= 7;
+                const isExpiringSoon = (dDay) => {
+                  const dDayNumber = parseInt(dDay.replace(/D[-+]/, ""), 10);
+                  return (
+                    dDay.includes("D+") ||
+                    (dDay.includes("D-") && dDayNumber <= 7)
+                  );
+                };
 
                 return (
                   <tr key={index}>
@@ -220,9 +270,14 @@ function Inventory() {
                     </td>
                     <td>{item.inventory.invenCode}</td>
                     <td>{item.inventory.invenName}</td>
-                    <td className={isExpiringSoon ? styles.expiringSoon : ""}>
+                    <td
+                      className={
+                        isExpiringSoon(dDay) ? styles.expiringSoon : ""
+                      }
+                    >
                       {dDay}
                     </td>
+
                     {/* ✅ 인풋 필드 유지 */}
                     <td>
                       <input
@@ -300,6 +355,9 @@ function Inventory() {
             loop={false} // ✅ 애니메이션 반복 X
             keepLastFrame={true} // ✅ 애니메이션이 끝나도 마지막 프레임 유지
             src={lottieAnimation} // ✅ 동적으로 변경됨
+            loop={false}
+            keepLastFrame={true}
+            src={lottieAnimation}
             style={{ height: "100px", width: "100px", margin: "0 auto" }}
           />
           <br />
