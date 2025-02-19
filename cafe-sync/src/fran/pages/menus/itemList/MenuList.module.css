@@ -2,17 +2,14 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     /* 5개씩 고정 */
-    gap: 40px;
-    /* 카드 간격 */
-    margin-top: 30px;
     justify-items: center;
-    padding: 0 40px;
+    padding: 0 80px;
     /* 좌우 여백 추가 */
 }
 
 .menuCard {
     text-align: center;
-    padding: 15px;
+    padding: 20px;
     border: none;
     border-radius: 10px;
     background: white;
@@ -53,7 +50,6 @@
     font-size: 14px;
     color: #666;
     margin-top: 5px;
-    max-width: 200px;
     text-align: center;
     line-height: 1.4;
 }

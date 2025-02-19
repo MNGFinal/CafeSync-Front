@@ -1,30 +1,31 @@
 .container {
   padding: 20px;
   width: 100%;
-  max-width: 600px;
+  max-width: 650px; /* ✅ 전체 크기 살짝 키워서 넓게 */
   margin: 0 auto;
 }
 
-/* 제목 */
+/* ✅ 제목 스타일 */
 .title {
   text-align: center;
-  font-size: 18px;
+  font-size: 20px; /* ✅ 폰트 크기 살짝 키움 */
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
-/* 출고 & 입고 매장 선택 */
+/* ✅ 출고 & 입고 매장 선택 */
 .storeSelect {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .storeBox {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 48%; /* ✅ 출고 & 입고 매장 크기 통일 */
 }
 
 .label {
@@ -32,15 +33,25 @@
   font-weight: bold;
   color: #666;
   margin-bottom: 5px;
+  position: relative;
+  left: -7px;
 }
 
 .storeName {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: bold;
   background-color: #f8f8f8;
-  padding: 10px 15px;
+  padding: 12px;
   border-radius: 5px;
   border: 1px solid #ccc;
+  width: 229px;
+  height: 40px;
+  text-align: center;
+  position: relative;
+  left: -3%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .arrow {
@@ -48,27 +59,31 @@
   font-weight: bold;
 }
 
-/* 입고 매장 선택 */
+/* ✅ 입고 매장 선택 */
 .franSelect {
+  margin-left: 73px;
   display: flex;
   align-items: center;
+  width: 100%;
   gap: 5px;
 }
 
 .franSelect input {
-  width: 180px;
-  height: 36px;
+  width: 200px; /* ✅ 크기 통일 */
+  height: 40px;
   padding: 5px;
   border: 1px solid #ccc;
   text-align: center;
   border-radius: 5px;
+  font-size: 15px;
+  font-weight: bold;
 }
 
 .searchButton {
   background-color: #6c5ce7;
   color: white;
   border: none;
-  padding: 7px 12px;
+  padding: 8px 10px; /* ✅ 버튼 크기 살짝 줄이기 */
   cursor: pointer;
   font-size: 14px;
   border-radius: 5px;
@@ -78,69 +93,76 @@
   background-color: #5a4bd6;
 }
 
-/* 제품 리스트 테이블 */
-.productTable {
-  margin-top: 15px;
+/* ✅ 테이블 컨테이너: 최대 높이 설정 + 스크롤 추가 */
+.productTableContainer {
+  max-height: 390px;
+  overflow-y: auto;
   border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 10px;
+  border-radius: 8px;
+  margin-top: 10px;
   background-color: #f9f9f9;
 }
 
-.productHeader,
-.productRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px;
-  font-size: 14px;
+/* ✅ 테이블 스타일 */
+.productTable {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
 }
 
-.productHeader {
+/* ✅ 테이블 헤더 고정 */
+.productTable thead {
+  position: sticky;
+  top: 0;
   background-color: #f4f4f4;
-  font-weight: bold;
+  z-index: 2;
 }
 
-.productRow {
-  border-top: 1px solid #ddd;
+/* ✅ 각 열의 너비 강제 조정 */
+.productTable th,
+.productTable td {
+  padding: 12px 10px;
+  text-align: center;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  vertical-align: middle;
+  white-space: nowrap;
 }
 
-.addButton {
-  background: #6c5ce7;
-  color: white;
-  border: none;
-  padding: 7px 15px;
-  cursor: pointer;
+/* ✅ 각 열의 너비 강제 조정 */
+.productTable th:nth-child(1),
+.productTable td:nth-child(1) {
+  width: 20%;
+} /* 제품 코드 */
+.productTable th:nth-child(2),
+.productTable td:nth-child(2) {
+  width: 25%;
+} /* 제품명 */
+.productTable th:nth-child(3),
+.productTable td:nth-child(3) {
+  width: 15%;
+} /* 보유 수량 */
+.productTable th:nth-child(4),
+.productTable td:nth-child(4) {
+  width: 15%;
+} /* 출고 수량 */
+.productTable th:nth-child(5),
+.productTable td:nth-child(5) {
+  width: 10%;
+} /* 삭제 */
+
+/* ✅ 입력 필드 크기 고정 */
+.productTable input {
+  width: 90%;
+  height: 36px;
+  padding: 5px;
+  border: 1px solid #ccc;
   border-radius: 5px;
+  text-align: center;
   font-size: 14px;
 }
 
-.addButton:hover {
-  background-color: #5a4bd6;
-}
-
-.productCode {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  cursor: pointer;
-  width: 100px;
-  text-align: center;
-  background-color: white;
-}
-
-.productCode:hover {
-  background-color: #f0f0f0;
-}
-
-input[type="number"] {
-  width: 70px;
-  text-align: center;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 5px;
-}
-
+/* ✅ 삭제 버튼 */
 .deleteButton {
   background: none;
   border: none;
@@ -151,4 +173,64 @@ input[type="number"] {
 
 .deleteButton:hover {
   color: darkred;
+}
+
+/* ✅ 제품 추가 버튼 애니메이션 */
+.addButton {
+  margin-bottom: 5px;
+  width: 100px;
+  height: 30px;
+  cursor: pointer;
+  background-color: #5a4bd6;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.addButton:hover {
+  background-color: #6c5ce7;
+}
+
+/* ✅ 하단 버튼 정렬 */
+.buttonGroup {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px; /* ✅ 버튼 위치 여유 공간 확보 */
+}
+
+.registerButton {
+  background-color: #6c5ce7;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.registerButton:hover {
+  background-color: #5a4bd6;
+}
+
+.cancelButton {
+  background-color: #ddd;
+  color: black;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.cancelButton:hover {
+  background-color: #bbb;
+}
+
+.productCode {
+  cursor: pointer;
 }
