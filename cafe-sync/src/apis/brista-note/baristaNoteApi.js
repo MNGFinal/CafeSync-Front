@@ -52,7 +52,7 @@ export const callSearchNoteAPI = ({search}) => {
     };
 };
 
-export const callNoteRegistAPI = ({ noteTitle, noteDetail, noteDate, userId , attachment }) => {
+export const callNoteRegistAPI = ({ noteTitle, noteDetail, noteDate, userId }) => {
     const requestURL = `http://localhost:8080/api/fran/notes`;
 
     return async (dispatch) => {
@@ -74,8 +74,7 @@ export const callNoteRegistAPI = ({ noteTitle, noteDetail, noteDate, userId , at
                     noteTitle,
                     noteDetail,
                     noteDate,
-                    userId,
-                    attachment,
+                    userId
                 }), // ✅ JSON 형식으로 전송
             });
 
@@ -93,5 +92,3 @@ export const callNoteRegistAPI = ({ noteTitle, noteDetail, noteDate, userId , at
         }
     };
 };
-
-
