@@ -223,3 +223,25 @@ textarea {
     gap: 20px; /* 버튼 간 간격을 설정 (20px로 설정, 필요에 따라 조정 가능) */
     margin-top: 10px;
 }
+
+/* -------------------------------------------------------------------------------- */
+
+/* 작성자와 작성일 사이 간격 설정 */
+.modalDetails p:first-child {
+    margin-bottom: 8px; /* 작성자와 작성일 간의 간격 */
+}
+
+/* 작성일과 파일 첨부 사이 간격 설정 */
+.modalDetails p:last-child {
+    margin-bottom: 8px; /* 작성일과 파일 첨부 간의 간격 */
+}
+
+/* hr과 작성자/작성일 간의 간격을 동일하게 설정 */
+hr {
+    margin-bottom: 20px; /* hr과 작성자/작성일 사이 간격 */
+}
+
+/* 파일 첨부 항목 스타일 */
+.fileUpload {
+    margin-bottom: 8px; /* 파일 첨부와 내용 간의 간격 */
+}

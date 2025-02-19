@@ -4,7 +4,7 @@ import MenuModal from "../modal/MenuModal";
 import { useOutletContext } from "react-router-dom";
 
 function CoffeeList() {
-  const {list, fetchMenus} = useOutletContext();
+  const { list, fetchMenus } = useOutletContext();
 
   const [selectedMenu, setSelectedMenu] = useState(null); // 선택한 메뉴 정보 저장
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태
@@ -39,8 +39,8 @@ function CoffeeList() {
             </div>
             <h3 className={styles.menuName}>{menu.menuNameKo}</h3>
             <p className={styles.menuNameEN}>{menu.menuNameEN}</p>
-            <hr className={styles.DetailLine} />
-            <p className={styles.menuDetail}>{menu.menuDetail}</p>
+            {/* <hr className={styles.DetailLine} /> */}
+            {/* <p className={styles.menuDetail}>{menu.menuDetail}</p> */}
           </div>
         ))
       ) : (
