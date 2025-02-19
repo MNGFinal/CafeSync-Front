@@ -1,7 +1,6 @@
-import { useNavigate, useParams } from "react-router-dom";
 import styles from "./Menus.module.css";
 
-function CategoryButtons({ fetchMenus, searchQuery, setSearchQuery }) {
+function CategoryButtons({ fetchMenus, searchQuery, setSearchQuery, category, setCategory }) {
 
   const categories = [
     { id: "coffee", name: "커피" },
@@ -9,9 +8,6 @@ function CategoryButtons({ fetchMenus, searchQuery, setSearchQuery }) {
     { id: "dessert", name: "디저트" },
     { id: "goods", name: "상품" },
   ];
-
-  const { category } = useParams();
-  const navigate = useNavigate();
 
   // 검색어 입력 필드 변경 핸들러
   const handleInputChange = (e) => {
@@ -35,7 +31,7 @@ function CategoryButtons({ fetchMenus, searchQuery, setSearchQuery }) {
             <button
               key={cat.id}
               className={`${styles.categoryButton} ${category === cat.id ? styles.active : ""}`}
-              onClick={() => navigate(`/fran/menus/${cat.id}`)}
+              onClick={() => setCategory(cat.id)}
             >
               {cat.name}
             </button>
