@@ -43,9 +43,6 @@ import Income from "./fran/pages/slip/Income";
 import Schedule from "./fran/pages/employee/Schedule";
 import DayOff from "./fran/pages/employee/DayOff";
 import CoffeeList from "./fran/pages/menus/itemList/CoffeeList";
-import DessertList from "./fran/pages/menus/itemList/DessertList";
-import DrinkList from "./fran/pages/menus/itemList/DrinkList";
-import GoodsList from "./fran/pages/menus/itemList/GoodsList";
 /* -------------------------------------------------------------------------- */
 
 /* ---------------------------------본사 컴포넌트----------------------------- */
@@ -106,9 +103,6 @@ function App() {
                 <Route index element={<CoffeeList />} />{" "}
                 {/* 기본값으로 CoffeeList 표시 */}
                 <Route path="coffee" element={<CoffeeList />} />
-                <Route path="drink" element={<DrinkList />} />
-                <Route path="dessert" element={<DessertList />} />
-                <Route path="goods" element={<GoodsList />} />
               </Route>
             </Route>
 
@@ -120,7 +114,7 @@ function App() {
             <Route path="schedule" element={<Schedule />} />
             <Route path="dayoff" element={<DayOff />} />
             <Route path="notice" element={<Notice />} />
-            <Route path="notice/notice-regist" element={<NoticeRegist/>}/>
+            <Route path="notice/notice-regist" element={<NoticeRegist />} />
             <Route path="chat" element={<Chat />} />
             <Route path="barista-note" element={<BaristaNote />} />
             <Route path="stats" element={<Stats />} />
@@ -149,7 +143,7 @@ function App() {
             <Route path="income" element={<HQIncome />} />
             <Route path="plan" element={<HQPlan />} />
             <Route path="mgment" element={<HQMgment />}>
-            
+
             </Route>
 
             <Route path="notice" element={<HQNotice />} />
