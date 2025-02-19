@@ -1,41 +1,90 @@
-
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import style from './Note.module.css';
-import { callBaristNotesAPI , callSearchNoteAPI } from '../../../apis/brista-note/baristaNoteApi';
+import { callBaristNotesAPI, callSearchNoteAPI, callNoteRegistAPI } from '../../../apis/brista-note/baristaNoteApi';
 
 function BaristaNoteLayout() {
     const dispatch = useDispatch();
     const notes = useSelector((state) => state.noteReducer.data);
+    const user = useSelector((state) => state.auth.user); // ✅ user 객체 가져오기
+    const userId = user?.userId || null; // ✅ user 객체에서 userId 추출
+
+    console.log("🔍 Redux에서 가져온 user 객체:", user);
+    console.log("📢 최종 userId:", userId);
+
     const noteList = Array.isArray(notes) ? notes : [];
-    
+
     useEffect(() => {
         dispatch(callBaristNotesAPI());
     }, [dispatch]);
-    
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [noteTitle, setNoteTitle] = useState('');
     const [selectedNote, setSelectedNote] = useState(null);
-    const [search, setSearch] = useState(''); 
+    const [search, setSearch] = useState('');
+    const [noteDetail, setNoteDetail] = useState('');
+    const [attachment, setAttachment] = useState(null);
 
     const openModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
-        const handleSearchChange = (e) => setSearch(e.target.value);  // 검색어 변경 함수
+    const closeModal = () => {
+        setNoteTitle(''); // 입력 필드 초기화
+        setNoteDetail(''); // 만약 내용도 초기화하려면 추가
+        setIsModalOpen(false);
+    }
+    const handleSearchChange = (e) => setSearch(e.target.value);
     
     const openDetailModal = (note) => {
         setSelectedNote(note);
         setIsDetailModalOpen(true);
     };
     const closeDetailModal = () => setIsDetailModalOpen(false);
+
     const handleTitleChange = (e) => setNoteTitle(e.target.value);
+    const handleDetailChange = (e) => setNoteDetail(e.target.value);
+    const handleFileChange = (e) => setAttachment(e.target.files[0]);
+
+    const handleSaveNote = async () => {
+        if (!noteTitle.trim()) {
+            alert('⚠️ 제목을 입력해주세요!');
+            return;
+        }
+    
+        if (!noteDetail.trim()) {
+            alert('⚠️ 내용을 입력해주세요!');
+            return;
+        }
+    
+    
+        console.log("📢 최종 userId:", userId);
+        if (!userId) {
+            alert("❌ userId가 없습니다. 로그인 후 다시 시도해주세요.");
+            return;
+        }
+    
+        const noteData = {
+            noteTitle,
+            noteDetail,
+            noteDate: new Date().toISOString(), // ✅ 현재시간 추가
+            userId
+        };
+    
+        console.log("📢 보낼 JSON 데이터:", noteData);
+    
+        await dispatch(callNoteRegistAPI(noteData)); // ✅ JSON 형식으로 전송
+        dispatch(callBaristNotesAPI());
+    
+        closeModal();
+    };
+    
+    
+    
+    
 
     const handleSearch = () => {
         if (search.trim()) {
-            // 검색어가 있을 때만 검색 API 호출
             dispatch(callSearchNoteAPI({ search }));
         } else {
-            // 검색어가 비어있으면 전체 목록을 불러오기
             dispatch(callBaristNotesAPI());
         }
     };
@@ -48,9 +97,9 @@ function BaristaNoteLayout() {
                     type="text"
                     placeholder="게시글검색"
                     value={search}
-                    onChange={handleSearchChange}  // 검색어 변경 시 상태 업데이트
+                    onChange={handleSearchChange}
                 />
-                <button className={style.searchButton} onClick={handleSearch}>검색</button>  {/* 검색 버튼 클릭 시 검색 실행 */}
+                <button className={style.searchButton} onClick={handleSearch}>검색</button>
                 <button className={style.registButton} onClick={openModal}>등록</button>
             </div>
 
@@ -88,26 +137,27 @@ function BaristaNoteLayout() {
                                 onChange={handleTitleChange}
                                 className={style.modalTitleInput}
                                 placeholder="제목을 입력하세요"
+                                required
                             />
                         </div>
                         <hr />
                         <div className={style.fileUpload}>
                             <label htmlFor="fileUpload">파일 첨부 : </label>
-                            <input type="file" id="fileUpload" />
+                            <input type="file" id="fileUpload" onChange={handleFileChange}/>
                         </div>
                         <div className={style.noteContent}>
                             <label htmlFor="noteContent">노트 내용 : </label>
-                            <textarea id="noteContent" placeholder="노트를 작성하세요"></textarea>
+                            <textarea id="noteContent" placeholder="노트를 작성하세요" onChange={handleDetailChange} required></textarea>
                         </div>
                         <div className={style.modalButtons}>
-                            <button className={style.saveButton}>저장</button>
+                            <button className={style.saveButton} onClick={handleSaveNote}>저장</button>
                             <button className={style.cancelButton} onClick={closeModal}>취소</button>
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* 상세보기 모달 (등록 모달과 동일한 디자인) */}
+            {/* 상세보기 모달 */}
             {isDetailModalOpen && selectedNote && (
                 <div className={style.modalOverlay}>
                     <div className={style.modalContent}>
@@ -129,7 +179,6 @@ function BaristaNoteLayout() {
                             <span>{selectedNote.attachment ? selectedNote.attachment : '없음'}</span>
                         </div>
                         <div className={style.noteContent}>
-
                             <textarea id="noteContent" value={selectedNote.noteDetail} readOnly></textarea>
                         </div>
                         <div className={style.modalButtons}>
