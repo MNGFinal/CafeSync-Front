@@ -99,3 +99,36 @@ export async function deleteFranInventory(deleteData) {
     };
   }
 }
+
+// 📌 src/apis/inventory/inventoryApi.js
+export async function getInOutList(franCode) {
+  if (!franCode) {
+    console.error("❌ franCode 없음! 데이터를 가져올 수 없습니다.");
+    return [];
+  }
+
+  try {
+    const token = sessionStorage.getItem("accessToken");
+    const apiUrl = `http://localhost:8080/api/fran/inout/list/${franCode}`; // ✅ franCode 추가
+
+    const response = await fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("✅ 가져온 입출고 리스트:", data);
+
+    return data.map((item) => ({ ...item, checked: false })); // 체크박스 추가
+  } catch (error) {
+    console.error("❌ 입출고 데이터를 가져오는 중 오류 발생:", error);
+    return [];
+  }
+}

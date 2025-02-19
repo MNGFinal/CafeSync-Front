@@ -1,0 +1,267 @@
+.container {
+  margin-top: 10px;
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+  padding-top: 7px;
+}
+
+.box1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.box2 {
+  display: flex;
+  gap: 5px;
+}
+
+.button {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  background-color: #f8f8f8;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-right: 10px;
+}
+
+.button:hover {
+  background-color: #e0e0e0;
+}
+
+.content {
+  margin-top: 15px;
+  width: 100%;
+  border: 1px solid black;
+  height: auto;
+  padding: 10px;
+}
+
+.textBox {
+  width: 50px;
+  height: 25px;
+  background-color: rgb(42, 122, 241);
+  color: white;
+  font-size: 13px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.textBox p {
+  text-align: center;
+}
+
+.list {
+  margin-top: 10px;
+  padding: 0;
+  list-style: none;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+  width: 100%;
+  min-height: 450px;
+}
+
+.listHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 15px;
+  background-color: #f4f4f4;
+  font-weight: bold;
+  border-bottom: 2px solid #ddd;
+}
+
+.listRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.listRow input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.listItem {
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.listItem:hover {
+  background-color: #f9f9f9;
+}
+
+.noData {
+  text-align: center;
+  padding: 15px;
+  color: gray;
+}
+
+/* ✅ 컬럼 내부 요소 정렬 */
+.listHeader span,
+.listRow span {
+  flex: 1;
+  text-align: center;
+}
+
+.listHeader span:first-child,
+.listRow span:first-child {
+  flex: 0.5; /* 체크박스 크기 조정 */
+  text-align: left;
+}
+
+.listRow input {
+  flex: 0.2;
+}
+
+.listHeader input[type="checkbox"],
+.listRow input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.showAllButton {
+  background-color: #6c5ce7;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  margin-right: 10px;
+  height: 35px;
+  border-radius: 5px;
+}
+
+.showAllButton:hover {
+  background-color: #5a4bd6;
+}
+
+/* 날짜 입력 필드 스타일 */
+.dateInput {
+  width: 120px; /* ✅ 원하는 크기로 조정 (기본값은 약 120px) */
+  height: 35px; /* ✅ 높이 조정 */
+  font-size: 13px; /* ✅ 글씨 크기 */
+  padding: 5px; /* ✅ 내부 여백 */
+  border: 1px solid #ccc; /* ✅ 테두리 */
+  border-radius: 5px; /* ✅ 모서리 둥글게 */
+  text-align: center; /* ✅ 가운데 정렬 */
+}
+
+/* ✅ 버튼 그룹 컨테이너 */
+.buttonGroup {
+  display: flex;
+  justify-content: center; /* ✅ 가운데 정렬 */
+  align-items: center;
+  gap: 12px; /* ✅ 버튼 사이 간격 */
+  margin-top: -7px;
+}
+
+/* ✅ 버튼 스타일 */
+.actionButton {
+  padding: 8px 15px; /* ✅ 버튼 크기 조정 */
+  font-size: 14px; /* ✅ 폰트 크기 */
+  font-weight: bold;
+  border: none;
+  border-radius: 5px; /* ✅ 모서리 둥글게 */
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+/* ✅ 출고 등록 버튼 (파란색) */
+.outButton {
+  background-color: #3498db; /* ✅ 파란색 */
+  color: white;
+}
+
+.outButton:hover {
+  background-color: #2980b9; /* ✅ 어두운 파란색 */
+}
+
+/* ✅ 입고 승인 버튼 (초록색) */
+.inButton {
+  background-color: #2ecc71; /* ✅ 초록색 */
+  color: white;
+}
+
+.inButton:hover {
+  background-color: #27ae60; /* ✅ 어두운 초록색 */
+}
+
+/* ✅ 입고 취소 버튼 (빨간색) */
+.cancelButton {
+  background-color: #e74c3c; /* ✅ 빨간색 */
+  color: white;
+}
+
+.cancelButton:hover {
+  background-color: #c0392b; /* ✅ 어두운 빨간색 */
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* ✅ 버튼 간격 살짝 더 넓힘 */
+  list-style: none;
+  padding: 12px;
+  margin-top: 5px;
+}
+
+.pagination li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 42px; /* ✅ 정사각형 느낌 강화 */
+  min-height: 42px;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 8px; /* ✅ 모서리 둥글게 */
+  background: linear-gradient(
+    to bottom,
+    #f9f9f9,
+    #e6e6e6
+  ); /* ✅ 버튼 그라데이션 */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15); /* ✅ 살짝 입체감 */
+  transition: all 0.3s ease-in-out;
+  font-weight: bold;
+  color: #333;
+}
+
+.pagination li:hover {
+  background: linear-gradient(
+    to bottom,
+    #e6e6e6,
+    #d4d4d4
+  ); /* ✅ 호버 시 색 변화 */
+}
+
+.pagination li:active {
+  transform: scale(0.95); /* ✅ 클릭 시 살짝 눌리는 효과 */
+}
+
+/* ✅ 현재 선택된 페이지 */
+.pagination .activePage {
+  background: linear-gradient(to bottom, #6c5ce7, #5144d3); /* ✅ 보라색 강조 */
+  color: white;
+  box-shadow: 0px 3px 6px rgba(108, 92, 231, 0.5); /* ✅ 더 강조 */
+}
+
+.pagination li a {
+  width: 100%; /* ✅ 숫자 영역을 li 전체로 확장 */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.activePage {
+  background-color: #6c5ce7;
+  color: white;
+  font-weight: bold;
+}

@@ -1,0 +1,154 @@
+.container {
+  padding: 20px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* 제목 */
+.title {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* 출고 & 입고 매장 선택 */
+.storeSelect {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.storeBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.storeName {
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #f8f8f8;
+  padding: 10px 15px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.arrow {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* 입고 매장 선택 */
+.franSelect {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.franSelect input {
+  width: 180px;
+  height: 36px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  text-align: center;
+  border-radius: 5px;
+}
+
+.searchButton {
+  background-color: #6c5ce7;
+  color: white;
+  border: none;
+  padding: 7px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 5px;
+}
+
+.searchButton:hover {
+  background-color: #5a4bd6;
+}
+
+/* 제품 리스트 테이블 */
+.productTable {
+  margin-top: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+.productHeader,
+.productRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.productHeader {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.productRow {
+  border-top: 1px solid #ddd;
+}
+
+.addButton {
+  background: #6c5ce7;
+  color: white;
+  border: none;
+  padding: 7px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.addButton:hover {
+  background-color: #5a4bd6;
+}
+
+.productCode {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100px;
+  text-align: center;
+  background-color: white;
+}
+
+.productCode:hover {
+  background-color: #f0f0f0;
+}
+
+input[type="number"] {
+  width: 70px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.deleteButton {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: red;
+}
+
+.deleteButton:hover {
+  color: darkred;
+}
