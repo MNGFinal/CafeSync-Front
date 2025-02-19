@@ -100,7 +100,7 @@ export async function deleteFranInventory(deleteData) {
   }
 }
 
-// 📌 src/apis/inventory/inventoryApi.js
+// 입출고 내역 조회
 export async function getInOutList(franCode) {
   if (!franCode) {
     console.error("❌ franCode 없음! 데이터를 가져올 수 없습니다.");
@@ -130,5 +130,43 @@ export async function getInOutList(franCode) {
   } catch (error) {
     console.error("❌ 입출고 데이터를 가져오는 중 오류 발생:", error);
     return [];
+  }
+}
+
+// 출고 등록 api
+export async function insertOutRegister(outRegisterData) {
+  try {
+    const token = sessionStorage.getItem("accessToken");
+    const response = await fetch(
+      "http://localhost:8080/api/fran/inout/out-register",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(outRegisterData),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+    }
+
+    // ✅ JSON 응답인지 확인 후 파싱
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      const result = await response.json();
+      console.log("✅ 출고 등록 성공:", result);
+      return { success: true, data: result };
+    } else {
+      // JSON이 아니라면 텍스트로 읽기
+      const textResult = await response.text();
+      console.warn("⚠️ 예상치 못한 응답 형식:", textResult);
+      return { success: false, error: "서버 응답이 JSON 형식이 아닙니다." };
+    }
+  } catch (error) {
+    console.error("❌ 출고 등록 실패:", error);
+    return { success: false, error: error.message };
   }
 }
