@@ -10,6 +10,7 @@ import {
   updateFranInventory,
   deleteFranInventory,
 } from "../../../apis/inventory/inventoryApi";
+import InOut from "./InOut"; // ✅ 새로 만든 InOut 컴포넌트 가져오기
 
 function Inventory() {
   const franCode = useSelector(
@@ -25,6 +26,15 @@ function Inventory() {
   const [modalMessage, setModalMessage] = useState("");
   const [lottieAnimation, setLottieAnimation] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isManageModalOpen, setIsManageModalOpen] = useState(false);
+
+  const handleManageModalOpen = () => {
+    setIsManageModalOpen(true);
+  };
+
+  const handleManageModalClose = () => {
+    setIsManageModalOpen(false);
+  };
 
   useEffect(() => {
     if (!franCode) return;
@@ -236,7 +246,13 @@ function Inventory() {
           </button>
         </div>
         <div className={styles.box2}>
-          <button className={styles.stockRequest}>입출고 신청 관리</button>
+          <button
+            className={styles.stockRequest}
+            onClick={handleManageModalOpen} // ✅ 클릭 시 모달 열기
+          >
+            입출고 신청 관리
+          </button>
+
           <button
             className={styles.expiryCheck}
             onClick={handleExpiringSoonFilter}
@@ -444,6 +460,9 @@ function Inventory() {
           <p>{modalMessage}</p>
         </div>
       </SModal>
+
+      {/* ✅ InOut 컴포넌트로 모달 분리 */}
+      <InOut isOpen={isManageModalOpen} onClose={handleManageModalClose} />
     </>
   );
 }
