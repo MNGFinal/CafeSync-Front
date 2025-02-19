@@ -24,16 +24,28 @@ function InOut({ isOpen, onClose }) {
 
   const itemsPerPage = 6; // ✅ 한 페이지당 6개
 
-  // ✅ 입출고 데이터 가져오기
-  useEffect(() => {
-    if (isOpen && franCode) {
+  // ✅ 📌 출고 등록 후 리스트 갱신을 위해 `fetchInOutList` 함수 생성
+  const fetchInOutList = () => {
+    if (franCode) {
       getInOutList(franCode).then((data) => {
         setInOutList(data);
         setFilteredInOutList(data); // ✅ 초기 데이터
-        setCurrentPage(0); // ✅ 필터링 시 첫 페이지로 이동
       });
     }
+  };
+
+  // ✅ 모달이 열릴 때 데이터 가져오기
+  useEffect(() => {
+    if (isOpen) {
+      fetchInOutList(); // 🔥 출고 등록 후 최신 데이터 불러오기
+    }
   }, [isOpen, franCode]);
+
+  // ✅ 출고 등록 성공 후 리스트 갱신
+  const handleRegisterSuccess = () => {
+    fetchInOutList(); // 🔥 출고 등록 후 최신 데이터 불러오기
+    setIsOutRegistOpen(false); // ✅ 모달 닫기
+  };
 
   // ✅ 날짜 필터링 적용
   useEffect(() => {
@@ -55,7 +67,7 @@ function InOut({ isOpen, onClose }) {
     });
 
     setFilteredInOutList(filteredData);
-    setCurrentPage(0); // ✅ 필터링 시 첫 페이지로 이동
+    setCurrentPage(0);
   }, [startDate, endDate, inOutList]);
 
   // ✅ 날짜 포맷 함수
@@ -162,12 +174,12 @@ function InOut({ isOpen, onClose }) {
 
           {/* ✅ 리스트 UI */}
           <ul className={styles.list}>
-            <li
-              className={`${styles.listHeader} ${styles.listRow}`}
-              checked={selectAll}
-              onChange={handleSelectAll}
-            >
-              <input type="checkbox" checked={selectAll} />
+            <li className={`${styles.listHeader} ${styles.listRow}`}>
+              <input
+                type="checkbox"
+                checked={selectAll}
+                onChange={handleSelectAll}
+              />
               <span>출고 매장</span>
               <span>입고 매장</span>
               <span>날짜</span>
@@ -211,10 +223,11 @@ function InOut({ isOpen, onClose }) {
         </div>
       </Modal>
 
-      {/* ✅ 출고 등록 모달 */}
+      {/* ✅ 출고 등록 모달에 `handleRegisterSuccess` 전달 */}
       <OutRegist
         isOpen={isOutRegistOpen}
         onClose={() => setIsOutRegistOpen(false)}
+        onRegisterSuccess={handleRegisterSuccess} // 🔥 출고 등록 성공 시 리스트 갱신
       />
     </>
   );

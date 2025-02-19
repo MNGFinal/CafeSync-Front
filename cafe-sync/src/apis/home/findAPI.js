@@ -132,6 +132,7 @@ export async function verifyAuthCode(userId, email, authenticationNumber) {
   }
 }
 
+// 비밀번호 변경경
 export async function updatePassword(userId, userPass) {
   console.log("프론트에서 보내는 데이터", { userId, userPass });
 
