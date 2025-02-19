@@ -142,15 +142,8 @@ function OutRegist({ isOpen, onClose, onRegisterSuccess }) {
     if (result.success) {
       console.log("✅ 출고 등록 성공:", result.data);
 
-      // ✅ 먼저 성공 모달을 띄우기
+      // ✅ 성공 모달 띄우기 (자동 닫기 X)
       setIsSuccessModalOpen(true);
-
-      // ✅ 1초 후 모달을 닫고 리스트 갱신
-      setTimeout(() => {
-        setIsSuccessModalOpen(false);
-        onRegisterSuccess(); // 🔥 리스트 갱신 실행
-        onClose(); // 🔥 출고 등록 모달 닫기
-      }, 1000);
     } else {
       setWarningMessage(result.error || "출고 등록에 실패했습니다.");
       setIsWarningModalOpen(true);
@@ -284,6 +277,7 @@ function OutRegist({ isOpen, onClose, onRegisterSuccess }) {
         isOpen={isSuccessModalOpen}
         onClose={() => {
           setIsSuccessModalOpen(false);
+          onRegisterSuccess(); // ✅ 리스트 갱신 실행
           onClose(); // ✅ 출고 등록 모달 닫기
         }}
         buttons={[
@@ -291,6 +285,7 @@ function OutRegist({ isOpen, onClose, onRegisterSuccess }) {
             text: "확인",
             onClick: () => {
               setIsSuccessModalOpen(false);
+              onRegisterSuccess(); // ✅ 리스트 갱신 실행
               onClose(); // ✅ 출고 등록 모달 닫기
             },
             className: modalStyle.confirmButtonS,
