@@ -1,9 +1,8 @@
-import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./Menus.module.css";
 
-function CategoryButtons() {
-  const [searchQuery, setSearchQuery] = useState(""); // 검색어 상태
+function CategoryButtons({fetchMenus, searchQuery, setSearchQuery}) {
+  
   const categories = [
     { id: "coffee", name: "커피" },
     { id: "drink", name: "음료" },
@@ -16,17 +15,8 @@ function CategoryButtons() {
 
   // 검색어 입력 필드 변경 핸들러
   const handleInputChange = (e) => {
+    console.log(e.target.value)
     setSearchQuery(e.target.value);
-  };
-
-  // 검색 버튼 클릭 시 필터링
-  const onClickHandler = () => {
-    if (searchQuery.trim() === "") {
-      // 검색어가 비어 있으면 전체 메뉴 리스트를 보여주도록 처리
-      navigate(`/fran/menus/${category}`);
-    } else {
-      navigate(`/fran/menus/${category}?query=${searchQuery}`); // 검색어와 함께 URL로 이동
-    }
   };
 
   return (
@@ -57,7 +47,7 @@ function CategoryButtons() {
         />
         <button
           className={styles.searchButton}
-          onClick={onClickHandler}
+          onClick={fetchMenus}
         >
           검색
         </button>
