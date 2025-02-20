@@ -51,7 +51,7 @@ function HQMgment() {
           {franList.length > 0 ? (
             franList.map((fran) => (
               <div key={fran.franCode} className={styles.storeCard}>
-                <img className={styles.storeImage} src={fran.franImage}></img>
+                <img className={styles.storeImage} src={fran.franImage} alt="가맹점이미지"></img>
                 <h3>{fran.franName}</h3>
                 <p>{fran.franAddr}</p>
                 <p className={styles.managerName}>점장: {fran.managerName || "미등록"}</p>
