@@ -130,6 +130,13 @@ function BaristaNoteLayout() {
         closeDetailModal();
     };    
 
+    const handleCancelEdit = () => {
+        // 원래 note의 제목과 내용을 설정하여 수정된 내용을 취소
+        setNoteTitle(selectedNote.noteTitle);
+        setNoteDetail(selectedNote.noteDetail);
+        setIsEditMode(false); // 읽기 전용 모드로 설정
+    };
+
     return (
         <>
             <div className={style.upperBox}>
@@ -263,7 +270,7 @@ function BaristaNoteLayout() {
                         {isEditMode && (
                             <div className={style.modalButtons}>
                                 <button className={style.saveButton} onClick={handleUpdateNote}>저장</button>
-                                <button className={style.cancelButton} onClick={() => setIsEditMode(false)}>취소</button>
+                                <button className={style.cancelButton} onClick={handleCancelEdit}>취소</button>
                             </div>
                         )}
                     </div>

@@ -122,7 +122,7 @@ export const callNoteUpdateAPI = ({ noteCode, noteTitle, noteDetail, noteDate, u
                     noteCode,
                     noteTitle,
                     noteDetail,
-                    noteDate, // 수정된 시간 (API에 전달)
+                    noteDate,
                     userId
                 }), // JSON 형식으로 전송
             });

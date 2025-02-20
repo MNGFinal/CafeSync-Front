@@ -153,20 +153,125 @@ export async function insertOutRegister(outRegisterData) {
       throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
     }
 
-    // ✅ JSON 응답인지 확인 후 파싱
+    // ✅ JSON 응답 여부 확인 후 안전하게 처리
     const contentType = response.headers.get("content-type");
     if (contentType && contentType.includes("application/json")) {
-      const result = await response.json();
-      console.log("✅ 출고 등록 성공:", result);
-      return { success: true, data: result };
+      return await response.json();
     } else {
-      // JSON이 아니라면 텍스트로 읽기
-      const textResult = await response.text();
-      console.warn("⚠️ 예상치 못한 응답 형식:", textResult);
       return { success: false, error: "서버 응답이 JSON 형식이 아닙니다." };
     }
   } catch (error) {
     console.error("❌ 출고 등록 실패:", error);
     return { success: false, error: error.message };
+  }
+}
+
+// ✅ 입고 승인 API
+export async function approveInoutItems(approveData) {
+  if (!approveData || approveData.length === 0) {
+    console.error("❌ 승인할 데이터가 없습니다!");
+    return { success: false, message: "승인할 데이터를 선택해주세요." };
+  }
+
+  try {
+    const token = sessionStorage.getItem("accessToken");
+    const apiUrl = "http://localhost:8080/api/fran/inout/approve";
+
+    const response = await fetch(apiUrl, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(approveData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+    }
+
+    console.log("✅ 입고 승인 성공");
+    return { success: true, message: "입고 승인 완료!" };
+  } catch (error) {
+    console.error("❌ 입고 승인 중 오류 발생:", error);
+    return {
+      success: false,
+      message: "입고 승인 중 오류가 발생했습니다. 다시 시도해주세요.",
+    };
+  }
+}
+
+// ✅ 입고 취소 API
+export async function cancelInoutItems(cancelData) {
+  if (!cancelData || cancelData.length === 0) {
+    console.error("❌ 취소할 데이터가 없습니다!");
+    return { success: false, message: "취소할 데이터를 선택해주세요." };
+  }
+
+  try {
+    const token = sessionStorage.getItem("accessToken");
+    const apiUrl = "http://localhost:8080/api/fran/inout/cancel";
+
+    const response = await fetch(apiUrl, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(cancelData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+    }
+
+    console.log("✅ 입고 취소 성공");
+    return { success: true, message: "입고 취소 완료!" };
+  } catch (error) {
+    console.error("❌ 입고 취소 중 오류 발생:", error);
+    return {
+      success: false,
+      message: "입고 취소 중 오류가 발생했습니다. 다시 시도해주세요.",
+    };
+  }
+}
+
+// ✅ 발주 신청 API
+export async function insertOrderRequest(orderData) {
+  if (!orderData || orderData.length === 0) {
+    console.error("❌ 발주할 데이터가 없습니다!");
+    return { success: false, message: "발주할 데이터를 선택해주세요." };
+  }
+
+  console.log(
+    "📤 서버로 보낼 발주 데이터:",
+    JSON.stringify(orderData, null, 2)
+  );
+
+  try {
+    const token = sessionStorage.getItem("accessToken");
+    const apiUrl = "http://localhost:8080/api/fran/order/request";
+
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(orderData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+    }
+
+    console.log("✅ 발주 신청 성공");
+    return { success: true, message: "발주 신청 되었습니다." };
+  } catch (error) {
+    console.error("❌ 발주 신청 중 오류 발생:", error);
+    return {
+      success: false,
+      message: "발주 신청 중 오류가 발생했습니다. 다시 시도해주세요.",
+    };
   }
 }

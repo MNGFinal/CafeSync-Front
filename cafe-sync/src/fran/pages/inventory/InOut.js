@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { getInOutList } from "../../../apis/inventory/inventoryApi";
+import {
+  getInOutList,
+  approveInoutItems,
+  cancelInoutItems,
+} from "../../../apis/inventory/inventoryApi";
 import Modal from "../../../components/Modal";
 import modalStyle from "../../../components/ModalButton.module.css";
 import styles from "./InOut.module.css";
@@ -8,8 +12,11 @@ import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import OutRegist from "./OutRegist";
 import ReactPaginate from "react-paginate";
+import SModal from "../../../components/SModal";
+import { Player } from "@lottiefiles/react-lottie-player";
+import InOutDetail from "./InOutDetail"; // ✅ 추가
 
-function InOut({ isOpen, onClose }) {
+function InOut({ isOpen, onClose, refreshInventory }) {
   const franCode = useSelector(
     (state) => state.auth?.user?.franchise?.franCode ?? null
   );
@@ -21,8 +28,29 @@ function InOut({ isOpen, onClose }) {
   const [endDate, setEndDate] = useState("");
   const [isOutRegistOpen, setIsOutRegistOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false); // 🔥 에러 모달 상태 추가
+  const [errorMessage, setErrorMessage] = useState(""); // 🔥 에러 메시지 상태 추가
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false); // ✅ 성공 모달 상태 추가
+  const [successMessage, setSuccessMessage] = useState(""); // ✅ 성공 메시지 추가
+  const [selectedInOut, setSelectedInOut] = useState(null); // ✅ 선택된 입출고 데이터 저장
+  const [isDetailOpen, setIsDetailOpen] = useState(false); // ✅ 상세 모달 상태
 
   const itemsPerPage = 6; // ✅ 한 페이지당 6개
+
+  // ✅ 날짜 유효성 검사: 시작 날짜가 종료 날짜보다 이후면 `SModal` 띄우기
+  useEffect(() => {
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+
+      if (start > end) {
+        setErrorMessage("시작 날짜는 종료 날짜보다 이후일 수 없습니다.");
+        setIsErrorModalOpen(true);
+        setStartDate("");
+        setEndDate("");
+      }
+    }
+  }, [startDate, endDate]);
 
   // ✅ 📌 출고 등록 후 리스트 갱신을 위해 `fetchInOutList` 함수 생성
   const fetchInOutList = () => {
@@ -91,6 +119,14 @@ function InOut({ isOpen, onClose }) {
 
   const handleCheckboxChange = (index) => {
     const updatedList = [...filteredInOutList];
+
+    // ✅ 이미 승인(1) 또는 취소(2)된 항목은 선택 불가
+    if (updatedList[index].inoutStatus !== 0) {
+      setErrorMessage("이미 승인 또는 취소된 항목입니다.");
+      setIsErrorModalOpen(true);
+      return;
+    }
+
     updatedList[index] = {
       ...updatedList[index],
       checked: !updatedList[index].checked,
@@ -106,6 +142,116 @@ function InOut({ isOpen, onClose }) {
       checked: newSelectAll,
     }));
     setFilteredInOutList(updatedList);
+  };
+
+  const handleApproveIn = async () => {
+    const selectedItems = filteredInOutList.filter((item) => item.checked);
+
+    if (selectedItems.length === 0) {
+      setErrorMessage("승인할 항목을 선택해주세요.");
+      setIsErrorModalOpen(true);
+      return;
+    }
+
+    const invalidItems = selectedItems.filter(
+      (item) => item.franInCode.franCode !== franCode
+    );
+
+    if (invalidItems.length > 0) {
+      setErrorMessage("입고 매장만 승인할 수 있습니다.");
+      setIsErrorModalOpen(true);
+      return;
+    }
+
+    try {
+      const approveData = selectedItems.map((item) => ({
+        inoutCode: item.inoutCode,
+        inoutStatus: 1,
+        franOutCode: { franCode: item.franOutCode.franCode },
+        franInCode: { franCode: item.franInCode.franCode },
+        inventoryList: item.inventoryList.map((inv) => ({
+          invenCode: inv.invenCode,
+          quantity: inv.quantity,
+        })),
+      }));
+
+      const response = await approveInoutItems(approveData);
+
+      if (response.success) {
+        setSuccessMessage("입고 승인 처리되었습니다.");
+        setIsSuccessModalOpen(true); // ✅ 성공 모달 열기
+        fetchInOutList();
+        refreshInventory(); // 재고 목록 새로고침
+      } else {
+        setErrorMessage(response.error || "입고 승인에 실패했습니다.");
+        setIsErrorModalOpen(true);
+      }
+    } catch (error) {
+      setErrorMessage("서버 오류 발생. 다시 시도해주세요.");
+      setIsErrorModalOpen(true);
+    }
+  };
+
+  const handleCancelIn = async () => {
+    const selectedItems = filteredInOutList.filter((item) => item.checked);
+
+    if (selectedItems.length === 0) {
+      setErrorMessage("취소할 항목을 선택해주세요.");
+      setIsErrorModalOpen(true);
+      return;
+    }
+
+    const invalidItems = selectedItems.filter(
+      (item) => item.franInCode.franCode !== franCode
+    );
+
+    if (invalidItems.length > 0) {
+      setErrorMessage("입고 매장만 취소할 수 있습니다.");
+      setIsErrorModalOpen(true);
+      return;
+    }
+
+    try {
+      const cancelData = selectedItems.map((item) => ({
+        inoutCode: item.inoutCode,
+        inoutStatus: 2,
+      }));
+
+      const response = await cancelInoutItems(cancelData);
+
+      if (response.success) {
+        setSuccessMessage("입고 취소 처리되었습니다.");
+        setIsSuccessModalOpen(true); // ✅ 성공 모달 열기
+        fetchInOutList();
+        refreshInventory(); // 재고 목록 새로고침침
+      } else {
+        setErrorMessage(response.error || "입고 취소에 실패했습니다.");
+        setIsErrorModalOpen(true);
+      }
+    } catch (error) {
+      setErrorMessage("서버 오류 발생. 다시 시도해주세요.");
+      setIsErrorModalOpen(true);
+    }
+  };
+
+  // ✅ 상태값을 한글로 변환하는 함수
+  const formatStatus = (status) => {
+    switch (status) {
+      case 0:
+        return "대기";
+      case 1:
+        return "승인";
+      case 2:
+        return "취소"; // ✅ 취소 상태 추가
+      default:
+        return "-";
+    }
+  };
+
+  // ✅ 리스트 아이템 클릭 시 상세 모달 열기
+  const handleItemClick = (item) => {
+    setSelectedInOut(item);
+    setIsDetailOpen(true);
   };
 
   return (
@@ -161,11 +307,23 @@ function InOut({ isOpen, onClose }) {
               >
                 출고 등록
               </button>
-              <button className={`${styles.actionButton} ${styles.inButton}`}>
+
+              <button
+                className={`${styles.actionButton} ${styles.inButton}`}
+                onClick={handleApproveIn}
+                disabled={filteredInOutList.every(
+                  (item) => item.inoutStatus !== 0
+                )} // ✅ 모든 항목이 승인 또는 취소된 경우 비활성화
+              >
                 입고 승인
               </button>
+
               <button
                 className={`${styles.actionButton} ${styles.cancelButton}`}
+                onClick={handleCancelIn}
+                disabled={filteredInOutList.every(
+                  (item) => item.inoutStatus !== 0
+                )} // ✅ 모든 항목이 승인 또는 취소된 경우 비활성화
               >
                 입고 취소
               </button>
@@ -191,6 +349,7 @@ function InOut({ isOpen, onClose }) {
                 <li
                   key={index}
                   className={`${styles.listItem} ${styles.listRow}`}
+                  onClick={() => handleItemClick(item)}
                 >
                   <input
                     type="checkbox"
@@ -200,7 +359,8 @@ function InOut({ isOpen, onClose }) {
                   <span>{item.franOutCode?.franName || "-"}</span>
                   <span>{item.franInCode?.franName || "-"}</span>
                   <span>{formatDate(item.inoutDate)}</span>
-                  <span>{item.inoutStatus === 0 ? "대기" : "승인"}</span>
+                  <span>{formatStatus(item.inoutStatus)}</span>{" "}
+                  {/* ✅ 상태값 적용 */}
                 </li>
               ))
             ) : (
@@ -222,6 +382,84 @@ function InOut({ isOpen, onClose }) {
           />
         </div>
       </Modal>
+      {/* ✅ 성공 모달 (성공 시 가장 먼저 렌더링) */}
+      {isSuccessModalOpen && (
+        <SModal
+          isOpen={isSuccessModalOpen}
+          onClose={() => setIsSuccessModalOpen(false)}
+          buttons={[
+            {
+              text: "확인",
+              onClick: () => setIsSuccessModalOpen(false),
+              className: modalStyle.confirmButtonS,
+            },
+          ]}
+        >
+          <div className={styles.modalContent}>
+            <Player
+              autoplay
+              loop={false}
+              keepLastFrame={true}
+              src="/animations/success-check.json" // ✅ 성공 애니메이션 적용
+              style={{ height: "100px", width: "100px", margin: "0 auto" }}
+            />
+            <p
+              style={{
+                fontSize: "16px",
+                fontWeight: "bold",
+                textAlign: "center",
+                paddingTop: "14px",
+              }}
+            >
+              {successMessage}
+            </p>
+          </div>
+        </SModal>
+      )}
+
+      {/* ✅ 실패 모달 (성공 모달보다 뒤에 배치) */}
+      {isErrorModalOpen && (
+        <SModal
+          isOpen={isErrorModalOpen}
+          onClose={() => setIsErrorModalOpen(false)}
+          buttons={[
+            {
+              text: "확인",
+              onClick: () => setIsErrorModalOpen(false),
+              className: modalStyle.confirmButtonS,
+            },
+          ]}
+        >
+          <div className={styles.modalContent}>
+            <Player
+              autoplay
+              loop={false}
+              keepLastFrame={true}
+              src="/animations/warning.json" // ✅ 실패 시 warning.json 사용
+              style={{ height: "100px", width: "100px", margin: "0 auto" }}
+            />
+            <p
+              style={{
+                fontSize: "16px",
+                fontWeight: "bold",
+                textAlign: "center",
+                paddingTop: "14px",
+              }}
+            >
+              {errorMessage}
+            </p>
+          </div>
+        </SModal>
+      )}
+
+      {/* ✅ 입출고 상세 모달 */}
+      {isDetailOpen && (
+        <InOutDetail
+          isOpen={isDetailOpen}
+          onClose={() => setIsDetailOpen(false)}
+          inoutData={selectedInOut} // ✅ 선택된 데이터 전달
+        />
+      )}
 
       {/* ✅ 출고 등록 모달에 `handleRegisterSuccess` 전달 */}
       <OutRegist

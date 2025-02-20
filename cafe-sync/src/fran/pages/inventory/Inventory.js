@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { getFranInventoryList } from "../../../apis/inventory/inventoryApi";
+import {
+  getFranInventoryList,
+  insertOrderRequest,
+} from "../../../apis/inventory/inventoryApi";
 import styles from "./Inventory.module.css";
 import generatePDF from "../../../config/generatePDF";
 import SModal from "../../../components/SModal"; // ✅ 이동 후 경로 수정
@@ -36,15 +39,15 @@ function Inventory() {
     setIsManageModalOpen(false);
   };
 
-  useEffect(() => {
+  const fetchInventory = async () => {
     if (!franCode) return;
+    const data = await getFranInventoryList(franCode);
+    setInventory(data);
+    setFilteredInventory(data);
+  };
 
-    const fetchInventory = async () => {
-      const data = await getFranInventoryList(franCode);
-      setInventory(data);
-      setFilteredInventory(data);
-    };
-
+  // ✅ useEffect에서 실행
+  useEffect(() => {
     fetchInventory();
   }, [franCode]);
 
@@ -218,6 +221,46 @@ function Inventory() {
     setIsModalOpen(true);
   };
 
+  const handleOrderRequest = async () => {
+    if (selectedItems.length === 0) {
+      setModalMessage("발주할 제품을 선택해주세요!");
+      setLottieAnimation("/animations/warning.json");
+      setIsModalOpen(true);
+      return;
+    }
+
+    const orderData = [
+      {
+        orderDate: new Date().toISOString().split("T")[0], // 오늘 날짜
+        franCode: franCode, // 현재 로그인한 가맹점
+        orderStatus: 0, // 대기 상태
+        orderDetails: selectedItems.map((code) => {
+          const item = filteredInventory.find(
+            (i) => i.inventory.invenCode === code
+          );
+          return {
+            invenCode: item.inventory.invenCode,
+            orderQty: item.orderQty,
+          };
+        }),
+      },
+    ];
+
+    const result = await insertOrderRequest(orderData);
+
+    setLottieAnimation(
+      result.success
+        ? "/animations/success-check.json"
+        : "/animations/warning.json"
+    );
+    setModalMessage(result.message);
+    setIsModalOpen(true);
+
+    if (result.success) {
+      fetchInventory(); // ✅ 발주 신청 후 재고 목록 갱신
+    }
+  };
+
   return (
     <>
       <div className="page-header">
@@ -262,7 +305,9 @@ function Inventory() {
           <button className={styles.lowStock} onClick={handleLowStockFilter}>
             {showLowStock ? "전체 보기" : "재고 부족 조회"}
           </button>
-          <button className={styles.orderRequest}>발주 신청</button>
+          <button className={styles.orderRequest} onClick={handleOrderRequest}>
+            발주 신청
+          </button>
         </div>
       </div>
 
@@ -298,7 +343,6 @@ function Inventory() {
               <th>권장수량</th>
               <th>공급업체</th>
               <th>최근 입고일</th>
-              <th>발주 상태</th>
             </tr>
           </thead>
           <tbody>
@@ -394,7 +438,6 @@ function Inventory() {
                     </td>
                     <td>{item.inventory.vendor.venName}</td>
                     <td>{item.lastIn}</td>
-                    <td>{item.confirmed === 0 ? "발주 전" : "승인"}</td>
                   </tr>
                 );
               })
@@ -462,7 +505,11 @@ function Inventory() {
       </SModal>
 
       {/* ✅ InOut 컴포넌트로 모달 분리 */}
-      <InOut isOpen={isManageModalOpen} onClose={handleManageModalClose} />
+      <InOut
+        isOpen={isManageModalOpen}
+        onClose={handleManageModalClose}
+        refreshInventory={fetchInventory} // ✅ 재고 목록 업데이트 함수 전달
+      />
     </>
   );
 }
