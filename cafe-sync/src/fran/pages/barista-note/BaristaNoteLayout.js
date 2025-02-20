@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import style from './Note.module.css';
 import { callBaristNotesAPI, callSearchNoteAPI, callNoteRegistAPI } from '../../../apis/brista-note/baristaNoteApi';
+import { callNoteUpdateAPI } from '../../../apis/brista-note/baristaNoteApi'; // 수정 API 호출
 
 function BaristaNoteLayout() {
     const dispatch = useDispatch();
@@ -25,18 +26,32 @@ function BaristaNoteLayout() {
     const [search, setSearch] = useState('');
     const [noteDetail, setNoteDetail] = useState('');
     const [attachment, setAttachment] = useState(null);
+    const [isEditMode, setIsEditMode] = useState(false); // 수정 모드 상태 추가
 
-    const openModal = () => setIsModalOpen(true);
+    const openModal = () => {
+        setIsEditMode(false);  // 등록 모드에서는 항상 false
+        setNoteTitle('');      // 제목 초기화
+        setNoteDetail('');     // 내용 초기화
+        setAttachment(null);   // 첨부파일 초기화
+        setSelectedNote(null); // 선택된 노트 초기화
+        setIsModalOpen(true);
+    };
     const closeModal = () => {
-        setNoteTitle(''); // 입력 필드 초기화
-        setNoteDetail(''); // 만약 내용도 초기화하려면 추가
+        setNoteTitle('');      // 제목 초기화
+        setNoteDetail('');     // 내용 초기화
+        setAttachment(null);   // 첨부파일 초기화
+        setSelectedNote(null); // 선택된 노트 초기화
         setIsModalOpen(false);
-    }
+    };
+
     const handleSearchChange = (e) => setSearch(e.target.value);
     
     const openDetailModal = (note) => {
         setSelectedNote(note);
+        setNoteTitle(note.noteTitle); // 선택된 노트의 제목 설정
+        setNoteDetail(note.noteDetail); // 선택된 노트의 내용 설정
         setIsDetailModalOpen(true);
+        setIsEditMode(false); // 상세보기 모드에서는 수정이 안 되도록 초기화
     };
     const closeDetailModal = () => setIsDetailModalOpen(false);
 
@@ -54,7 +69,6 @@ function BaristaNoteLayout() {
             alert('⚠️ 내용을 입력해주세요!');
             return;
         }
-    
     
         console.log("📢 최종 userId:", userId);
         if (!userId) {
@@ -76,10 +90,6 @@ function BaristaNoteLayout() {
     
         closeModal();
     };
-    
-    
-    
-    
 
     const handleSearch = () => {
         if (search.trim()) {
@@ -88,6 +98,37 @@ function BaristaNoteLayout() {
             dispatch(callBaristNotesAPI());
         }
     };
+
+    const handleUpdateNote = async () => {
+        if (!noteTitle.trim() || !noteDetail.trim()) {
+            alert('⚠️ 제목과 내용을 입력해주세요!');
+            return;
+        }
+    
+        // 세션에서 가져온 user.id와 selectedNote.userId를 비교
+        const sessionUserId = user?.userId;  // `user`는 Redux store에서 가져온 사용자 정보
+    
+        console.log("🔍 sessionUserId:", sessionUserId);
+        console.log("🔍 selectedNote.userId:", selectedNote?.userId);
+    
+        if (selectedNote.userId !== sessionUserId) {
+            alert("❌ 자신이 작성한 글만 수정할 수 있습니다.");
+            return;
+        }
+    
+        // 수정 시에만 `noteDate`를 현재 시간으로 업데이트
+        const updatedNote = {
+            noteCode: selectedNote.noteCode,
+            noteTitle,
+            noteDetail,
+            noteDate: new Date().toISOString(), // 수정 시 현재 시간으로 업데이트
+            userId: sessionUserId
+        };
+    
+        await dispatch(callNoteUpdateAPI(updatedNote)); // 수정 API 호출
+        dispatch(callBaristNotesAPI());
+        closeDetailModal();
+    };    
 
     return (
         <>
@@ -130,6 +171,11 @@ function BaristaNoteLayout() {
             {isModalOpen && (
                 <div className={style.modalOverlay}>
                     <div className={style.modalContent}>
+                        {/* 닫기 버튼 (X)를 문자열로 표시하여 우측 상단에 배치 */}
+                        <div className={style.closeButtonContainer}>
+                            <span className={style.closeButton} onClick={closeModal}>×</span>
+                        </div>
+
                         <div className={style.modalContentContainer}>
                             <input
                                 type="text"
@@ -143,7 +189,7 @@ function BaristaNoteLayout() {
                         <hr />
                         <div className={style.fileUpload}>
                             <label htmlFor="fileUpload">파일 첨부 : </label>
-                            <input type="file" id="fileUpload" onChange={handleFileChange}/>
+                            <input type="file" id="fileUpload" onChange={handleFileChange} />
                         </div>
                         <div className={style.noteContent}>
                             <label htmlFor="noteContent">노트 내용 : </label>
@@ -151,7 +197,6 @@ function BaristaNoteLayout() {
                         </div>
                         <div className={style.modalButtons}>
                             <button className={style.saveButton} onClick={handleSaveNote}>저장</button>
-                            <button className={style.cancelButton} onClick={closeModal}>취소</button>
                         </div>
                     </div>
                 </div>
@@ -161,12 +206,16 @@ function BaristaNoteLayout() {
             {isDetailModalOpen && selectedNote && (
                 <div className={style.modalOverlay}>
                     <div className={style.modalContent}>
+                        <div className={style.closeButtonContainer}>
+                            <span className={style.closeButton} onClick={closeModal}>×</span>
+                        </div>
                         <div className={style.modalContentContainer}>
                             <input
                                 type="text"
-                                value={selectedNote.noteTitle}
+                                value={noteTitle}
+                                onChange={handleTitleChange}
                                 className={style.modalTitleInput}
-                                readOnly
+                                readOnly={!isEditMode} // 수정 모드일 때만 수정 가능
                             />
                         </div>
                         <hr />
@@ -174,19 +223,53 @@ function BaristaNoteLayout() {
                             <p>작성자: {selectedNote.empName}</p>
                             <p>작성일: {selectedNote.noteDate}</p>
                         </div>
+
+                        {/* 파일 첨부 부분: 첨부된 파일이 있을 때는 파일명, 없을 때는 파일 첨부 버튼 */}
                         <div className={style.fileUpload}>
-                            <label htmlFor="fileUpload">파일 첨부 : </label>
-                            <span>{selectedNote.attachment ? selectedNote.attachment : '없음'}</span>
+                            {selectedNote.attachment ? (
+                                <span>파일 첨부 : {selectedNote.attachment}</span>
+                            ) : (
+                                isEditMode && (
+                                    <>
+                                        <label htmlFor="fileUpload">파일 첨부: </label>
+                                        <input 
+                                            type="file" 
+                                            id="fileUpload" 
+                                            onChange={handleFileChange} 
+                                            className={style.fileInput}
+                                        />
+                                    </>
+                                )
+                            )}
                         </div>
+
                         <div className={style.noteContent}>
-                            <textarea id="noteContent" value={selectedNote.noteDetail} readOnly></textarea>
+                            <textarea
+                                id="noteContent"
+                                value={noteDetail}
+                                onChange={handleDetailChange}
+                                readOnly={!isEditMode}
+                            />
                         </div>
-                        <div className={style.modalButtons}>
-                            <button className={style.cancelButton} onClick={closeDetailModal}>닫기</button>
-                        </div>
+
+                        {/* 수정 버튼은 파일 첨부 여부와 상관없이, isEditMode에만 의존 */}
+                        {selectedNote.userId === userId && !isEditMode && (
+                            <div className={style.modalButtons}>
+                                <button className={style.saveButton} onClick={() => setIsEditMode(true)}>수정</button>
+                            </div>
+                        )}
+
+                        {/* 수정 모드일 때만 저장 및 취소 버튼 보이도록 */}
+                        {isEditMode && (
+                            <div className={style.modalButtons}>
+                                <button className={style.saveButton} onClick={handleUpdateNote}>저장</button>
+                                <button className={style.cancelButton} onClick={() => setIsEditMode(false)}>취소</button>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
+
         </>
     );
 }
