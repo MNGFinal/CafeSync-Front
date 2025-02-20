@@ -1,0 +1,37 @@
+.tableContainer {
+  margin-top: 20px;
+  max-height: 725px; /* 테이블 높이 제한 */
+  overflow-y: auto; /* 세로 스크롤 활성화 */
+  overflow-x: hidden; /* 가로 스크롤 방지 */
+  border: 1px solid #ddd;
+  background-color: white;
+  position: relative; /* 헤더를 고정할 수 있도록 부모 요소 설정 */
+}
+
+/* 🟢 테이블 헤더 고정 */
+.inventoryTable thead {
+  position: sticky;
+  top: 0;
+  background-color: #f4f4f4; /* 헤더 배경색 */
+  z-index: 1; /* 다른 요소 위에 배치 */
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* 헤더 아래 그림자 추가 */
+}
+
+.inventoryTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.inventoryTable th,
+.inventoryTable td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+/* 헤더 스타일 */
+.inventoryTable th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+  text-align: center;
+}
