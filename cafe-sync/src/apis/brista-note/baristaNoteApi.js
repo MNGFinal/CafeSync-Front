@@ -4,7 +4,7 @@ import { GET_NOTES, POST_NOTE } from '../../modules/NoteModule.js'
 import { GET_NOTE } from '../../modules/NoteModule.js'
 
 export const callBaristNotesAPI = () => {
-    const requestURL = `http://localhost:8080/api/fran/getAllNotes`;
+    const requestURL = `http://localhost:8080/api/fran/notes`;
 
     return async(dispatch , getState) => {
         const result = await fetch(requestURL,{
@@ -21,7 +21,7 @@ export const callBaristNotesAPI = () => {
 };
 
 export const callBaristNoteDetailAPI = ({noteCode}) => {
-    const requestURL = `http://localhost:8080/api/fran/getAllNotes/${noteCode}`
+    const requestURL = `http://localhost:8080/api/fran/notes/${noteCode}`
 
     return async (dispatch,getState) => {
         const result = await fetch(requestURL,{
@@ -38,7 +38,7 @@ export const callBaristNoteDetailAPI = ({noteCode}) => {
 };
 
 export const callSearchNoteAPI = ({search}) => {
-    const requestURL = `http://localhost:8080/api/fran/getAllNotes/search?search=${search}`
+    const requestURL = `http://localhost:8080/api/fran/notes/search?search=${search}`
 
     return async (dispatch,getState) => {
         const result = await fetch(requestURL,{
