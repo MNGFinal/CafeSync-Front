@@ -150,6 +150,27 @@ function OutRegist({ isOpen, onClose, onRegisterSuccess }) {
     }
   };
 
+  const handleQuantityChange = (index, value) => {
+    // 🔄 입력값이 숫자가 아닐 경우 빈 문자열로 처리
+    const updatedValue = value ? Number(value) : "";
+
+    setProductList((prevList) =>
+      prevList.map((product, i) => {
+        if (i === index) {
+          // ✅ 출고 수량이 보유 수량보다 많다면 경고 모달 띄우기
+          if (updatedValue > product.stock) {
+            setWarningMessage("보유 수량보다 많은 수량을 출고할 수 없습니다.");
+            setIsWarningModalOpen(true);
+            return { ...product, quantity: "" }; // 🚨 입력값 초기화
+          }
+
+          return { ...product, quantity: updatedValue };
+        }
+        return product;
+      })
+    );
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -245,16 +266,9 @@ function OutRegist({ isOpen, onClose, onRegisterSuccess }) {
                       type="number"
                       value={product.quantity}
                       placeholder="수량"
-                      onChange={(e) => {
-                        const updatedValue = e.target.value
-                          ? Number(e.target.value)
-                          : ""; // 🔄 숫자로 변환
-                        setProductList((prevList) =>
-                          prevList.map((p, i) =>
-                            i === index ? { ...p, quantity: updatedValue } : p
-                          )
-                        );
-                      }}
+                      onChange={(e) =>
+                        handleQuantityChange(index, e.target.value)
+                      }
                     />
                   </td>
 
@@ -357,7 +371,7 @@ function OutRegist({ isOpen, onClose, onRegisterSuccess }) {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            padding: "10px",
+            padding: "5px",
             gap: "10px",
           }}
         >
@@ -366,14 +380,14 @@ function OutRegist({ isOpen, onClose, onRegisterSuccess }) {
             loop={false}
             keepLastFrame={true}
             src="/animations/warning.json"
-            style={{ height: "80px", width: "80px" }}
+            style={{ height: "100px", width: "100px" }}
           />
           <p
             style={{
               fontSize: "16px",
               fontWeight: "bold",
               textAlign: "center",
-              paddingTop: "14px",
+              paddingTop: "4px",
             }}
           >
             {warningMessage}

@@ -36,15 +36,15 @@ function Inventory() {
     setIsManageModalOpen(false);
   };
 
-  useEffect(() => {
+  const fetchInventory = async () => {
     if (!franCode) return;
+    const data = await getFranInventoryList(franCode);
+    setInventory(data);
+    setFilteredInventory(data);
+  };
 
-    const fetchInventory = async () => {
-      const data = await getFranInventoryList(franCode);
-      setInventory(data);
-      setFilteredInventory(data);
-    };
-
+  // ✅ useEffect에서 실행
+  useEffect(() => {
     fetchInventory();
   }, [franCode]);
 
@@ -462,7 +462,11 @@ function Inventory() {
       </SModal>
 
       {/* ✅ InOut 컴포넌트로 모달 분리 */}
-      <InOut isOpen={isManageModalOpen} onClose={handleManageModalClose} />
+      <InOut
+        isOpen={isManageModalOpen}
+        onClose={handleManageModalClose}
+        refreshInventory={fetchInventory} // ✅ 재고 목록 업데이트 함수 전달
+      />
     </>
   );
 }
