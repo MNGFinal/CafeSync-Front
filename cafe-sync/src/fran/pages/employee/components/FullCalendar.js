@@ -38,9 +38,7 @@ const MyCalendar = () => {
 
       const formattedEvents = data.map((schedule) => ({
         id: schedule.scheduleCode,
-        title: `${getScheduleType(schedule.scheduleDivision)} - ${
-          schedule.empCode
-        }`,
+        title: `${getScheduleType(schedule.scheduleDivision)} - ${schedule.empName}`,
         date: schedule.scheduleDate,
         emp: schedule.empCode,
         extendedProps: {
@@ -87,13 +85,13 @@ const MyCalendar = () => {
             eventContent: (arg) => {
               console.log("이벤트 ExtendedProps?", arg.event.extendedProps);
               const divisionClass = `division-${arg.event.extendedProps.scheduleDivision}`;
-
+              const titleM = getScheduleType(arg.event.extendedProps.scheduleDivision);
               return (
                 <div
                   className="custom-event-month"
                   title={arg.event.extendedProps.description}
                 >
-                  <span className={divisionClass}>{arg.event.title}</span>
+                  <span className={divisionClass}>{titleM}</span>
                 </div>
               );
             },
