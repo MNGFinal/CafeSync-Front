@@ -107,3 +107,11 @@
     z-index: 2;
     /* 다른 요소 위에 표시 */
 }
+
+.noResult {
+    display: flex;
+
+    height: 30pc;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
