@@ -14,6 +14,7 @@ import OutRegist from "./OutRegist";
 import ReactPaginate from "react-paginate";
 import SModal from "../../../components/SModal";
 import { Player } from "@lottiefiles/react-lottie-player";
+import InOutDetail from "./InOutDetail"; // ✅ 추가
 
 function InOut({ isOpen, onClose, refreshInventory }) {
   const franCode = useSelector(
@@ -31,6 +32,8 @@ function InOut({ isOpen, onClose, refreshInventory }) {
   const [errorMessage, setErrorMessage] = useState(""); // 🔥 에러 메시지 상태 추가
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false); // ✅ 성공 모달 상태 추가
   const [successMessage, setSuccessMessage] = useState(""); // ✅ 성공 메시지 추가
+  const [selectedInOut, setSelectedInOut] = useState(null); // ✅ 선택된 입출고 데이터 저장
+  const [isDetailOpen, setIsDetailOpen] = useState(false); // ✅ 상세 모달 상태
 
   const itemsPerPage = 6; // ✅ 한 페이지당 6개
 
@@ -245,6 +248,12 @@ function InOut({ isOpen, onClose, refreshInventory }) {
     }
   };
 
+  // ✅ 리스트 아이템 클릭 시 상세 모달 열기
+  const handleItemClick = (item) => {
+    setSelectedInOut(item);
+    setIsDetailOpen(true);
+  };
+
   return (
     <>
       <Modal
@@ -340,6 +349,7 @@ function InOut({ isOpen, onClose, refreshInventory }) {
                 <li
                   key={index}
                   className={`${styles.listItem} ${styles.listRow}`}
+                  onClick={() => handleItemClick(item)}
                 >
                   <input
                     type="checkbox"
@@ -440,6 +450,15 @@ function InOut({ isOpen, onClose, refreshInventory }) {
             </p>
           </div>
         </SModal>
+      )}
+
+      {/* ✅ 입출고 상세 모달 */}
+      {isDetailOpen && (
+        <InOutDetail
+          isOpen={isDetailOpen}
+          onClose={() => setIsDetailOpen(false)}
+          inoutData={selectedInOut} // ✅ 선택된 데이터 전달
+        />
       )}
 
       {/* ✅ 출고 등록 모달에 `handleRegisterSuccess` 전달 */}
