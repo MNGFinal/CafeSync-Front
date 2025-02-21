@@ -104,22 +104,26 @@ function Orders() {
   const handleStartDateChange = (e) => {
     const newStartDate = e.target.value;
     if (endDate && newStartDate > endDate) {
+      console.log("🚨 시작 날짜 오류 감지! warning.json 설정");
+      setLottieAnimation("/animations/warning.json"); // ✅ 경고 애니메이션 적용
       setWarningMessage("시작 날짜는 종료 날짜보다 늦을 수 없습니다!");
       setIsWarningModalOpen(true);
       return;
     }
-    setStartDate(newStartDate); // ✅ 상태만 업데이트 (handleFilterOrders 호출 X)
+    setStartDate(newStartDate);
   };
 
   // ✅ 날짜 변경 핸들러 (종료일)
   const handleEndDateChange = (e) => {
     const newEndDate = e.target.value;
     if (startDate && newEndDate < startDate) {
+      console.log("🚨 날짜 오류 감지! warning.json 설정");
+      setLottieAnimation("/animations/warning.json"); // ✅ 경고 애니메이션 적용
       setWarningMessage("종료 날짜는 시작 날짜보다 빠를 수 없습니다!");
       setIsWarningModalOpen(true);
       return;
     }
-    setEndDate(newEndDate); // ✅ 상태만 업데이트 (handleFilterOrders 호출 X)
+    setEndDate(newEndDate);
   };
 
   // ✅ 날짜 변경 시 자동으로 필터링 실행
@@ -378,11 +382,17 @@ function Orders() {
       {/* ✅ 경고 모달 추가 */}
       <SModal
         isOpen={isWarningModalOpen}
-        onClose={() => setIsWarningModalOpen(false)}
+        onClose={() => {
+          setIsWarningModalOpen(false);
+          setLottieAnimation(""); // ✅ 모달 닫을 때 초기화
+        }}
         buttons={[
           {
             text: "확인",
-            onClick: () => setIsWarningModalOpen(false),
+            onClick: () => {
+              setIsWarningModalOpen(false);
+              setLottieAnimation(""); // ✅ 버튼 클릭 시 초기화
+            },
             className: modalStyle.confirmButtonS,
           },
         ]}
