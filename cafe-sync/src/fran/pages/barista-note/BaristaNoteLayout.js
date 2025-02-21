@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import style from './Note.module.css';
-import { callBaristNotesAPI, callSearchNoteAPI, callNoteRegistAPI } from '../../../apis/brista-note/baristaNoteApi';
-import { callNoteUpdateAPI } from '../../../apis/brista-note/baristaNoteApi'; // 수정 API 호출
+import { callBaristNotesAPI, callSearchNoteAPI, callNoteRegistAPI , callNoteUpdateAPI , callNoteDeleteAPI } from '../../../apis/brista-note/baristaNoteApi';
 
 function BaristaNoteLayout() {
     const dispatch = useDispatch();
@@ -96,6 +95,15 @@ function BaristaNoteLayout() {
             dispatch(callSearchNoteAPI({ search }));
         } else {
             dispatch(callBaristNotesAPI());
+        }
+    };
+
+    // 삭제버튼을 추가하는 메소드
+    const handleDeleteNote = async (noteCode) => {
+        if (window.confirm('정말로 이 노트를 삭제하시겠습니까?')) {
+            await dispatch(callNoteDeleteAPI({ noteCode }));
+            dispatch(callBaristNotesAPI()); // 노트 삭제 후 갱신
+            closeDetailModal();
         }
     };
 
@@ -263,6 +271,13 @@ function BaristaNoteLayout() {
                         {selectedNote.userId === userId && !isEditMode && (
                             <div className={style.modalButtons}>
                                 <button className={style.saveButton} onClick={() => setIsEditMode(true)}>수정</button>
+                                {/* 삭제 버튼 추가 */}
+                                <button 
+                                    className={style.deleteButton} 
+                                    onClick={() => handleDeleteNote(selectedNote.noteCode)}
+                                >
+                                    삭제
+                                </button>
                             </div>
                         )}
 
