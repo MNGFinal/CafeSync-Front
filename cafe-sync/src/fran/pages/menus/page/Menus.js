@@ -26,7 +26,7 @@ function Menus() {
     if (!categoryCode) return;
 
     try {
-    
+
       const response = await fetch(
         `http://localhost:8080/api/fran/menus/${categoryCode}?query=${searchQuery}`
       );
@@ -52,7 +52,7 @@ function Menus() {
   // ✅ 페이지 변경 시 동작
   const handlePageChange = ({ selected }) => {
     setCurrentPage(selected);
-  
+
     // ✅ 현재 페이지 데이터 필터링 (10개씩 나누기)
     const offset = selected * itemsPerPage; // 0 → 10 → 20 ... (페이지별 데이터 시작점)
     setSlicedList(list.slice(offset, offset + itemsPerPage)); // 10개씩 자르기
@@ -94,7 +94,6 @@ function Menus() {
           disabledClassName={styles.disabled}
           forcePage={currentPage}
         />
-
       )}
     </div>
   );

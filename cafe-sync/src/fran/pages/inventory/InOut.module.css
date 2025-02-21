@@ -265,3 +265,16 @@
   color: white;
   font-weight: bold;
 }
+
+/* ✅ 체크박스와 텍스트 정렬 */
+.checkbox-container {
+  display: flex;
+  align-items: center; /* 세로 중앙 정렬 */
+  justify-content: center; /* 가로 중앙 정렬 */
+}
+
+.checkbox-container input {
+  margin: 0; /* 기본 마진 제거 */
+  width: 16px; /* 체크박스 크기 조절 */
+  height: 16px;
+}

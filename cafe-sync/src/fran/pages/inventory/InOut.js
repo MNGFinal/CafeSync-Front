@@ -349,18 +349,19 @@ function InOut({ isOpen, onClose, refreshInventory }) {
                 <li
                   key={index}
                   className={`${styles.listItem} ${styles.listRow}`}
-                  onClick={() => handleItemClick(item)}
+                  onClick={() => handleItemClick(item)} // ✅ 리스트 클릭 시 상세보기 실행
                 >
+                  {/* ✅ 체크박스 클릭 시 이벤트 버블링 차단 */}
                   <input
                     type="checkbox"
                     checked={item.checked || false}
+                    onClick={(e) => e.stopPropagation()} // ✅ 클릭 이벤트가 li로 전달되지 않도록 차단!
                     onChange={() => handleCheckboxChange(index)}
                   />
                   <span>{item.franOutCode?.franName || "-"}</span>
                   <span>{item.franInCode?.franName || "-"}</span>
                   <span>{formatDate(item.inoutDate)}</span>
-                  <span>{formatStatus(item.inoutStatus)}</span>{" "}
-                  {/* ✅ 상태값 적용 */}
+                  <span>{formatStatus(item.inoutStatus)}</span>
                 </li>
               ))
             ) : (

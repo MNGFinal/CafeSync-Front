@@ -12,9 +12,30 @@ const MyCalendar = () => {
   );
   const [events, setEvents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [updateTrigger, setUpdateTrigger] = useState(false);
   const calendarRef = useRef();
 
-  useEffect( () => { if (franCode) { fetchSchedules(); } }, [franCode] );
+  useEffect( () => { fetchSchedules(); }, [] );
+
+  const onScheduleUpdate = (newSchedules) => {
+    const formattedNewEvents = newSchedules.map((schedule) => ({
+      id: schedule.scheduleCode,
+      title: `${getScheduleType(schedule.scheduleDivision)} - ${schedule.empName}`,
+      date: schedule.scheduleDate,
+      emp: schedule.empCode,
+      extendedProps: {
+        scheduleDivision: schedule.scheduleDivision,
+      },
+      classNames: [`division-${schedule.scheduleDivision}`],
+    }));
+  
+    setEvents((prevEvents) => [...prevEvents, ...formattedNewEvents]);
+    setUpdateTrigger((prev) => !prev);
+  };
+
+  useEffect(() => {
+    console.log("📌 새로운 이벤트가 추가됨:", events);
+  }, [updateTrigger]);
 
   const fetchSchedules = async () => {
     console.log("🔍 조회할 스케줄 franCode:", franCode);
@@ -30,9 +51,10 @@ const MyCalendar = () => {
       }
 
       const data = await response.json();
-      console.log("✅ 기본 조회된 스케줄:", data);
+      // console.log("✅ 기본 조회된 스케줄:", data);
+      const sortOrder = { 1: 1, 2: 2, 3: 3, 4: 4 };
 
-      const formattedEvents = data.map((schedule) => ({
+      const formattedEvents = data.data.map((schedule) => ({
         id: schedule.scheduleCode,
         title: `${getScheduleType(schedule.scheduleDivision)} - ${schedule.empName}`,
         date: schedule.scheduleDate,
@@ -41,7 +63,8 @@ const MyCalendar = () => {
           scheduleDivision: schedule.scheduleDivision,
         },
         classNames: [`division-${schedule.scheduleDivision}`],
-      }));
+      }))
+      // .sort((a, b) => sortOrder[a.extendedProps.scheduleDivision] - sortOrder[b.extendedProps.scheduleDivision]);
 
       setEvents(formattedEvents);
       
@@ -55,6 +78,8 @@ const MyCalendar = () => {
     return scheduleTypes[division] || "알 수 없음";
   };
 
+  
+
   return (
     <div className={`${st.cal} test-class`}>
       <FullCalendar
@@ -66,7 +91,8 @@ const MyCalendar = () => {
         headerToolbar={{
           start: "prev next today",
           center: "title",
-          end: "addEventBtn dayGridMonth dayGridWeek",
+          end: "addEventBtn dayGridWeek",
+          // dayGridMonth
         }}
         customButtons={{
           addEventBtn: {
@@ -75,24 +101,25 @@ const MyCalendar = () => {
           },
         }}
         events={events}
+        eventOrder="scheduleDivision"
         views={{
-          dayGridMonth: {
-            dayMaxEventRows: 3,
-            eventDisplay: "list-item",
-            eventContent: (arg) => {
-              console.log("이벤트 ExtendedProps?", arg.event.extendedProps);
-              const divisionClass = `division-${arg.event.extendedProps.scheduleDivision}`;
-              const titleM = getScheduleType(arg.event.extendedProps.scheduleDivision);
-              return (
-                <div
-                  className="custom-event-month"
-                  title={arg.event.extendedProps.description}
-                >
-                  <span className={divisionClass}>{titleM}</span>
-                </div>
-              );
-            },
-          },
+          // dayGridMonth: {
+          //   dayMaxEventRows: 3,
+          //   eventDisplay: "list-item",
+          //   eventContent: (arg) => {
+          //     console.log("이벤트 ExtendedProps?", arg.event.extendedProps);
+          //     const divisionClass = `division-${arg.event.extendedProps.scheduleDivision}`;
+          //     const titleM = getScheduleType(arg.event.extendedProps.scheduleDivision);
+          //     return (
+          //       <div
+          //         className="custom-event-month"
+          //         title={arg.event.extendedProps.description}
+          //       >
+          //         <span className={divisionClass}>{titleM}</span>
+          //       </div>
+          //     );
+          //   },
+          // },
           timeGridWeek: {
             dayMaxEventRows: false,
             eventContent: (arg) => {
@@ -128,6 +155,7 @@ const MyCalendar = () => {
         isModalOpen={isModalOpen} 
         setIsModalOpen={setIsModalOpen} 
         franCode={franCode}
+        onScheduleUpdate={onScheduleUpdate}
       />
     </div>
   );

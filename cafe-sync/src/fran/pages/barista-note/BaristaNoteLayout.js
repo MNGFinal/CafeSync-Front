@@ -1,23 +1,51 @@
+// src/fran/pages/barista-note/BaristaNoteLayout.js
+
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import style from './Note.module.css';
-import { callBaristNotesAPI, callSearchNoteAPI, callNoteRegistAPI } from '../../../apis/brista-note/baristaNoteApi';
-import { callNoteUpdateAPI } from '../../../apis/brista-note/baristaNoteApi'; // 수정 API 호출
+import { callBaristNotesAPI, callSearchNoteAPI, callNoteRegistAPI , callNoteUpdateAPI , callNoteDeleteAPI } from '../../../apis/brista-note/baristaNoteApi';
+import { useMemo } from 'react';
+
+// 추가된 임포트
+import ReactPaginate from 'react-paginate'; // 페이지네이션 컴포넌트
 
 function BaristaNoteLayout() {
     const dispatch = useDispatch();
     const notes = useSelector((state) => state.noteReducer.data);
     const user = useSelector((state) => state.auth.user); // ✅ user 객체 가져오기
     const userId = user?.userId || null; // ✅ user 객체에서 userId 추출
+    const noteList = useMemo(() => (Array.isArray(notes) ? notes : []), [notes]);
 
     console.log("🔍 Redux에서 가져온 user 객체:", user);
     console.log("📢 최종 userId:", userId);
 
-    const noteList = Array.isArray(notes) ? notes : [];
+    // 추가된 상태 변수
+    const [pageCount, setPageCount] = useState(0); // 전체 페이지 수
+    const [currentPage, setCurrentPage] = useState(0); // 현재 페이지
+    const notesPerPage = 15; // 한 페이지에 표시할 노트 개수
 
     useEffect(() => {
         dispatch(callBaristNotesAPI());
     }, [dispatch]);
+
+    // 페이지 변경 핸들러
+    const handlePageChange = (selected) => {
+        setCurrentPage(selected.selected);
+    };
+
+    useEffect(() => {
+        const newPageCount = Math.ceil(noteList.length / notesPerPage);
+        setPageCount(newPageCount);
+    
+        setCurrentPage((prevPage) => 
+            prevPage >= newPageCount && newPageCount > 0 ? newPageCount - 1 : prevPage
+        );
+    }, [noteList]);
+
+    const notesToDisplay = noteList.slice(
+        currentPage * notesPerPage,
+        (currentPage + 1) * notesPerPage
+    );
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
@@ -99,6 +127,15 @@ function BaristaNoteLayout() {
         }
     };
 
+    // 삭제버튼을 추가하는 메소드
+    const handleDeleteNote = async (noteCode) => {
+        if (window.confirm('정말로 이 노트를 삭제하시겠습니까?')) {
+            await dispatch(callNoteDeleteAPI({ noteCode }));
+            dispatch(callBaristNotesAPI()); // 노트 삭제 후 갱신
+            closeDetailModal();
+        }
+    };
+
     const handleUpdateNote = async () => {
         if (!noteTitle.trim() || !noteDetail.trim()) {
             alert('⚠️ 제목과 내용을 입력해주세요!');
@@ -159,8 +196,8 @@ function BaristaNoteLayout() {
                     <div className={style.infoItem}>작성일</div>
                     <div className={style.infoItem}>조회수</div>
                 </div>
-                {noteList.length > 0 ? (
-                    noteList.map((note) => (
+                {notesToDisplay.length > 0 ? (
+                    notesToDisplay.map((note) => (
                         <div key={note.noteCode} className={style.infoRow} onClick={() => openDetailModal(note)}>
                             <div className={style.infoItem}>{note.noteCode}</div>
                             <div className={style.infoItem}>{note.noteTitle}</div>
@@ -172,6 +209,26 @@ function BaristaNoteLayout() {
                 ) : (
                     <div>데이터가 없습니다.</div>
                 )}
+
+            {/* 페이지네이션 위치 조정 */}
+            <div className={style.paginationContainer}>
+                <ReactPaginate
+                    previousLabel={"이전"}
+                    nextLabel={"다음"}
+                    breakLabel={"..."}
+                    pageCount={pageCount}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={3}
+                    onPageChange={handlePageChange}
+                    containerClassName={style.pagination}
+                    activeClassName={style.activePage}
+                    previousClassName={style.previous}
+                    nextClassName={style.next}
+                    disabledClassName={style.disabled}
+                    forcePage={currentPage}
+                />
+            </div>
+
             </div>
 
             {/* 등록 모달 */}
@@ -263,6 +320,13 @@ function BaristaNoteLayout() {
                         {selectedNote.userId === userId && !isEditMode && (
                             <div className={style.modalButtons}>
                                 <button className={style.saveButton} onClick={() => setIsEditMode(true)}>수정</button>
+                                {/* 삭제 버튼 추가 */}
+                                <button 
+                                    className={style.deleteButton} 
+                                    onClick={() => handleDeleteNote(selectedNote.noteCode)}
+                                >
+                                    삭제
+                                </button>
                             </div>
                         )}
 
