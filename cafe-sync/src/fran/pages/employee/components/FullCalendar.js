@@ -14,11 +14,7 @@ const MyCalendar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const calendarRef = useRef();
 
-  useEffect(() => {
-    if (franCode) {
-      fetchSchedules();
-    }
-  }, [franCode]);
+  useEffect( () => { if (franCode) { fetchSchedules(); } }, [franCode] );
 
   const fetchSchedules = async () => {
     console.log("🔍 조회할 스케줄 franCode:", franCode);
@@ -48,6 +44,7 @@ const MyCalendar = () => {
       }));
 
       setEvents(formattedEvents);
+      
     } catch (error) {
       console.error("조회 오류!!", error);
     }
@@ -127,7 +124,11 @@ const MyCalendar = () => {
         dayCellContent={(arg) => `${arg.date.getDate()}`}
       />
       {/* 스케줄 등록 모달 */}
-      <ScheduleAdd isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+      <ScheduleAdd 
+        isModalOpen={isModalOpen} 
+        setIsModalOpen={setIsModalOpen} 
+        franCode={franCode}
+      />
     </div>
   );
 };
