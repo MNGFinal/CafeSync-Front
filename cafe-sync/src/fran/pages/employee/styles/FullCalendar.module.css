@@ -4,14 +4,14 @@
 }
 
 /* 일요일 빨간색 */
-:global(.fc-daygrid-day.fc-day-sun a) {
+/* :global(.fc-daygrid-day.fc-day-sun a) {
     color: red !important;
-}
+} */
 
 /* 토요일 파란색 */
-:global(.fc-daygrid-day.fc-day-sat a) {
+/* :global(.fc-daygrid-day.fc-day-sat a) {
     color: blue !important;
-}
+} */
 
 /* 월별 뷰에서 날짜 행 높이 설정 */
 :global(.fc-dayGridMonth-view .fc-daygrid-day-frame) {
@@ -114,14 +114,16 @@
 }
 
 /* 일정 구분별 색 설정 */
-:global(.division-1) {
-    /* 오픈 */ 
-    background-color: #BDC0F1; 
+:global(.fc-h-event) {
+    border: 1px solid white;
+}
+:global(.fc-event-main) {
     color: black !important;
-} 
-:global(.division-2) { background-color: #F1E7BD; color: black !important; } /* 미들 */
-:global(.division-3) { background-color: #F1BDBD; color: black !important; } /* 마감 */
-:global(.division-4) { background-color: #C9F1BD; color: black !important; } /* 휴가 */
+}
+:global(.division-1) { background-color: #BDC0F1; } /* 오픈 */ 
+:global(.division-2) { background-color: #bde5f1; } /* 미들 */
+:global(.division-3) { background-color: #F1BDBD; } /* 마감 */
+:global(.division-4) { background-color: #C9F1BD; } /* 휴가 */
 :global(.fc-dayGridMonth-view .custom-event-month) { 
     display: flex;
     align-items: center;
