@@ -3,8 +3,7 @@
 import {
   BrowserRouter as Router,
   Routes,
-  Route,
-  Outlet,
+  Route
 } from "react-router-dom";
 import ProtectedRoute from "./home/pages/protected-route/ProtectedRoute";
 
@@ -62,7 +61,7 @@ import HQBaristaNote from "./hq/pages/barista-note/HQBaristaNote";
 import HQStats from "./hq/pages/stats/HQStats";
 import HQRegist from "./hq/pages/menus/HQRegist";
 import HQDiscontinue from "./hq/pages/menus/HQDiscontinue";
-
+import FranRegist from "./hq/pages/mgment/itemList/FranRegist";
 /* -------------------------------------------------------------------------- */
 
 import RegisterTest from "./test/RegisterTest";
@@ -142,10 +141,8 @@ function App() {
             <Route path="duty" element={<HQDuty />} />
             <Route path="income" element={<HQIncome />} />
             <Route path="plan" element={<HQPlan />} />
-            <Route path="mgment" element={<HQMgment />}>
-
-            </Route>
-
+            <Route path="mgment" element={<HQMgment />} />
+            <Route path="mgment/regist" element={<FranRegist />} />
             <Route path="notice" element={<HQNotice />} />
             <Route path="chat" element={<HQChat />} />
             <Route path="barista-note" element={<HQBaristaNote />} />
