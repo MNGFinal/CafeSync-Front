@@ -181,6 +181,23 @@
     transform: scale(1.1);
 }
 
+.deleteButton {
+    padding: 8px 16px;
+    background-color: rgb(154, 154, 255);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.3s ease-in-out; /* 애니메이션 추가 */
+}
+
+/* 저장 버튼 호버 효과 */
+.deleteButton:hover {
+    background-color: rgb(140, 140, 255);
+    transform: scale(1.1);
+}
+
 /* 취소 버튼 스타일 (cancelButton) */
 .cancelButton {
     padding: 8px 16px;
