@@ -94,7 +94,6 @@ function Menus() {
           disabledClassName={styles.disabled}
           forcePage={currentPage}
         />
-
       )}
     </div>
   );
