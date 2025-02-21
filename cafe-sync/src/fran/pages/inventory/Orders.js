@@ -4,6 +4,8 @@ import { useSelector } from "react-redux";
 import {
   findOrderList,
   updateFranOrder,
+  deleteFranOrderDetail,
+  deleteFranOrders,
 } from "../../../apis/inventory/inventoryApi";
 import SModal from "../../../components/SModal";
 import { Player } from "@lottiefiles/react-lottie-player";
@@ -25,7 +27,7 @@ function Orders() {
   const [isWarningModalOpen, setIsWarningModalOpen] = useState(false);
   const [warningMessage, setWarningMessage] = useState("");
 
-  const itemsPerPage = 15;
+  const itemsPerPage = 12;
   const franCode = useSelector(
     (state) => state.auth?.user?.franchise?.franCode ?? null
   );
@@ -39,6 +41,42 @@ function Orders() {
   );
 
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+
+  const [selectedOrders, setSelectedOrders] = useState([]); // ✅ 왼쪽 (발주 목록 체크박스)
+
+  // ✅ 왼쪽 (발주 목록) 체크박스 개별 선택
+  const handleOrderCheckboxChange = (orderCode) => {
+    setSelectedOrders((prevSelected) =>
+      prevSelected.includes(orderCode)
+        ? prevSelected.filter((code) => code !== orderCode)
+        : [...prevSelected, orderCode]
+    );
+  };
+
+  // ✅ 왼쪽 (발주 목록) 전체 선택 (현재 페이지 기준으로)
+  const handleOrderSelectAll = () => {
+    const currentPageOrders = filteredOrders.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+    );
+
+    const currentPageOrderCodes = currentPageOrders.map(
+      (order) => order.orderCode
+    );
+
+    if (currentPageOrderCodes.every((code) => selectedOrders.includes(code))) {
+      // ✅ 현재 페이지의 모든 항목이 선택된 경우 → 전체 해제
+      setSelectedOrders((prevSelected) =>
+        prevSelected.filter((code) => !currentPageOrderCodes.includes(code))
+      );
+    } else {
+      // ✅ 현재 페이지에서 선택되지 않은 항목들만 추가
+      setSelectedOrders((prevSelected) => [
+        ...prevSelected,
+        ...currentPageOrderCodes,
+      ]);
+    }
+  };
 
   // ✅ 선택된 주문이 변경될 때 초기화
   useEffect(() => {
@@ -249,38 +287,48 @@ function Orders() {
   };
 
   const handleSaveChanges = async () => {
-    if (selectedItems.length === 0) {
+    if (!selectedOrder) {
       setLottieAnimation("/animations/alert2.json");
-      setWarningMessage("🚨 업데이트할 항목을 선택해주세요!");
+      setWarningMessage("🚨 저장할 발주를 선택해주세요!");
       setIsWarningModalOpen(true);
       return;
     }
 
-    const updatedData = filteredOrderDetails
-      .filter((detail) => selectedItems.includes(detail.orderDetailId))
-      .map((detail) => ({
-        orderDetailId: detail.orderDetailId,
-        invenCode: detail.invenCode,
-        orderQty: detail.orderQty,
-        orderCode: selectedOrder.orderCode, // ✅ orderCode 추가
-      }));
+    // ✅ 업데이트할 데이터 구성 (orderDetailId 유지)
+    const updatedData = filteredOrderDetails.map((detail) => ({
+      orderDetailId: detail.orderDetailId, // 기존 ID 유지 (추가한 경우 가짜 ID 포함)
+      invenCode: detail.invenCode,
+      orderQty: detail.orderQty,
+      orderCode: selectedOrder.orderCode, // ✅ orderCode 추가
+    }));
 
     try {
       const response = await updateFranOrder(updatedData);
 
       if (response.success) {
         setLottieAnimation("/animations/success-check.json");
-        setWarningMessage("✅ 업데이트가 완료되었습니다!");
+        setWarningMessage("✅ 저장이 완료되었습니다!");
         setIsWarningModalOpen(true);
 
-        // ✅ 최신 데이터 다시 불러오기 (리렌더링 유도)
-        await fetchOrders();
+        // ✅ 최신 데이터 다시 불러오기 (백엔드에서 실제 orderDetailId 반영)
+        const updatedOrders = await findOrderList(franCode);
+        setOrders(updatedOrders);
+        setFilteredOrders(updatedOrders);
 
-        // ✅ 선택된 주문의 상세 목록도 다시 반영 (업데이트된 상태 유지)
-        const updatedOrder = orders.find(
+        // ✅ 선택된 주문의 최신 데이터를 가져와 반영 (가짜 ID → 실제 ID)
+        const updatedOrder = updatedOrders.find(
           (order) => order.orderCode === selectedOrder.orderCode
         );
-        setSelectedOrder(updatedOrder);
+
+        if (updatedOrder) {
+          setSelectedOrder(updatedOrder);
+          setFilteredOrderDetails(updatedOrder.orderDetails);
+        } else {
+          setSelectedOrder(null);
+        }
+
+        // ✅ 선택된 아이템 초기화
+        setSelectedItems([]);
       } else {
         setLottieAnimation("/animations/alert2.json");
         setWarningMessage("❌ 업데이트에 실패했습니다. 다시 시도해주세요.");
@@ -301,6 +349,124 @@ function Orders() {
     setOrders(data);
     setFilteredOrders(data);
     setLoading(false);
+  };
+
+  // ✅ 발주 상세 항목 삭제 핸들러
+  const handleDeleteOrderDetails = async () => {
+    if (selectedItems.length === 0) {
+      setLottieAnimation("/animations/alert2.json");
+      setWarningMessage("🚨 삭제할 항목을 선택해주세요!");
+      setIsWarningModalOpen(true);
+      return;
+    }
+
+    // ✅ 선택된 발주 중에서 승인(1) 또는 반려(2) 상태가 있는지 확인
+    const hasRestrictedItems = filteredOrderDetails.some(
+      (detail) =>
+        selectedItems.includes(detail.orderDetailId) &&
+        (selectedOrder.orderStatus === 1 || selectedOrder.orderStatus === 2)
+    );
+
+    if (hasRestrictedItems) {
+      setLottieAnimation("/animations/warning.json");
+      setWarningMessage("🚨 승인되었거나 반려된 발주는 삭제할 수 없습니다!");
+      setIsWarningModalOpen(true);
+      return;
+    }
+
+    // ✅ 삭제할 데이터 최신 ID 적용
+    const deleteData = selectedItems.map((id) => ({ orderDetailId: id }));
+
+    try {
+      const response = await deleteFranOrderDetail(deleteData);
+
+      if (response.success) {
+        setLottieAnimation("/animations/success-check.json");
+        setWarningMessage("✅ 선택한 발주 항목이 삭제되었습니다!");
+        setIsWarningModalOpen(true);
+
+        // ✅ 최신 데이터 다시 불러오기 (UI와 백엔드 동기화)
+        const refreshedOrders = await findOrderList(franCode);
+        setOrders(refreshedOrders);
+        setFilteredOrders(refreshedOrders);
+
+        // ✅ 선택된 주문의 최신 데이터를 반영
+        const refreshedOrder = refreshedOrders.find(
+          (order) => order.orderCode === selectedOrder.orderCode
+        );
+        setSelectedOrder(refreshedOrder);
+
+        // ✅ 선택된 항목 초기화
+        setSelectedItems([]);
+      } else {
+        setLottieAnimation("/animations/alert2.json");
+        setWarningMessage("❌ 삭제할 제품을 체크해주세요.");
+        setIsWarningModalOpen(true);
+      }
+    } catch (error) {
+      console.error("❌ 삭제 중 오류 발생:", error);
+      setLottieAnimation("/animations/alert2.json");
+      setWarningMessage("🚨 삭제 중 오류가 발생했습니다. 다시 시도해주세요.");
+      setIsWarningModalOpen(true);
+    }
+  };
+
+  const handleDeleteOrders = async () => {
+    if (selectedOrders.length === 0) {
+      setLottieAnimation("/animations/alert2.json");
+      setWarningMessage("🚨 삭제할 발주를 선택해주세요!");
+      setIsWarningModalOpen(true);
+      return;
+    }
+
+    // ✅ 선택된 발주 중에서 승인(1) 또는 반려(2) 상태가 있는지 확인
+    const hasRestrictedOrders = filteredOrders.some(
+      (order) =>
+        selectedOrders.includes(order.orderCode) &&
+        (order.orderStatus === 1 || order.orderStatus === 2)
+    );
+
+    if (hasRestrictedOrders) {
+      setLottieAnimation("/animations/warning.json");
+      setWarningMessage("🚨 승인되었거나 반려된 발주는 삭제할 수 없습니다!");
+      setIsWarningModalOpen(true);
+      return;
+    }
+
+    // ✅ 삭제할 orderCode 리스트
+    const deleteData = selectedOrders.map((orderCode) => ({ orderCode }));
+
+    try {
+      const response = await deleteFranOrders(deleteData);
+
+      if (response.success) {
+        setLottieAnimation("/animations/success-check.json");
+        setWarningMessage("✅ 선택한 발주가 삭제되었습니다!");
+        setIsWarningModalOpen(true);
+
+        // ✅ UI에서 삭제된 항목 즉시 제거
+        setFilteredOrders((prevOrders) =>
+          prevOrders.filter(
+            (order) => !selectedOrders.includes(order.orderCode)
+          )
+        );
+
+        // ✅ 선택된 항목 초기화
+        setSelectedOrders([]);
+
+        // ✅ 최신 데이터 다시 불러오기
+        await fetchOrders();
+      } else {
+        setLottieAnimation("/animations/alert2.json");
+        setWarningMessage("❌ 삭제할 발주를 선택해주세요.");
+        setIsWarningModalOpen(true);
+      }
+    } catch (error) {
+      console.error("❌ 삭제 중 오류 발생:", error);
+      setLottieAnimation("/animations/alert2.json");
+      setWarningMessage("🚨 삭제 중 오류가 발생했습니다. 다시 시도해주세요.");
+      setIsWarningModalOpen(true);
+    }
   };
 
   return (
@@ -325,22 +491,44 @@ function Orders() {
               value={endDate}
               onChange={handleEndDateChange}
             />
-            <button className={styles.searchBtn} onClick={handleResetFilters}>
-              전체 조회
-            </button>
+            <div className={styles.buttonGroup2}>
+              <button className={styles.searchBtn} onClick={handleResetFilters}>
+                전체 조회
+              </button>
+              <button
+                className={styles.deleteOrder}
+                onClick={handleDeleteOrders}
+              >
+                발주내역 삭제
+              </button>
+            </div>
           </div>
 
           <table className={styles.orderTable}>
             <thead>
               <tr>
+                <th style={{ width: "50px" }}>
+                  <input
+                    type="checkbox"
+                    checked={filteredOrders
+                      .slice(
+                        (currentPage - 1) * itemsPerPage,
+                        currentPage * itemsPerPage
+                      )
+                      .every((order) =>
+                        selectedOrders.includes(order.orderCode)
+                      )}
+                    onChange={handleOrderSelectAll}
+                  />
+                </th>
                 <th>발주 신청 기간</th>
-                <th>상태</th>
+                <th style={{ width: "130px" }}>상태</th>{" "}
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan="2">⏳ 데이터 로딩 중...</td>
+                  <td colSpan="3">⏳ 데이터 로딩 중...</td>
                 </tr>
               ) : filteredOrders.length > 0 ? (
                 filteredOrders
@@ -349,22 +537,25 @@ function Orders() {
                     currentPage * itemsPerPage
                   )
                   .map((order) => (
-                    <tr
-                      key={order.orderCode}
-                      className={
-                        selectedOrder?.orderCode === order.orderCode
-                          ? styles.selectedRow
-                          : ""
-                      }
-                      onClick={() => setSelectedOrder(order)}
-                    >
-                      <td>{formatDate(order.orderDate)}</td>
+                    <tr key={order.orderCode}>
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={selectedOrders.includes(order.orderCode)}
+                          onChange={() =>
+                            handleOrderCheckboxChange(order.orderCode)
+                          }
+                        />
+                      </td>
+                      <td onClick={() => setSelectedOrder(order)}>
+                        {formatDate(order.orderDate)}
+                      </td>
                       <td
                         className={
                           order.orderStatus === 1
-                            ? styles.statusApproved // ✅ 승인(초록색)
+                            ? styles.statusApproved
                             : order.orderStatus === 2
-                            ? styles.statusRejected // ✅ 반려(빨간색)
+                            ? styles.statusRejected
                             : ""
                         }
                       >
@@ -374,7 +565,7 @@ function Orders() {
                   ))
               ) : (
                 <tr>
-                  <td colSpan="2">📭 조회된 데이터가 없습니다.</td>
+                  <td colSpan="3">📭 조회된 데이터가 없습니다.</td>
                 </tr>
               )}
             </tbody>
@@ -453,10 +644,11 @@ function Orders() {
                   </button>
                   <button
                     className={styles.deleteBtn}
+                    onClick={handleDeleteOrderDetails}
                     disabled={
                       selectedOrder?.orderStatus === 1 ||
                       selectedOrder?.orderStatus === 2
-                    } // ✅ 상태가 1(승인) 또는 2(반려)이면 비활성화
+                    } // ✅ 승인(1) 또는 반려(2) 상태이면 삭제 불가
                   >
                     삭제
                   </button>
@@ -477,10 +669,10 @@ function Orders() {
                         onChange={handleSelectAll}
                       />
                     </th>
-                    <th style={{ width: "80px" }}>제품 이미지</th>
-                    <th>제품 코드</th>
+                    <th style={{ width: "200px" }}>제품 이미지</th>
+                    <th style={{ width: "140px" }}>제품 코드</th>
                     <th>제품명</th>
-                    <th>발주 수량</th>
+                    <th style={{ width: "130px" }}>발주 수량</th>
                   </tr>
                 </thead>
                 <tbody>
