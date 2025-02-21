@@ -3,23 +3,23 @@ import Modal from "../../../../components/Modal";
 import modalStyle from "../../../../components/ModalButton.module.css";
 import style from "../styles/ScheduleAdd.module.css";
 
-const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode }) => {
+const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode, onScheduleUpdate }) => {
   console.log('ScheduleAdd에서 본 franCode', franCode);
 
   const today = new Date().toISOString().split("T")[0];
   
   const divisionOption = [
     { label: "오픈", value: 1 }, 
-    { label: "미들", value: 2}, 
-    { label: "마감", value: 3}, 
-    { label: "휴가", value: 4}
+    { label: "미들", value: 2 }, 
+    { label: "마감", value: 3 }, 
+    { label: "휴가", value: 4 }
   ];
 
   const [workerList, setWorkerList] = useState([]);
   const [scheduleDate, setScheduleDate] = useState(today);
   
   const [workers, setWorkers] = useState([
-    { empCode: "", division: "", key: Date.now() },
+    { empCode: "", empName: "", division: "", key: Date.now() },
   ]);
   
   useEffect( () => { if (franCode) { fetchWorkers(); } }, [franCode] );
@@ -35,7 +35,6 @@ const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode }) => {
       if(!responseWorker.ok) {throw new Error("근로자 응답 실패")};
 
       const workerData = await responseWorker.json();
-      console.log("조회된 근로자???", workerData);
 
       setWorkerList(workerData.map(worker => ({
         empCode: worker.empCode,
@@ -47,9 +46,13 @@ const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode }) => {
     }
   }
 
+  // useEffect(() => {
+  //   console.log('workerList 잘 들어오니', workerList);
+  // }, [workerList]);
+
   // ✅ 근로자 추가
   const addWorkerHandler = () => {
-    setWorkers([...workers, { empCode: "", division: "", key: Date.now() }]);
+    setWorkers([...workers, { empCode: "", empName: "", division: "", key: Date.now() }]);
   };
 
   // ✅ 근로자 삭제
@@ -64,7 +67,9 @@ const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode }) => {
       workers.map((worker) => {
         if(worker.key === key) {
           if(name === "worker") {
-            return { ...worker, empCode: value };
+            const selectedWorker = workerList.find(w => Number(w.empCode) === Number(value));
+            console.log('selectedWorker 정보 확인', selectedWorker)
+            return { ...worker, empCode: value, empName: selectedWorker ? selectedWorker.empName : "알 수 없음" };
           }
           return { ...worker, [name]: value };
         }
@@ -74,17 +79,22 @@ const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode }) => {
   };
 
   const prepareScheduleData = () => {
-    return workers.map(worker => ({
-      scheduleDate: scheduleDate,
-      empCode: worker.empCode,
-      scheduleDivision: Number(worker.division),
-      franCode: franCode
-    }));
+    return workers.map(worker => {
+      const localDateTime = new Date(scheduleDate);
+      localDateTime.setHours(9,0,0,0);
+      return {
+        scheduleDate: localDateTime.toISOString(),
+        empCode: worker.empCode,
+        scheduleDivision: Number(worker.division),
+        franCode: franCode,
+        empName: worker.empName
+      }
+    });
   };
 
   const confirmHandler = async () => {
     const scheduleData = prepareScheduleData();
-    console.log("날짜 정보: ", prepareScheduleData.scheduleDate);
+    console.log("보낼 스케줄 정보: ", scheduleData);
 
     try {
       const resopnse = await fetch("http://localhost:8080/api/fran/schedule", {
@@ -94,20 +104,28 @@ const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode }) => {
         },
         body: JSON.stringify(scheduleData)
       });
+      const savedSchedules = await resopnse.json();
+      console.log('세이브 된 스케줄 자료', savedSchedules);
       if (!resopnse.ok) {
         throw new Error("스케줄 저장 실패ㅠ");
       }
 
       console.log("스케줄 등록 성공!!!!!");
       alert("스케줄 등록 성공");
-      setIsModalOpen(false);
+
+      if (onScheduleUpdate) {
+        onScheduleUpdate(savedSchedules.data);
+      };
+
+      closeHandler();
     } catch (error) {
       console.log("스케줄 등록 실 패 !", error);
       alert("스케줄 등록 실패");
     }
   }
+
   const closeHandler = () => {
-    setWorkers([{ worker: "", division: "", key: Date.now() }]);
+    setWorkers([{ empCode: "", empName: "", division: "", key: Date.now() }]);
     setIsModalOpen(false);
   };
 
@@ -146,6 +164,7 @@ const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode }) => {
                   <select
                     name="worker"
                     value={worker}
+                    // value={worker?.empCode || ""}  // undefined 방지
                     onChange={(e) => workerChangeHandler(e, key)}
                     className={style.workerBox}
                   >
