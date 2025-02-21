@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
 import styles from "./Orders.module.css";
 import { useSelector } from "react-redux";
-import { findOrderList } from "../../../apis/inventory/inventoryApi";
+import {
+  findOrderList,
+  updateFranOrder,
+} from "../../../apis/inventory/inventoryApi";
 import SModal from "../../../components/SModal";
 import { Player } from "@lottiefiles/react-lottie-player";
 import modalStyle from "../../../components/ModalButton.module.css";
 import generateOrderPDF from "../../../config/generateOrderPDF"; // ✅ 새 PDF 함수 가져오기
+import ProductSelectModal from "./ProductSelectModal";
 
 function Orders() {
   const [orders, setOrders] = useState([]);
@@ -33,6 +37,8 @@ function Orders() {
   const franName = useSelector(
     (state) => state.auth?.user?.franchise?.franName ?? "가맹점명 미확인"
   );
+
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
 
   // ✅ 선택된 주문이 변경될 때 초기화
   useEffect(() => {
@@ -88,14 +94,14 @@ function Orders() {
     );
   };
 
-  // ✅ 전체 선택 / 해제
+  // ✅ 전체 선택 / 해제 (API + 새로 추가된 데이터 포함)
   const handleSelectAll = () => {
     if (selectAll) {
       setSelectedItems([]); // 전체 해제
     } else {
       setSelectedItems(
-        selectedOrder.orderDetails.map((detail) => detail.orderDetailId)
-      ); // 모든 항목 선택
+        filteredOrderDetails.map((detail) => detail.orderDetailId)
+      ); // ✅ 모든 데이터 포함!
     }
     setSelectAll(!selectAll);
   };
@@ -203,6 +209,100 @@ function Orders() {
     }
   };
 
+  const handleProductSelect = (selectedProduct) => {
+    const isDuplicate = filteredOrderDetails.some(
+      (product) => product.invenCode === selectedProduct.invenCode
+    );
+
+    if (isDuplicate) {
+      console.log("🔍 현재 Lottie 애니메이션 경로:", lottieAnimation);
+      setLottieAnimation("/animations/warning.json"); // ✅ 애니메이션 경로 설정
+      setWarningMessage("이미 추가된 제품입니다.");
+      setIsWarningModalOpen(true);
+      return;
+    }
+
+    setFilteredOrderDetails((prevList) => [
+      ...prevList,
+      {
+        orderDetailId: Date.now(), // ✅ 고유한 ID 부여
+        invenCode: selectedProduct.invenCode,
+        orderQty: 1,
+        inventory: {
+          invenImage: selectedProduct.invenImage,
+          invenName: selectedProduct.invenName,
+        },
+      },
+    ]);
+
+    setIsProductModalOpen(false);
+  };
+
+  const handleOrderQtyChange = (index, newQty) => {
+    const updatedQty = Math.max(Number(newQty) || 1, 1);
+
+    setFilteredOrderDetails((prevDetails) =>
+      prevDetails.map((detail, i) =>
+        i === index ? { ...detail, orderQty: updatedQty } : detail
+      )
+    );
+  };
+
+  const handleSaveChanges = async () => {
+    if (selectedItems.length === 0) {
+      setLottieAnimation("/animations/alert2.json");
+      setWarningMessage("🚨 업데이트할 항목을 선택해주세요!");
+      setIsWarningModalOpen(true);
+      return;
+    }
+
+    const updatedData = filteredOrderDetails
+      .filter((detail) => selectedItems.includes(detail.orderDetailId))
+      .map((detail) => ({
+        orderDetailId: detail.orderDetailId,
+        invenCode: detail.invenCode,
+        orderQty: detail.orderQty,
+        orderCode: selectedOrder.orderCode, // ✅ orderCode 추가
+      }));
+
+    try {
+      const response = await updateFranOrder(updatedData);
+
+      if (response.success) {
+        setLottieAnimation("/animations/success-check.json");
+        setWarningMessage("✅ 업데이트가 완료되었습니다!");
+        setIsWarningModalOpen(true);
+
+        // ✅ 최신 데이터 다시 불러오기 (리렌더링 유도)
+        await fetchOrders();
+
+        // ✅ 선택된 주문의 상세 목록도 다시 반영 (업데이트된 상태 유지)
+        const updatedOrder = orders.find(
+          (order) => order.orderCode === selectedOrder.orderCode
+        );
+        setSelectedOrder(updatedOrder);
+      } else {
+        setLottieAnimation("/animations/alert2.json");
+        setWarningMessage("❌ 업데이트에 실패했습니다. 다시 시도해주세요.");
+        setIsWarningModalOpen(true);
+      }
+    } catch (error) {
+      console.error("❌ 업데이트 중 오류 발생:", error);
+      setLottieAnimation("/animations/alert2.json");
+      setWarningMessage("🚨 서버 오류 발생! 다시 시도해주세요.");
+      setIsWarningModalOpen(true);
+    }
+  };
+
+  const fetchOrders = async () => {
+    if (!franCode) return;
+    setLoading(true);
+    const data = await findOrderList(franCode);
+    setOrders(data);
+    setFilteredOrders(data);
+    setLoading(false);
+  };
+
   return (
     <>
       <div className="page-header">
@@ -259,7 +359,17 @@ function Orders() {
                       onClick={() => setSelectedOrder(order)}
                     >
                       <td>{formatDate(order.orderDate)}</td>
-                      <td>{getOrderStatusText(order.orderStatus)}</td>
+                      <td
+                        className={
+                          order.orderStatus === 1
+                            ? styles.statusApproved // ✅ 승인(초록색)
+                            : order.orderStatus === 2
+                            ? styles.statusRejected // ✅ 반려(빨간색)
+                            : ""
+                        }
+                      >
+                        {getOrderStatusText(order.orderStatus)}
+                      </td>
                     </tr>
                   ))
               ) : (
@@ -312,10 +422,44 @@ function Orders() {
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
+                {isProductModalOpen && (
+                  <ProductSelectModal
+                    isOpen={isProductModalOpen}
+                    onClose={() => setIsProductModalOpen(false)}
+                    onSelect={handleProductSelect}
+                  />
+                )}
                 <div className={styles.buttonGroup}>
-                  <button className={styles.addList}>추가</button>
-                  <button className={styles.editBtn}>수정</button>
-                  <button className={styles.deleteBtn}>삭제</button>
+                  <button
+                    className={styles.addList}
+                    onClick={() => setIsProductModalOpen(true)}
+                    disabled={
+                      selectedOrder?.orderStatus === 1 ||
+                      selectedOrder?.orderStatus === 2
+                    } // ✅ 상태가 1(승인) 또는 2(반려)이면 비활성화
+                  >
+                    추가
+                  </button>
+
+                  <button
+                    className={styles.editBtn}
+                    onClick={handleSaveChanges}
+                    disabled={
+                      selectedOrder?.orderStatus === 1 ||
+                      selectedOrder?.orderStatus === 2
+                    } // ✅ 상태가 1(승인) 또는 2(반려)이면 비활성화
+                  >
+                    저장
+                  </button>
+                  <button
+                    className={styles.deleteBtn}
+                    disabled={
+                      selectedOrder?.orderStatus === 1 ||
+                      selectedOrder?.orderStatus === 2
+                    } // ✅ 상태가 1(승인) 또는 2(반려)이면 비활성화
+                  >
+                    삭제
+                  </button>
                 </div>
               </div>
 
@@ -323,25 +467,24 @@ function Orders() {
               <table className={styles.detailTable}>
                 <thead>
                   <tr>
-                    <th>
+                    <th style={{ width: "50px" }}>
                       <input
                         type="checkbox"
                         checked={
-                          selectedOrder.orderDetails.length > 0 &&
-                          selectedItems.length ===
-                            selectedOrder.orderDetails.length
+                          filteredOrderDetails.length > 0 &&
+                          selectedItems.length === filteredOrderDetails.length
                         }
                         onChange={handleSelectAll}
                       />
                     </th>
-                    <th>제품 이미지</th>
+                    <th style={{ width: "80px" }}>제품 이미지</th>
                     <th>제품 코드</th>
                     <th>제품명</th>
                     <th>발주 수량</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredOrderDetails.map((detail) => (
+                  {filteredOrderDetails.map((detail, index) => (
                     <tr key={detail.orderDetailId}>
                       <td>
                         <input
@@ -365,7 +508,21 @@ function Orders() {
                       </td>
                       <td>{detail.invenCode}</td>
                       <td>{detail.inventory?.invenName ?? "알 수 없음"}</td>
-                      <td>{detail.orderQty}</td>
+                      <td>
+                        <input
+                          type="number"
+                          value={detail.orderQty}
+                          min="1"
+                          className={styles.inputSmall}
+                          onChange={(e) =>
+                            handleOrderQtyChange(index, e.target.value)
+                          } // ✅ index를 전달!
+                          disabled={
+                            selectedOrder.orderStatus === 1 ||
+                            selectedOrder.orderStatus === 2
+                          } // ✅ 상태가 승인(1) 또는 반려(2)일 때 비활성화
+                        />
+                      </td>
                     </tr>
                   ))}
                 </tbody>
