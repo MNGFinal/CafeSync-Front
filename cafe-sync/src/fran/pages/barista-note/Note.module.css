@@ -1,3 +1,4 @@
+/* src/fran/pages/barista-note/Note.module.css*/
 /* 상단 박스 컨테이너 스타일 */
 .upperBox {
     display: flex;
@@ -136,6 +137,7 @@
     padding: 20px;
     border-radius: 8px;
     width: 40%;
+    position: relative;
 }
 
 .modalContentContainer{
@@ -244,4 +246,19 @@ hr {
 /* 파일 첨부 항목 스타일 */
 .fileUpload {
     margin-bottom: 8px; /* 파일 첨부와 내용 간의 간격 */
+}
+
+/* 닫기 버튼 스타일 */
+.closeButton {
+    position: absolute; /* 부모 요소에 대해 절대 위치 설정 */
+    top: 10px; /* 상단에서 10px 떨어지게 설정 */
+    right: 15px; /* 오른쪽에서 10px 떨어지게 설정 */
+    font-size: 24px; /* 버튼 크기 */
+    color: #333; /* 버튼 색상 */
+    cursor: pointer;
+}
+
+/* 닫기 버튼 호버 효과 */
+.closeButton:hover {
+    color: #f44336; /* hover 시 빨간색으로 변환 */
 }

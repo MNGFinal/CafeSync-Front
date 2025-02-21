@@ -10,11 +10,13 @@ const initialState = {
 export const GET_NOTES = 'note/GET_NOTES';
 export const GET_NOTE = 'note/GET_NOTE';
 export const POST_NOTE = 'note/POST_NOTE';
+export const PUT_NOTE = 'note/PUT_NOTE'
 
 const actions = createActions({
     [GET_NOTES]: () => {},
     [GET_NOTE]: () => {},
-    [POST_NOTE] : () => {}
+    [POST_NOTE] : () => {},
+    [PUT_NOTE] : () => {}
 });
 
 const noteReducer = handleActions(
@@ -30,6 +32,10 @@ const noteReducer = handleActions(
         [POST_NOTE]: (state, action) => ({
             ...state,
             date : action.payload
+        }),
+        [PUT_NOTE]: (state, action) => ({
+            ...state,
+            data : action.payload
         })
     },
     initialState // ✅ 올바른 초기 상태 전달
