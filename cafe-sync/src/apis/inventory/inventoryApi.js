@@ -275,3 +275,30 @@ export async function insertOrderRequest(orderData) {
     };
   }
 }
+
+// ✅ 발주 신청 내역 조회
+export async function findOrderList(franCode) {
+  try {
+    const token = sessionStorage.getItem("accessToken");
+    const apiUrl = `http://localhost:8080/api/fran/order/${franCode}`; // ✅ Path Variable 적용
+
+    const response = await fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("✅ 발주 신청 내역 조회 완료:", data);
+    return data.data; // ResponseDTO에서 실제 데이터 추출
+  } catch (error) {
+    console.error("❌ 발주 신청 내역 조회 오류:", error);
+    return [];
+  }
+}
