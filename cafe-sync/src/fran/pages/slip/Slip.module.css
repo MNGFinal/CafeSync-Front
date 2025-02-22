@@ -1,0 +1,204 @@
+.searchBox {
+    display: flex;
+    align-items: center;
+}
+
+.textBox {
+    margin: 10px;
+    width: 50px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #a1a1a1;
+    color: white;
+    border: none;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px;
+    
+}
+
+.dateInput {
+    margin: 10px;
+}
+
+.dateInput input {
+    height: 30px;
+    border: 1px solid #ddd;
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.searchBtn {
+    margin-left: 10px;
+}
+
+.searchBtn button {
+    border: none;
+    width: 50px;
+    height: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    background-color: #007BFF; /* 밝은 블루 */
+    color: white;
+    border-radius: 5px;
+    font-weight: bold;
+    position: relative;
+    left: -13px;
+}
+
+.searchBtn button:hover {
+    background-color: #0056b3; /* Hover 시 진한 블루 */
+}
+
+.boxContainer {
+    display: flex;
+    width: 100%;
+    margin-top: 10px;
+    align-items: center;
+}
+
+.addBtn {
+    display: flex;
+    gap: 10px;
+    margin-left: 10px;
+}
+
+.addBtn button {
+    width: 60px;
+    height: 35px;
+    background-color: #5A9EF7; /* 연한 블루 */
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    font-weight: bold;
+}
+
+.addBtn button:hover {
+    background-color: #3B82F6; /* Hover 시 진한 블루 */
+}
+
+.billBox {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.billBox button {
+    width: 150px;
+    height: 35px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    margin-right: 10px;
+}
+
+/* 추가 버튼 - 파란색 */
+.addBtn button:nth-child(1) {
+    background-color: #007BFF;
+}
+
+.addBtn button:nth-child(1):hover {
+    background-color: #0056b3;
+}
+
+/* 저장 버튼 - 초록색 */
+.addBtn button:nth-child(2) {
+    background-color: #28A745;
+}
+
+.addBtn button:nth-child(2):hover {
+    background-color: #218838;
+}
+
+/* 삭제 버튼 - 빨간색 */
+.addBtn button:nth-child(3) {
+    background-color: #DC3545;
+}
+
+.addBtn button:nth-child(3):hover {
+    background-color: #C82333;
+}
+
+/* 세금 계산서 버튼 - 그린 */
+.billBox button:nth-child(1) {
+    background-color: #28A745;
+}
+
+.billBox button:nth-child(1):hover {
+    background-color: #218838;
+}
+
+/* 손익 계산서 버튼 - 옐로우 */
+.billBox button:nth-child(2) {
+    background-color: #FFC107;
+    color: black;
+}
+
+.billBox button:nth-child(2):hover {
+    background-color: #E0A800;
+}
+
+.slipTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    border-radius: 5px;
+    overflow: hidden;
+    table-layout: fixed; /* 테이블 너비 고정 */
+}
+
+.slipTable thead {
+    background-color: #f1f1f1;
+}
+
+.slipTable th, 
+.slipTable td {
+    padding: 8px;
+    text-align: center;
+    border: 1px solid #aaa;
+    font-size: 14px;
+    white-space: nowrap; /* 줄바꿈 방지 */
+    overflow: hidden;
+    text-overflow: ellipsis; /* 글자가 넘칠 경우 "..." 표시 */
+}
+
+/* 체크박스 컬럼 크기 유지 */
+.slipTable th:first-child,
+.slipTable td:first-child {
+    width: 50px;
+}
+
+/* 나머지 컬럼 크기를 동일하게 */
+.slipTable th:not(:first-child),
+.slipTable td:not(:first-child) {
+    width: calc((100% - 50px) / 10); /* 체크박스 제외 10개 컬럼 동일한 너비 */
+}
+
+/* 짝수 행 배경색 변경 */
+.slipTable tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.noData{
+    width: 1780px;
+    height: 640px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #ddd;
+    color: grey;
+}
+
+.noData img {
+    width: 100px;
+    height: auto;
+}
