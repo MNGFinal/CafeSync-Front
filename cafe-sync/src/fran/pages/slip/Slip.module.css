@@ -189,7 +189,6 @@
 }
 
 .noData{
-    display: flex;
     width: 1780px;
     height: 640px;
     flex-direction: column;
