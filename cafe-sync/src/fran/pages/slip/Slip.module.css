@@ -16,7 +16,6 @@
     font-size: 14px;
     font-weight: bold;
     border-radius: 5px;
-    
 }
 
 .dateInput {
@@ -147,6 +146,7 @@
     background-color: #E0A800;
 }
 
+/* 테이블 스타일 */
 .slipTable {
     width: 100%;
     border-collapse: collapse;
@@ -154,6 +154,13 @@
     border-radius: 5px;
     overflow: hidden;
     table-layout: fixed; /* 테이블 너비 고정 */
+}
+
+/* 체크박스 크기 통일 (헤더, 바디 모두) */
+.slipTable input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
 }
 
 .slipTable thead {
@@ -171,16 +178,64 @@
     text-overflow: ellipsis; /* 글자가 넘칠 경우 "..." 표시 */
 }
 
-/* 체크박스 컬럼 크기 유지 */
+/* 체크박스 컬럼(1번째) 고정 너비 */
 .slipTable th:first-child,
 .slipTable td:first-child {
-    width: 50px;
+    width: 60px;         /* 기존 50px → 60px으로 약간 넓힘 */
+    text-align: center;  /* 가운데 정렬 */
+    vertical-align: middle;
 }
 
-/* 나머지 컬럼 크기를 동일하게 */
-.slipTable th:not(:first-child),
-.slipTable td:not(:first-child) {
-    width: calc((100% - 50px) / 10); /* 체크박스 제외 10개 컬럼 동일한 너비 */
+
+/* 열별로 적당히 너비 설정 (2 ~ 11열) */
+.slipTable th:nth-child(2),
+.slipTable td:nth-child(2) {
+  width: 110px; /* 날짜 */
+}
+
+.slipTable th:nth-child(3),
+.slipTable td:nth-child(3) {
+  width: 100px; /* 거래처 코드 */
+}
+
+.slipTable th:nth-child(4),
+.slipTable td:nth-child(4) {
+  width: 120px; /* 거래처명 */
+}
+
+.slipTable th:nth-child(5),
+.slipTable td:nth-child(5) {
+  width: 80px; /* 구분 */
+}
+
+.slipTable th:nth-child(6),
+.slipTable td:nth-child(6) {
+  width: 110px; /* 계정과목 코드 */
+}
+
+.slipTable th:nth-child(7),
+.slipTable td:nth-child(7) {
+  width: 120px; /* 계정과목명 */
+}
+
+.slipTable th:nth-child(8),
+.slipTable td:nth-child(8) {
+  width: 110px; /* 적요 코드 */
+}
+
+.slipTable th:nth-child(9),
+.slipTable td:nth-child(9) {
+  width: 120px; /* 적요명 */
+}
+
+.slipTable th:nth-child(10),
+.slipTable td:nth-child(10) {
+  width: 90px; /* 차변(출금) */
+}
+
+.slipTable th:nth-child(11),
+.slipTable td:nth-child(11) {
+  width: 90px; /* 대변(입금) */
 }
 
 /* 짝수 행 배경색 변경 */
@@ -188,7 +243,28 @@
     background-color: #f9f9f9;
 }
 
-.noData{
+/* 셀 내부 인풋, 셀렉트 크기 조절 */
+.slipTable td input,
+.slipTable td select {
+    width: 90%;
+    max-width: 100%;
+    box-sizing: border-box;
+    height: 30px; /* 높이 맞춤 */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.slipTable td select option {
+    text-align: center;
+}
+
+
+/* 데이터 없을 때 표시 영역 */
+.noData {
     width: 1780px;
     height: 640px;
     flex-direction: column;
@@ -202,3 +278,129 @@
     width: 100px;
     height: auto;
 }
+
+  
+  /* 모달 제목 */
+  .modalTitle {
+    margin: 0;
+    padding-bottom: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    border-bottom: 1px solid #ccc;
+    text-align: left;   /* 제목 왼쪽 정렬 (원하시면 center로 바꿔도 됨) */
+  }
+  
+  /* 탭 + 검색 영역 컨테이너 */
+  /* 모달 상단: 탭 + 검색 영역을 감싸는 컨테이너 */
+.tabFilterContainer {
+  display: flex;
+  justify-content: space-between; /* 왼쪽 탭, 오른쪽 검색 */
+  align-items: center;           /* 수직 가운데 정렬 */
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+/* 탭 버튼 묶음 */
+.tabButtons {
+  display: flex;
+}
+
+/* 각 탭 버튼 */
+.tabButton {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  font-size: 14px;
+}
+.tabButton:hover {
+  background-color: #e0e0e0;
+}
+.activeTab {
+  background-color: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+/* 검색 박스 */
+.searchBox {
+  display: flex;
+  align-items: center;
+}
+
+/* 검색창 인풋 */
+.searchInput {
+  width: 140px;
+  height: 30px;
+  padding: 6px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  /* position, left 설정은 빼버리기! */
+}
+
+  
+  /* 테이블 */
+  .vendorTable {
+    width: 100%;       /* 모달 내부에서 꽉 차게 */
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  .vendorTable th,
+  .vendorTable td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+    font-size: 14px;
+  }
+  
+  .vendorTable thead {
+    background-color: #f1f1f1;
+  }
+  
+  .vendorTable tr:hover {
+    background-color: #f5f5f5;
+  }
+
+.modalWrapper {
+    position: fixed;
+    top: 50px;       /* 상단에서 50px 정도 띄움 */
+    left: 20px;      /* 왼쪽에서 20px */
+    right: auto;     /* 기본 center 해제 */
+    margin: 0;       /* 가운데 정렬 해제 */
+    transform: none; /* translate 해제 */
+  }
+  
+  .modalContainer {
+    width: 650px; 
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #fff; /* 원하는 배경 */
+    border-radius: 8px;
+  }
+  
+
+  /* 테이블 래퍼: 스크롤은 여기서 */
+.tableWrapper {
+    height: 470px;          /* 원하는 높이, 예: 300px */
+    overflow-y: auto;       /* 세로 스크롤 */
+    margin-top: 20px;
+  }
+
+  /* 테이블 */
+.vendorTable {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* 열 너비 고정 분배 시 */
+  }
+
+  /* 테이블 헤더: sticky */
+.vendorTable thead th {
+    position: sticky; /* 스크롤 시 헤더 고정 */
+    top: 0;
+    background-color: #f1f1f1;
+    z-index: 2;       /* 헤더가 본문보다 위에 표시되도록 */
+  }
+
+  
