@@ -364,10 +364,7 @@ function Slip() {
     // 검증: 각 체크된 행에 대해 필수 필드가 모두 채워졌는지 확인
     const invalidRow = checkedRows.find((row) => !isRowValid(row));
     if (invalidRow) {
-      showModal(
-        "/animations/warning.json",
-        "모든 필드값을 입력해주세요!" // 또는 "필수 입력 필드를 모두 채워주세요!"
-      );
+      showModal("/animations/warning.json", "모든 필드값을 입력해주세요!");
       return;
     }
 
