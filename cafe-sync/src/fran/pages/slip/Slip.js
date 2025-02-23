@@ -333,6 +333,22 @@ function Slip() {
     }, 0);
   }
 
+  // 필수 필드 검증 함수
+  const isRowValid = (row) => {
+    // 필수 항목: slipDate, slipDivision, venCode.venCode, actCode.actCode, summaryCode.summaryCode
+    // debit, credit은 선택적이라고 가정합니다.
+    return (
+      row.slipDate &&
+      row.slipDivision &&
+      row.venCode &&
+      row.venCode.venCode &&
+      row.actCode &&
+      row.actCode.actCode &&
+      row.summaryCode &&
+      row.summaryCode.summaryCode
+    );
+  };
+
   const handleSave = async () => {
     if (!slipList.data) {
       showModal("/animations/warning.json", "저장할 데이터가 없습니다!");
@@ -345,8 +361,16 @@ function Slip() {
       return;
     }
 
+    // 검증: 각 체크된 행에 대해 필수 필드가 모두 채워졌는지 확인
+    const invalidRow = checkedRows.find((row) => !isRowValid(row));
+    if (invalidRow) {
+      showModal("/animations/warning.json", "모든 필드값을 입력해주세요!");
+      return;
+    }
+
     const dtoArray = checkedRows.map((row) => ({
       slipCode: row.slipCode || 0,
+      // 날짜에 T가 없으면 시간 정보를 추가
       slipDate: row.slipDate.includes("T")
         ? row.slipDate
         : row.slipDate + "T00:00:00",
@@ -362,13 +386,7 @@ function Slip() {
     try {
       const result = await saveSlipList(dtoArray);
       if (result) {
-        setTimeout(() => {
-          showModal(
-            "/animations/success-check.json",
-            "성공적으로 저장 되었습니다!"
-          );
-        }, 100); // ✅ 상태 변경 반영을 위해 약간의 지연 추가
-
+        showModal("/animations/success-check.json", "저장 성공!");
         // 저장 후, 최신 데이터로 재조회하여 UI 업데이트
         await fetchSlips();
       }
