@@ -6,6 +6,7 @@ import {
   getAccountList,
   getSummaryList,
   saveSlipList,
+  deleteSlipList,
 } from "../../../apis/slip/slipApi";
 import { useSelector } from "react-redux";
 import Modal from "../../../components/Modal";
@@ -421,6 +422,33 @@ function Slip() {
     setSlipList(updatedList);
   };
 
+  // 삭제 핸들러 (Delete)
+  const handleDelete = async () => {
+    if (!slipList.data) {
+      showModal("/animations/warning.json", "삭제할 데이터가 없습니다!");
+      return;
+    }
+    const checkedRows = slipList.data.filter(
+      (item) => item.selected && item.slipCode
+    );
+    if (checkedRows.length === 0) {
+      showModal("/animations/warning.json", "삭제할 행을 선택하세요!");
+      return;
+    }
+    // 삭제할 행의 slipCode 배열 추출
+    const idArray = checkedRows.map((row) => row.slipCode);
+    try {
+      const result = await deleteSlipList(idArray);
+      if (result) {
+        showModal("/animations/success-check.json", "삭제 성공!");
+        await fetchSlips();
+      }
+    } catch (error) {
+      console.error(error);
+      showModal("/animations/error.json", "삭제 실패!");
+    }
+  };
+
   return (
     <>
       <div className="page-header">
@@ -451,8 +479,8 @@ function Slip() {
       <div className={styles.boxContainer}>
         <div className={styles.addBtn}>
           <button onClick={handleAddRow}>행 추가</button>
-          <button onClick={handleSave}>저장</button> {/* ← 저장 버튼 */}
-          <button>삭제</button>
+          <button onClick={handleSave}>저장</button>
+          <button onClick={handleDelete}>삭제</button>
         </div>
         <div className={styles.billBox}>
           <button>세금 계산서 생성</button>
