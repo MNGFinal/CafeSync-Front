@@ -1,6 +1,8 @@
 .searchBox {
     display: flex;
     align-items: center;
+    position: absolute;
+    top: 137px;
 }
 
 .textBox {
@@ -56,7 +58,7 @@
 .boxContainer {
     display: flex;
     width: 100%;
-    margin-top: 10px;
+    margin-top: 50px;
     align-items: center;
 }
 
@@ -64,6 +66,8 @@
     display: flex;
     gap: 10px;
     margin-left: 10px;
+    position: absolute;
+    top: 203px;
 }
 
 .addBtn button {
@@ -82,11 +86,29 @@
     background-color: #3B82F6; /* Hover 시 진한 블루 */
 }
 
+/* 버튼 + 안내 문구를 감싸는 박스 */
 .billBox {
-    display: flex;
-    gap: 10px;
-    margin-left: auto;
+  display: flex;
+  flex-direction: column; /* 세로로 나열 */
+  align-items: flex-start; /* 왼쪽 정렬 (필요시 center, flex-end 등 조정) */
+  gap: 5px;               /* 문구와 버튼 사이 여백 */
+  margin-left: auto;      /* 기존에 사용 중이라면 유지 */
+  /* ... 나머지 기존 스타일 ... */
 }
+
+/* 안내 문구 */
+.noticeText {
+  font-size: 14px;
+  color: #666;
+  /* 필요하다면 margin-bottom: 8px 등 추가 가능 */
+}
+
+/* 버튼 묶음 */
+.buttonContainer {
+  display: flex;
+  gap: 10px; /* 버튼 사이 간격 */
+}
+
 
 .billBox button {
     width: 150px;
@@ -152,7 +174,6 @@
     border-collapse: collapse;
     margin-top: 15px;
     border-radius: 5px;
-    overflow: hidden;
     table-layout: fixed; /* 테이블 너비 고정 */
 }
 
@@ -169,7 +190,6 @@
 
 .slipTable th, 
 .slipTable td {
-    padding: 8px;
     text-align: center;
     border: 1px solid #aaa;
     font-size: 14px;
@@ -196,6 +216,7 @@
 .slipTable th:nth-child(3),
 .slipTable td:nth-child(3) {
   width: 100px; /* 거래처 코드 */
+  padding: 3px;
 }
 
 .slipTable th:nth-child(4),
@@ -266,12 +287,13 @@
 /* 데이터 없을 때 표시 영역 */
 .noData {
     width: 1780px;
-    height: 640px;
+    height: 636px;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     background-color: #ddd;
     color: grey;
+    overflow: auto;
 }
 
 .noData img {
@@ -296,7 +318,7 @@
   display: flex;
   justify-content: space-between; /* 왼쪽 탭, 오른쪽 검색 */
   align-items: center;           /* 수직 가운데 정렬 */
-  margin-top: 10px;
+  margin-top: 15px;
   margin-bottom: 10px;
 }
 
@@ -403,4 +425,34 @@
     z-index: 2;       /* 헤더가 본문보다 위에 표시되도록 */
   }
 
-  
+  /* Slip.module.css 등 */
+.slipTableContainer {
+  max-height: 690px; /* 원하는 높이 (예: 600px) */
+  overflow: auto;
+  margin-top: 10px;
+}
+
+/* 테이블 헤더 고정 */
+.slipTable thead {
+  position: sticky;
+  top: 0;
+  background-color: #f1f1f1;
+  z-index: 10;
+}
+
+.selectFilter{
+  width: 127px;
+  text-align: center;
+  height: 24px;
+  border: none;
+  background-color: #f1f1f1;
+  font-weight: bold;
+}
+
+.noticeText {
+  margin-left: 20px;
+  font-size: 14px;
+  color: #666;
+  /* 필요에 따라 더 꾸밀 수 있음 */
+}
+
