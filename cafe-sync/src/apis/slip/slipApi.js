@@ -382,3 +382,128 @@ export async function deleteSlipList(slipIdArray) {
     return null;
   }
 }
+
+// 세금 계산서 생성
+export async function createTaxInvoices(taxDataArray) {
+  try {
+    let token = sessionStorage.getItem("accessToken");
+    const refreshToken = sessionStorage.getItem("refreshToken");
+    const apiUrl = "http://localhost:8080/api/fran/tax"; // 실제 엔드포인트
+
+    // 예: taxDataArray = [ { slipCode, taxDate, taxVal }, ... ]
+    let response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(taxDataArray),
+    });
+
+    // 토큰 만료 처리 (403)
+    if (response.status === 403 && refreshToken) {
+      console.warn("🔄 Access Token 만료됨. Refresh Token으로 갱신 시도...");
+      const refreshResponse = await fetch(
+        "http://localhost:8080/api/refresh-token",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ refreshToken }),
+        }
+      );
+      if (!refreshResponse.ok) {
+        throw new Error("❌ Refresh Token 갱신 실패! 다시 로그인해야 합니다.");
+      }
+
+      const newTokenData = await refreshResponse.json();
+      token = newTokenData.accessToken;
+      sessionStorage.setItem("accessToken", token);
+
+      // 새 토큰으로 재요청
+      response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(taxDataArray),
+      });
+    }
+
+    if (!response.ok) {
+      throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("✅ 세금 계산서 생성 성공:", data);
+    return data;
+  } catch (error) {
+    console.error("❌ 세금 계산서 생성 중 오류 발생:", error);
+    return null;
+  }
+}
+
+// 손익 계산서 생성
+// 손익 계산서 생성 API 요청
+export async function createPnl(pnlData) {
+  try {
+    let token = sessionStorage.getItem("accessToken");
+    const refreshToken = sessionStorage.getItem("refreshToken");
+    const apiUrl = "http://localhost:8080/api/fran/pnl"; // 엔드포인트 수정
+
+    let response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(pnlData),
+    });
+
+    // 403이면 토큰 만료 처리
+    if (response.status === 403 && refreshToken) {
+      console.warn("🔄 Access Token 만료됨. Refresh Token으로 갱신 시도...");
+      const refreshResponse = await fetch(
+        "http://localhost:8080/api/refresh-token",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ refreshToken }),
+        }
+      );
+
+      if (!refreshResponse.ok) {
+        throw new Error("❌ Refresh Token 갱신 실패! 다시 로그인해야 합니다.");
+      }
+
+      const newTokenData = await refreshResponse.json();
+      token = newTokenData.accessToken;
+      sessionStorage.setItem("accessToken", token);
+
+      // 새 토큰으로 다시 요청
+      response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(pnlData),
+      });
+    }
+
+    if (!response.ok) {
+      throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("✅ 손익 계산서 생성 성공:", data);
+    return data;
+  } catch (error) {
+    console.error("❌ 손익 계산서 생성 중 오류 발생:", error);
+    return null;
+  }
+}

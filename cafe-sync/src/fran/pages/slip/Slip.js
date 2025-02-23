@@ -7,6 +7,8 @@ import {
   getSummaryList,
   saveSlipList,
   deleteSlipList,
+  createTaxInvoices,
+  createPnl,
 } from "../../../apis/slip/slipApi";
 import { useSelector } from "react-redux";
 import Modal from "../../../components/Modal";
@@ -18,44 +20,42 @@ function Slip() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [slipList, setSlipList] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false); // 경고용 모달
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [lottieAnimation, setLottieAnimation] = useState("");
   const franCode = useSelector(
     (state) => state.auth?.user?.franchise?.franCode ?? null
   );
 
-  // --------------------------------------------
-  // 🔹 "거래처" 관련 상태
+  // 거래처 관련 상태
   const [vendorList, setVendorList] = useState([]);
-  const [vendorActiveTab, setVendorActiveTab] = useState("전체"); // 탭(전체, 일반, 도매, 금융, 카드)
+  const [vendorActiveTab, setVendorActiveTab] = useState("전체");
   const [vendorSearchText, setVendorSearchText] = useState("");
 
+  // 계정과목 관련 상태
   const [accountOptions, setAccountOptions] = useState([]);
-
-  const [accountActiveTab, setAccountActiveTab] = useState("전체"); // 탭(전체, 자산, 부채, 자본, 수익, 비용)
+  const [accountActiveTab, setAccountActiveTab] = useState("전체");
   const [accountSearchText, setAccountSearchText] = useState("");
 
-  // 🔹 "적요" 관련 상태
+  // 적요 관련 상태
   const [summaryOptions, setSummaryOptions] = useState([]);
 
-  // --------------------------------------------
-  // 🔹 코드 선택 모달 관련 상태
+  // 코드 선택 모달 관련 상태
   const [codeModalOpen, setCodeModalOpen] = useState(false);
   const [codeModalType, setCodeModalType] = useState(""); // "vendor", "account", "summary"
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
 
-  // --------------------------------------------
-  // 🔹 벤더 필터링 함수
+  // "구분" 필터 상태 (테이블 헤더에 적용)
+  const [divisionFilter, setDivisionFilter] = useState("전체");
+
+  // 벤더 필터링 함수
   const getFilteredVendorList = () => {
     let filtered = vendorList;
-    // 탭 필터
     if (vendorActiveTab !== "전체") {
       filtered = filtered.filter(
         (vendor) => vendor.venDivision === vendorActiveTab
       );
     }
-    // 검색어 필터 (거래처명)
     if (vendorSearchText.trim() !== "") {
       const lowerSearch = vendorSearchText.toLowerCase();
       filtered = filtered.filter((vendor) =>
@@ -65,14 +65,12 @@ function Slip() {
     return filtered;
   };
 
-  // 🔹 계정과목 필터링 함수
+  // 계정과목 필터링 함수
   const getFilteredAccountOptions = () => {
     let filtered = accountOptions;
-    // 탭 필터
     if (accountActiveTab !== "전체") {
       filtered = filtered.filter((acc) => acc.division === accountActiveTab);
     }
-    // 검색어 필터 (계정과목명)
     if (accountSearchText.trim() !== "") {
       const lowerSearch = accountSearchText.toLowerCase();
       filtered = filtered.filter((acc) =>
@@ -82,8 +80,7 @@ function Slip() {
     return filtered;
   };
 
-  // --------------------------------------------
-  // 날짜 변경 이벤트 핸들러
+  // 날짜 변경 핸들러
   const handleDateChange = (event) => {
     const { name, value } = event.target;
     if (name === "startDate") setStartDate(value);
@@ -98,7 +95,6 @@ function Slip() {
       setIsModalOpen(true);
       return false;
     }
-
     const start = new Date(startDate);
     const end = new Date(endDate);
     if (start > end) {
@@ -107,13 +103,11 @@ function Slip() {
       setIsModalOpen(true);
       return false;
     }
-
     const maxEndDate = new Date(start);
     maxEndDate.setMonth(start.getMonth() + 1);
     if (maxEndDate.getDate() !== start.getDate()) {
       maxEndDate.setDate(0);
     }
-
     if (end > maxEndDate) {
       setLottieAnimation("/animations/warning.json");
       setModalMessage(
@@ -132,7 +126,6 @@ function Slip() {
       setIsModalOpen(true);
       return false;
     }
-
     return true;
   };
 
@@ -145,7 +138,7 @@ function Slip() {
           if (nestedField) {
             return {
               ...item,
-              slipCode: item.slipCode, // ✅ slipCode 유지
+              slipCode: item.slipCode,
               [nestedField]: {
                 ...item[nestedField],
                 [field]: value,
@@ -154,7 +147,7 @@ function Slip() {
           } else {
             return {
               ...item,
-              slipCode: item.slipCode, // ✅ slipCode 유지
+              slipCode: item.slipCode,
               [field]: value,
             };
           }
@@ -172,7 +165,7 @@ function Slip() {
     setCodeModalOpen(true);
   };
 
-  // 코드 모달에서 옵션 선택 시 해당 행 업데이트
+  // 코드 모달에서 옵션 선택 시 행 업데이트
   const handleCodeSelect = (option) => {
     if (selectedRowIndex === null) return;
     const updatedList = { ...slipList };
@@ -180,21 +173,18 @@ function Slip() {
       updatedList.data = updatedList.data.map((item, idx) => {
         if (idx === selectedRowIndex) {
           if (codeModalType === "vendor") {
-            // option: { venCode, venName, ... }
             return {
               ...item,
               venCode: { venCode: option.venCode, venName: option.venName },
             };
           }
           if (codeModalType === "account") {
-            // option: { code, name, division, ... }
             return {
               ...item,
               actCode: { actCode: option.code, actName: option.name },
             };
           }
           if (codeModalType === "summary") {
-            // option: { code, name, ... }
             return {
               ...item,
               summaryCode: {
@@ -213,32 +203,27 @@ function Slip() {
     setCodeModalType("");
   };
 
-  // vendorList를 실제 DB에서 가져오기 (거래처 선택 모달 + 타입 = vendor)
+  // 거래처 정보 조회
   useEffect(() => {
     if (codeModalOpen && codeModalType === "vendor") {
       getVendorList()
-        .then((res) => {
-          setVendorList(res.data);
-        })
+        .then((res) => setVendorList(res.data))
         .catch((error) => console.error(error));
     }
   }, [codeModalOpen, codeModalType]);
 
-  // 조회 버튼 클릭 시 데이터 불러오기
+  // 전표 조회
   const fetchSlips = async () => {
     if (!isValidDateRange()) return;
-
     try {
       const data = await getFranSlipList(franCode, startDate, endDate);
       console.log("✅ 응답 데이터:", data);
-
       if (!data || data.length === 0) {
         setLottieAnimation("/animations/warning.json");
         setModalMessage("해당 날짜에 대한 데이터가 없습니다!");
         setIsModalOpen(true);
         return;
       }
-
       setSlipList(data);
     } catch (error) {
       console.error("❌ 데이터 조회 오류:", error);
@@ -248,7 +233,7 @@ function Slip() {
     }
   };
 
-  // 새 행 추가 함수
+  // 새 행 추가
   const handleAddRow = () => {
     const newRow = {
       slipDate: "",
@@ -259,7 +244,6 @@ function Slip() {
       debit: "",
       credit: "",
     };
-
     const updatedList = { ...slipList };
     if (!updatedList.data) {
       updatedList.data = [];
@@ -270,9 +254,7 @@ function Slip() {
 
   function formatBusinessNum(numString) {
     if (!numString) return "";
-    // 1) 숫자만 추출
     const raw = numString.replace(/[^0-9]/g, "");
-    // 2) 길이가 10자리면 3-2-5 형태로 하이픈 삽입
     if (raw.length === 10) {
       return (
         raw.substring(0, 3) + "-" + raw.substring(3, 5) + "-" + raw.substring(5)
@@ -281,29 +263,27 @@ function Slip() {
     return numString;
   }
 
+  // 계정과목 정보 조회
   useEffect(() => {
     async function fetchAccountList() {
       try {
-        const response = await getAccountList(); // 응답 구조: { data: [ { actCode, actName, actDivision }, ... ] }
-
-        // response.data를 map 돌려서, 프론트가 쓰는 구조로 매핑
+        const response = await getAccountList();
         const mapped = response.data.map((item) => ({
-          code: item.actCode, // 기존 actCode -> code
-          name: item.actName, // 기존 actName -> name
-          division: item.actDivision, // 기존 actDivision -> division
+          code: item.actCode,
+          name: item.actName,
+          division: item.actDivision,
         }));
-
         setAccountOptions(mapped);
       } catch (error) {
         console.error(error);
       }
     }
-
     if (codeModalOpen && codeModalType === "account") {
       fetchAccountList();
     }
   }, [codeModalOpen, codeModalType]);
 
+  // 적요 정보 조회
   useEffect(() => {
     async function fetchSummaryList() {
       try {
@@ -317,7 +297,6 @@ function Slip() {
         console.error(error);
       }
     }
-
     if (codeModalOpen && codeModalType === "summary") {
       fetchSummaryList();
     }
@@ -327,17 +306,13 @@ function Slip() {
     setLottieAnimation(animationPath);
     setModalMessage(message);
     setIsModalOpen(true);
-
-    // 상태 업데이트 후 Lottie가 정상적으로 반영되도록 강제 렌더링 대기
     setTimeout(() => {
       setLottieAnimation(animationPath);
     }, 0);
   }
 
-  // 필수 필드 검증 함수
+  // 필수 필드 검증
   const isRowValid = (row) => {
-    // 필수 항목: slipDate, slipDivision, venCode.venCode, actCode.actCode, summaryCode.summaryCode
-    // debit, credit은 선택적이라고 가정합니다.
     return (
       row.slipDate &&
       row.slipDivision &&
@@ -355,23 +330,18 @@ function Slip() {
       showModal("/animations/warning.json", "저장할 데이터가 없습니다!");
       return;
     }
-
     const checkedRows = slipList.data.filter((item) => item.selected);
     if (checkedRows.length === 0) {
       showModal("/animations/warning.json", "저장할 행을 선택하세요!");
       return;
     }
-
-    // 검증: 각 체크된 행에 대해 필수 필드가 모두 채워졌는지 확인
     const invalidRow = checkedRows.find((row) => !isRowValid(row));
     if (invalidRow) {
       showModal("/animations/warning.json", "모든 필드값을 입력해주세요!");
       return;
     }
-
     const dtoArray = checkedRows.map((row) => ({
       slipCode: row.slipCode || 0,
-      // 날짜에 T가 없으면 시간 정보를 추가
       slipDate: row.slipDate.includes("T")
         ? row.slipDate
         : row.slipDate + "T00:00:00",
@@ -383,12 +353,10 @@ function Slip() {
       credit: row.credit ? parseInt(row.credit) : 0,
       franCode: parseInt(franCode),
     }));
-
     try {
       const result = await saveSlipList(dtoArray);
       if (result) {
         showModal("/animations/success-check.json", "저장 성공!");
-        // 저장 후, 최신 데이터로 재조회하여 UI 업데이트
         await fetchSlips();
       }
     } catch (error) {
@@ -422,7 +390,7 @@ function Slip() {
     setSlipList(updatedList);
   };
 
-  // 삭제 핸들러 (Delete)
+  // 삭제 핸들러
   const handleDelete = async () => {
     if (!slipList.data) {
       showModal("/animations/warning.json", "삭제할 데이터가 없습니다!");
@@ -435,7 +403,6 @@ function Slip() {
       showModal("/animations/warning.json", "삭제할 행을 선택하세요!");
       return;
     }
-    // 삭제할 행의 slipCode 배열 추출
     const idArray = checkedRows.map((row) => row.slipCode);
     try {
       const result = await deleteSlipList(idArray);
@@ -446,6 +413,100 @@ function Slip() {
     } catch (error) {
       console.error(error);
       showModal("/animations/error.json", "삭제 실패!");
+    }
+  };
+
+  // 세금 계산서 생성 핸들러
+  const taxHandler = async () => {
+    if (!slipList.data) {
+      showModal("/animations/warning.json", "데이터가 없습니다!");
+      return;
+    }
+    const checkedRows = slipList.data.filter(
+      (item) =>
+        item.selected &&
+        (item.slipDivision === "차변(출금)" ||
+          item.slipDivision === "대변(입금)")
+    );
+    if (checkedRows.length === 0) {
+      showModal(
+        "/animations/warning.json",
+        "세금 계산서를 생성할 행을 선택하세요!"
+      );
+      return;
+    }
+    const taxDataArray = checkedRows.map((row) => {
+      const taxVal = row.slipDivision === "차변(출금)" ? row.debit : row.credit;
+      const dateOnly = row.slipDate.split("T")[0];
+      return {
+        slipCode: row.slipCode,
+        franCode: franCode,
+        taxDate: dateOnly,
+        taxVal: taxVal || 0,
+      };
+    });
+    try {
+      const result = await createTaxInvoices(taxDataArray);
+      if (result) {
+        showModal("/animations/success-check.json", "세금 계산서 생성 성공!");
+      }
+    } catch (error) {
+      console.error(error);
+      showModal("/animations/error.json", "세금 계산서 생성 실패!");
+    }
+  };
+
+  // 손익 계산서 생성 핸들러
+  const handleCreatePnl = async () => {
+    if (!slipList.data) {
+      showModal(
+        "/animations/warning.json",
+        "손익 계산서를 생성할 데이터가 없습니다!"
+      );
+      return;
+    }
+    const checkedRows = slipList.data.filter((item) => item.selected);
+    if (checkedRows.length === 0) {
+      showModal(
+        "/animations/warning.json",
+        "손익 계산서를 생성할 전표를 선택하세요!"
+      );
+      return;
+    }
+    const pnlId = `PNL-${Date.now()}`;
+    const totalRevenue = checkedRows.reduce(
+      (sum, row) => sum + (row.credit || 0),
+      0
+    );
+    const totalExpense = checkedRows.reduce(
+      (sum, row) => sum + (row.debit || 0),
+      0
+    );
+    const operatingProfit = totalRevenue - totalExpense;
+    const netProfit = operatingProfit;
+    const ratio =
+      totalRevenue !== 0
+        ? `${Math.round((netProfit / totalRevenue) * 100)}%`
+        : "0%";
+    const pnlData = {
+      pnlId: pnlId,
+      period: new Date().toISOString().split("T")[0],
+      revenue: totalRevenue,
+      expense: totalExpense,
+      operProfit: operatingProfit,
+      netProfit: netProfit,
+      ratio: ratio,
+      slipCodes: checkedRows.map((row) => ({ slipCode: row.slipCode })),
+    };
+    console.log("🚀 생성된 손익 계산서 데이터:", pnlData);
+    try {
+      const result = await createPnl(pnlData);
+      if (result) {
+        showModal("/animations/success-check.json", "손익 계산서 생성 성공!");
+        await fetchSlips();
+      }
+    } catch (error) {
+      showModal("/animations/error.json", "손익 계산서 생성 실패!");
     }
   };
 
@@ -483,164 +544,203 @@ function Slip() {
           <button onClick={handleDelete}>삭제</button>
         </div>
         <div className={styles.billBox}>
-          <button>세금 계산서 생성</button>
-          <button>손익 계산서 생성</button>
+          {/* 안내 문구를 먼저 배치 */}
+          <div className={styles.noticeText}>
+            ※ 차변(출금), 대변(입금)만 생성 가능합니다.
+          </div>
+
+          {/* 버튼 묶음 */}
+          <div className={styles.buttonContainer}>
+            <button onClick={taxHandler}>세금 계산서 생성</button>
+            <button onClick={handleCreatePnl}>손익 계산서 생성</button>
+          </div>
         </div>
       </div>
 
-      <table className={styles.slipTable}>
-        <thead>
-          <tr>
-            <th>
-              <input
-                type="checkbox"
-                onChange={(e) => handleHeaderCheckboxChange(e.target.checked)}
-              />
-            </th>
-            <th>날짜</th>
-            <th>거래처 코드</th>
-            <th>거래처명</th>
-            <th>구분</th>
-            <th>계정과목 코드</th>
-            <th>계정과목명</th>
-            <th>적요 코드</th>
-            <th>적요명</th>
-            <th>차변(출금)</th>
-            <th>대변(입금)</th>
-          </tr>
-        </thead>
-        <tbody>
-          {slipList && slipList.data && slipList.data.length > 0 ? (
-            slipList.data.map((slip, index) => (
-              <tr key={index}>
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={slip.selected || false}
-                    onChange={(e) =>
-                      handleCheckboxChange(index, e.target.checked)
-                    }
-                  />
-                </td>
-                <td>
-                  <input
-                    type="date"
-                    value={slip.slipDate ? slip.slipDate.split("T")[0] : ""}
-                    placeholder="날짜 선택"
-                    onChange={(e) =>
-                      handleInputChange(index, "slipDate", e.target.value)
-                    }
-                  />
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    value={slip.venCode.venCode}
-                    placeholder="거래처 코드"
-                    readOnly
-                    onClick={() => openCodeModal(index, "vendor")}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    value={slip.venCode.venName}
-                    placeholder="거래처명"
-                    readOnly
-                  />
-                </td>
-                <td>
-                  <select
-                    value={slip.slipDivision || ""}
-                    onChange={(e) =>
-                      handleInputChange(index, "slipDivision", e.target.value)
-                    }
-                  >
-                    <option value="">선택</option>
-                    <option value="입금">입금</option>
-                    <option value="출금">출금</option>
-                    <option value="차변(출금)">차변(출금)</option>
-                    <option value="대변(입금)">대변(입금)</option>
-                  </select>
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    value={slip.actCode.actCode}
-                    placeholder="계정과목 코드"
-                    readOnly
-                    onClick={() => openCodeModal(index, "account")}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    value={slip.actCode.actName}
-                    placeholder="계정과목명"
-                    readOnly
-                  />
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    value={slip.summaryCode.summaryCode}
-                    placeholder="적요 코드"
-                    readOnly
-                    onClick={() => openCodeModal(index, "summary")}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    value={slip.summaryCode.summaryName}
-                    placeholder="적요명"
-                    readOnly
-                  />
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    value={slip.debit || ""}
-                    placeholder="차변(출금)"
-                    onChange={(e) =>
-                      handleInputChange(index, "debit", e.target.value)
-                    }
-                    disabled={
-                      slip.slipDivision === "입금" ||
-                      slip.slipDivision === "출금" ||
+      <div className={styles.slipTableContainer}>
+        <table className={styles.slipTable}>
+          <thead>
+            <tr>
+              <th>
+                <input
+                  type="checkbox"
+                  onChange={(e) => handleHeaderCheckboxChange(e.target.checked)}
+                />
+              </th>
+              <th>날짜</th>
+              <th>거래처 코드</th>
+              <th>거래처명</th>
+              <th>
+                {/* 구분 필터 셀렉트 */}
+                <select
+                  value={divisionFilter}
+                  onChange={(e) => setDivisionFilter(e.target.value)}
+                  className={styles.selectFilter}
+                >
+                  <option value="전체">구분(전체)</option>
+                  <option value="입금">입금</option>
+                  <option value="출금">출금</option>
+                  <option value="차변(출금)">차변(출금)</option>
+                  <option value="대변(입금)">대변(입금)</option>
+                  <option value="차변/대변">차변/대변</option>
+                </select>
+              </th>
+              <th>계정과목 코드</th>
+              <th>계정과목명</th>
+              <th>적요 코드</th>
+              <th>적요명</th>
+              <th>차변(출금)</th>
+              <th>대변(입금)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {slipList && slipList.data && slipList.data.length > 0 ? (
+              // 구분 필터 적용
+              slipList.data
+                .filter((slip) => {
+                  if (divisionFilter === "전체") return true;
+                  if (divisionFilter === "차변/대변") {
+                    return (
+                      slip.slipDivision === "차변(출금)" ||
                       slip.slipDivision === "대변(입금)"
-                    }
-                  />
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    value={slip.credit || ""}
-                    placeholder="대변(입금)"
-                    onChange={(e) =>
-                      handleInputChange(index, "credit", e.target.value)
-                    }
-                    disabled={
-                      slip.slipDivision === "입금" ||
-                      slip.slipDivision === "출금" ||
-                      slip.slipDivision === "차변(출금)"
-                    }
-                  />
+                    );
+                  }
+                  return slip.slipDivision === divisionFilter;
+                })
+                .map((slip, index) => (
+                  <tr key={index}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={slip.selected || false}
+                        onChange={(e) =>
+                          handleCheckboxChange(index, e.target.checked)
+                        }
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="date"
+                        value={slip.slipDate ? slip.slipDate.split("T")[0] : ""}
+                        placeholder="날짜 선택"
+                        onChange={(e) =>
+                          handleInputChange(index, "slipDate", e.target.value)
+                        }
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={slip.venCode.venCode}
+                        placeholder="거래처 코드"
+                        readOnly
+                        onClick={() => openCodeModal(index, "vendor")}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={slip.venCode.venName}
+                        placeholder="거래처명"
+                        readOnly
+                      />
+                    </td>
+                    <td>
+                      <select
+                        value={slip.slipDivision || ""}
+                        onChange={(e) =>
+                          handleInputChange(
+                            index,
+                            "slipDivision",
+                            e.target.value
+                          )
+                        }
+                      >
+                        <option value="">선택</option>
+                        <option value="입금">입금</option>
+                        <option value="출금">출금</option>
+                        <option value="차변(출금)">차변(출금)</option>
+                        <option value="대변(입금)">대변(입금)</option>
+                      </select>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={slip.actCode.actCode}
+                        placeholder="계정과목 코드"
+                        readOnly
+                        onClick={() => openCodeModal(index, "account")}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={slip.actCode.actName}
+                        placeholder="계정과목명"
+                        readOnly
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={slip.summaryCode.summaryCode}
+                        placeholder="적요 코드"
+                        readOnly
+                        onClick={() => openCodeModal(index, "summary")}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={slip.summaryCode.summaryName}
+                        placeholder="적요명"
+                        readOnly
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        value={slip.debit || ""}
+                        placeholder="차변(출금)"
+                        onChange={(e) =>
+                          handleInputChange(index, "debit", e.target.value)
+                        }
+                        disabled={
+                          slip.slipDivision === "입금" ||
+                          slip.slipDivision === "출금" ||
+                          slip.slipDivision === "대변(입금)"
+                        }
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        value={slip.credit || ""}
+                        placeholder="대변(입금)"
+                        onChange={(e) =>
+                          handleInputChange(index, "credit", e.target.value)
+                        }
+                        disabled={
+                          slip.slipDivision === "입금" ||
+                          slip.slipDivision === "출금" ||
+                          slip.slipDivision === "차변(출금)"
+                        }
+                      />
+                    </td>
+                  </tr>
+                ))
+            ) : (
+              <tr>
+                <td colSpan="11" className={styles.noData}>
+                  <img src="/images/icons/document.png" alt="문서" />
+                  <h3>데이터가 없습니다.</h3>
                 </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="11" className={styles.noData}>
-                <img src="/images/icons/document.png" alt="문서" />
-                <h3>데이터가 없습니다.</h3>
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            )}
+          </tbody>
+        </table>
+      </div>
 
-      {/* 경고 메시지용 모달 (SModal 그대로 사용) */}
       <SModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -654,7 +754,7 @@ function Slip() {
       >
         <div style={{ textAlign: "center" }}>
           <Player
-            key={lottieAnimation} // ✅ 애니메이션이 변경될 때마다 리렌더링
+            key={lottieAnimation}
             autoplay
             loop={false}
             keepLastFrame={true}
@@ -666,7 +766,6 @@ function Slip() {
         </div>
       </SModal>
 
-      {/* 코드 선택 모달: 거래처, 계정과목, 적요 → Modal 사용 */}
       <Modal
         isOpen={codeModalOpen}
         onClose={() => setCodeModalOpen(false)}
@@ -686,13 +785,9 @@ function Slip() {
               ? "계정과목 조회"
               : "적요 조회"}
           </h3>
-
-          {/* 모달 내부: codeModalType별로 다른 탭/검색/테이블 */}
           {codeModalType === "vendor" && (
             <>
-              {/* 탭 + 검색 영역 */}
               <div className={styles.tabFilterContainer}>
-                {/* 탭 버튼들 */}
                 <div className={styles.tabButtons}>
                   {["전체", "일반", "도매", "금융", "카드"].map((tab) => (
                     <button
@@ -706,8 +801,6 @@ function Slip() {
                     </button>
                   ))}
                 </div>
-
-                {/* 검색창 */}
                 <div className={styles.searchBox}>
                   <input
                     type="text"
@@ -718,8 +811,6 @@ function Slip() {
                   />
                 </div>
               </div>
-
-              {/* 테이블 */}
               <div className={styles.tableWrapper}>
                 <table className={styles.vendorTable}>
                   <thead>
@@ -748,12 +839,9 @@ function Slip() {
               </div>
             </>
           )}
-
           {codeModalType === "account" && (
             <>
-              {/* 탭 + 검색 영역 */}
               <div className={styles.tabFilterContainer}>
-                {/* 탭 버튼들 */}
                 <div className={styles.tabButtons}>
                   {["전체", "자산", "부채", "자본", "수익", "비용"].map(
                     (tab) => (
@@ -769,8 +857,6 @@ function Slip() {
                     )
                   )}
                 </div>
-
-                {/* 검색창 */}
                 <div className={styles.searchBox}>
                   <input
                     type="text"
@@ -781,8 +867,6 @@ function Slip() {
                   />
                 </div>
               </div>
-
-              {/* 테이블 */}
               <div className={styles.tableWrapper}>
                 <table className={styles.vendorTable}>
                   <thead>
@@ -807,10 +891,8 @@ function Slip() {
               </div>
             </>
           )}
-
           {codeModalType === "summary" && (
             <>
-              {/* 탭 + 검색이 필요 없다면 생략 or 간단 처리 */}
               <div className={styles.tableWrapper}>
                 <table className={styles.vendorTable}>
                   <thead>
