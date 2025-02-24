@@ -61,7 +61,11 @@ function NoticeDetailLayout() {
                 {/* 파일첨부 */}
                 <div className={style.row}>
                     <label className={style.labelAttachment} htmlFor="attachment">파일첨부 :&nbsp;</label>
-                    <input className={style.attachment} type="file" disabled />
+                    {notice.attachment ? (
+                        <input className = {style.attachment} type="text" value={notice.attachment}/>// Display the file name here
+                    ) : (
+                        <span>파일 없음</span>
+                    )}
                 </div>
 
                 {/* 내용 */}
