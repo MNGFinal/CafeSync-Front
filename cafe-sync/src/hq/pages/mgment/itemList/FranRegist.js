@@ -1,10 +1,10 @@
 import { useState } from "react";
 import styles from "./FranRegist.module.css"; // 스타일 파일 추가
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { registFran } from "../../../../apis/mgment/mgmentApi";
 
 function FranRegist({ onClose }) {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const [formData, setFormData] = useState({
         franCode: "",
         franName: "",

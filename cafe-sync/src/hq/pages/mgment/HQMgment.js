@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { fetchFrans, deleteFran } from "../../../apis/mgment/mgmentApi";
 import Modal from "../../../components/Modal";
 import modalStyle from "../../../components/ModalButton.module.css";
 import styles from "./itemList/FranList.module.css";
 import FranRegist from "./itemList/FranRegist"; // ✅ 가맹점 등록 컴포넌트 추가
+
 
 
 function HQMgment() {
@@ -13,7 +13,8 @@ function HQMgment() {
   const [isModalOpen, setIsModalOpen] = useState(false);  // ✅ 상세 모달 상태 추가
   const [isRegistModalOpen, setIsRegistModalOpen] = useState(false); // ✅ 등록 모달 상태 추가
   const [selectedFran, setSelectedFran] = useState(null);
-  const navigate = useNavigate();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // ✅ 폐점 확인 모달 상태 추가
+
 
 
   // 가맹점 목록 불러오기
@@ -48,6 +49,16 @@ function HQMgment() {
     setIsRegistModalOpen(false);
   };
 
+  // ✅ 삭제 확인 모달 열기
+  const openDeleteModal = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  // ✅ 삭제 확인 모달 닫기
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+
   // ✅ 삭제 후 리스트에서 제거하는 함수 추가
   const handleDeleteSuccess = (franCode) => {
     setFranList((prevList) => prevList.filter(fran => fran.franCode !== franCode));
@@ -57,13 +68,12 @@ function HQMgment() {
   // ✅ 삭제 기능 함수
   const handleDeleteFran = async () => {
     if (!selectedFran) return;
-    const confirmDelete = window.confirm(`${selectedFran.franName} 가맹점을 폐점하시겠습니까?`);
-    if (!confirmDelete) return;
 
     const success = await deleteFran(selectedFran.franCode);
     if (success) {
-      alert("가맹점 삭제 성공!");
+      // alert("가맹점 삭제 성공!");
       handleDeleteSuccess(selectedFran.franCode); // ✅ 리스트에서 삭제
+      closeDeleteModal(); // ✅ 모달 닫기 추가
     } else {
       alert("가맹점 삭제 실패");
     }
@@ -146,7 +156,7 @@ function HQMgment() {
           },
           {
             text: "폐점",
-            onClick: handleDeleteFran, // ✅ 이렇게만 사용하면 됨
+            onClick: openDeleteModal, // ✅ 폐점 버튼 클릭 시 삭제 확인 모달 열기
             className: modalStyle.deleteButtonB
           },
         ]}
@@ -157,6 +167,8 @@ function HQMgment() {
             <div className={styles.modalHeader}>
               <h2 className={styles.modalTitle}>{selectedFran.franName} 가맹점 조회</h2>
             </div>
+
+            <hr className={styles.line} />
 
             {/* 점포 이미지 및 이름, 주소 */}
             <div className={styles.storeTopInfo}>
@@ -170,7 +182,7 @@ function HQMgment() {
                 <p className={styles.storeAddr}>{selectedFran.franAddr}</p>
               </div>
             </div>
-
+            <hr className={styles.line} />
             {/* 세부 정보 */}
             <div className={styles.detailInfo}>
               <p>
@@ -197,6 +209,19 @@ function HQMgment() {
         <FranRegist onClose={closeRegistModal} />
       </Modal>
       {/*************************************************************************/}
+
+      {/******************************* 폐점 확인 모달 *******************************/}
+      <Modal isOpen={isDeleteModalOpen} onClose={closeDeleteModal}>
+        <div className={styles.deleteConfirm}>
+          <p>{selectedFran?.franName} 가맹점을 정말 폐점하시겠습니까?</p>
+        </div>
+        <div className={styles.buttonContainer}>
+          <button className={modalStyle.deleteButtonS} onClick={handleDeleteFran}>확인</button>
+          <button className={modalStyle.cancelButtonS} onClick={closeDeleteModal}>취소</button>
+        </div>
+      </Modal>
+      {/*************************************************************************/}
+
     </>
   );
 }

@@ -51,3 +51,24 @@ export async function deleteFran(franCode) {
         return false; // 삭제 실패
     }
 }
+
+
+// ✅ 가맹점 정보 수정 (PUT 요청)
+export async function updateFran(franCode, updateData) {
+    try {
+        const response = await fetch(`http://localhost:8080/api/hq/mgment/${franCode}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updateData),
+        });
+
+        if (!response.ok) throw new Error("가맹점 수정 실패");
+
+        return true; // 수정 성공
+    } catch (error) {
+        console.error("가맹점 수정 오류:", error);
+        return false; // 수정 실패
+    }
+}

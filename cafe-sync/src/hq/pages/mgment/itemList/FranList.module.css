@@ -188,26 +188,29 @@
 
 /* 모달 헤더 */
 .modalHeader {
-    background-color: #f5f0f7;
-    /* 연한 보라/핑크 톤 */
     padding: 0.5rem 1rem;
     margin-top: 10px;
-    margin-bottom: 2rem;
     border-radius: 4px;
 }
 
 .modalTitle {
     margin: 0;
     font-size: 1.4rem;
-    color: #5c2e91;
-    /* 포인트 컬러 예시 */
+}
+
+.line {
+    border-top: 1px solid #ddd;
+    /* 선의 두께를 3px로 설정하고 색상을 검정으로 */
+    width: 100%;
+    /* 가로로 꽉 차게 설정 */
 }
 
 /* 이미지와 기본 정보 상단 배치 */
 .storeTopInfo {
     display: flex;
     gap: 4rem;
-    margin-bottom: 2rem;
+    margin-top: 25px;
+    margin-bottom: 25px;
     align-items: center;
     text-align: center;
 }
