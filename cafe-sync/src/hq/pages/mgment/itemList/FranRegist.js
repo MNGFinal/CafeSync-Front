@@ -3,7 +3,7 @@ import styles from "./FranRegist.module.css"; // 스타일 파일 추가
 import { useNavigate } from "react-router-dom";
 import { registFran } from "../../../../apis/mgment/mgmentApi";
 
-function FranRegist() {
+function FranRegist({ onClose }) {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         franCode: "",
@@ -81,7 +81,7 @@ function FranRegist() {
 
                 <div className={styles.buttonGroup}>
                     <button type="submit" className={styles.submitButton}>등록</button>
-                    <button type="button" className={styles.cancelButton} onClick={() => navigate("/hq/mgment")}>취소</button>
+                    <button type="button" className={styles.cancelButton} onClick={onClose}>취소</button>
                 </div>
             </form>
         </div>

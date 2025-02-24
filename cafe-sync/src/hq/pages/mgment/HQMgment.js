@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import { fetchFrans } from "../../../apis/mgment/mgmentApi";
+import { useNavigate } from "react-router-dom";
+import { fetchFrans, deleteFran } from "../../../apis/mgment/mgmentApi";
 import Modal from "../../../components/Modal";
 import modalStyle from "../../../components/ModalButton.module.css";
 import styles from "./itemList/FranList.module.css";
+import FranRegist from "./itemList/FranRegist"; // ✅ 가맹점 등록 컴포넌트 추가
+import FranDelete from "./itemList/FranDelete"; // ✅ 삭제 기능 분리
 
 
 function HQMgment() {
 
   const [franList, setFranList] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);  // ✅ 상세 모달 상태 추가
+  const [isRegistModalOpen, setIsRegistModalOpen] = useState(false); // ✅ 등록 모달 상태 추가
   const [selectedFran, setSelectedFran] = useState(null);
   const navigate = useNavigate();
 
@@ -24,20 +27,33 @@ function HQMgment() {
     getFrans();
   }, []);
 
-  // 모달 열기
+  // 상세페이지 모달 열기
   const openModal = (fran) => {
     setSelectedFran(fran);
     setIsModalOpen(true);
   };
 
-  // 모달 닫기
+  // 상세페이지 모달 닫기
   const closeModal = () => {
     setSelectedFran(null);
     setIsModalOpen(false);
   };
 
+  // ✅ 등록 모달 열기
+  const openRegistModal = () => {
+    setIsRegistModalOpen(true);
+  };
 
+  // ✅ 등록 모달 닫기
+  const closeRegistModal = () => {
+    setIsRegistModalOpen(false);
+  };
 
+  // ✅ 삭제 후 리스트에서 제거하는 함수 추가
+  const handleDeleteSuccess = (franCode) => {
+    setFranList(franList.filter(fran => fran.franCode !== franCode));
+    closeModal();
+  };
 
   return (
     <>
@@ -48,13 +64,13 @@ function HQMgment() {
         {/********************************* 등록창 *********************************/}
         <button
           className={styles.registButton}
-          onClick={() => navigate("regist")}
+          onClick={openRegistModal}
         >등록</button>
 
 
         <div className={styles.dividerContainer}>
           <hr className={styles.divider} />
-          <Outlet />
+          {/* <Outlet /> */}
         </div>
         {/*************************************************************************/}
 
@@ -81,7 +97,11 @@ function HQMgment() {
         <div className={styles.gridContainer}>
           {franList.length > 0 ? (
             franList.map((fran) => (
-              <div key={fran.franCode} className={styles.storeCard} onClick={() => openModal(fran)}>
+              <div
+                key={fran.franCode}
+                className={styles.storeCard}
+                onClick={() => openModal(fran)}
+              >
                 <img className={styles.imagePlaceholder} src={fran.franImage} alt="가맹점 이미지"></img>
                 <h3>{fran.franName}</h3>
                 <p>{fran.franAddr}</p>
@@ -97,7 +117,7 @@ function HQMgment() {
       </div>
 
 
-      {/********************************* 모달창 *********************************/}
+      {/******************************* 상세 모달창 *******************************/}
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
@@ -160,7 +180,12 @@ function HQMgment() {
       </Modal>
 
       {/*************************************************************************/}
+      {/******************************* 등록 모달창 *******************************/}
 
+      <Modal isOpen={isRegistModalOpen} onClose={closeRegistModal}>
+        <FranRegist onClose={closeRegistModal} />
+      </Modal>
+      {/*************************************************************************/}
     </>
   );
 }

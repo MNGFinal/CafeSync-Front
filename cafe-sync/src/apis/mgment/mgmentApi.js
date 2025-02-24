@@ -14,7 +14,7 @@ export async function fetchFrans() {
     }
 }
 
-
+// ✅ 가맹점 등록 (POST 요청)
 export async function registFran(franData) {
     try {
         const response = await fetch("http://localhost:8080/api/hq/mgment", {
@@ -33,5 +33,21 @@ export async function registFran(franData) {
     } catch (error) {
         console.error("가맹점 등록 실패:", error);
         throw error;
+    }
+}
+
+// ✅ 가맹점 폐점 (DELETE 요청)
+export async function deleteFran(franCode) {
+    try {
+        const response = await fetch(`http://localhost:8080/api/hq/mgment/${franCode}`, {
+            method: "DELETE",
+        });
+
+        if (!response.ok) throw new Error("가맹점 삭제 실패");
+
+        return true; // 삭제 성공
+    } catch (error) {
+        console.error("가맹점 삭제 오류:", error);
+        return false; // 삭제 실패
     }
 }
