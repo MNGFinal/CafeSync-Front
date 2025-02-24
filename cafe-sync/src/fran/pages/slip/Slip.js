@@ -48,6 +48,25 @@ function Slip() {
   // "구분" 필터 상태 (테이블 헤더에 적용)
   const [divisionFilter, setDivisionFilter] = useState("전체");
 
+  const [isSearchClicked, setIsSearchClicked] = useState(false);
+
+  useEffect(() => {
+    if (!franCode) return;
+
+    const today = new Date();
+    const todayStr = today.toISOString().split("T")[0];
+
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+    const oneMonthAgoStr = oneMonthAgo.toISOString().split("T")[0];
+
+    setStartDate(oneMonthAgoStr);
+    setEndDate(todayStr);
+
+    // ✅ 초기 데이터 로딩 시에는 날짜 검증 없이 실행
+    fetchSlips(oneMonthAgoStr, todayStr, false);
+  }, [franCode]);
+
   // 벤더 필터링 함수
   const getFilteredVendorList = () => {
     let filtered = vendorList;
@@ -213,17 +232,23 @@ function Slip() {
   }, [codeModalOpen, codeModalType]);
 
   // 전표 조회
-  const fetchSlips = async () => {
-    if (!isValidDateRange()) return;
+  const fetchSlips = async (start, end, validate = false) => {
+    // 🚀 validate가 true일 경우에만 날짜 유효성 검사 실행
+    if (validate && !isValidDateRange()) return;
+
     try {
-      const data = await getFranSlipList(franCode, startDate, endDate);
+      const data = await getFranSlipList(franCode, start, end);
       console.log("✅ 응답 데이터:", data);
+
       if (!data || data.length === 0) {
+        if (!isSearchClicked) return; // ✅ 초기 로딩 시에는 모달 띄우지 않음
+
         setLottieAnimation("/animations/warning.json");
         setModalMessage("해당 날짜에 대한 데이터가 없습니다!");
         setIsModalOpen(true);
         return;
       }
+
       setSlipList(data);
     } catch (error) {
       console.error("❌ 데이터 조회 오류:", error);
@@ -231,6 +256,13 @@ function Slip() {
       setModalMessage("데이터 조회 중 오류가 발생했습니다!");
       setIsModalOpen(true);
     }
+  };
+
+  const handleSearch = () => {
+    setIsSearchClicked(true); // ✅ 조회 버튼 클릭 여부 표시
+
+    // 🚀 이미 날짜가 선택되어 있다면 유효성 검사 실행하지 않음
+    fetchSlips(startDate, endDate, false); // ✅ 유효성 검사 없이 실행
   };
 
   // 새 행 추가
@@ -340,8 +372,9 @@ function Slip() {
       showModal("/animations/warning.json", "모든 필드값을 입력해주세요!");
       return;
     }
+
     const dtoArray = checkedRows.map((row) => ({
-      slipCode: row.slipCode || 0,
+      slipCode: row.slipCode || 0, // slipCode는 새로 생성될 경우 0으로 전달됨
       slipDate: row.slipDate.includes("T")
         ? row.slipDate
         : row.slipDate + "T00:00:00",
@@ -353,11 +386,15 @@ function Slip() {
       credit: row.credit ? parseInt(row.credit) : 0,
       franCode: parseInt(franCode),
     }));
+
     try {
       const result = await saveSlipList(dtoArray);
+
       if (result) {
         showModal("/animations/success-check.json", "저장 성공!");
-        await fetchSlips();
+
+        // ✅ 저장 후 최신 데이터 불러오기 (slipCode 반영을 위해 필요)
+        await fetchSlips(startDate, endDate, false);
       }
     } catch (error) {
       console.error(error);
@@ -422,12 +459,19 @@ function Slip() {
       showModal("/animations/warning.json", "데이터가 없습니다!");
       return;
     }
+
+    // ✅ 세금계산서 생성 전에 최신 데이터 가져오기 (slipCode 반영)
+    await fetchSlips(startDate, endDate, false);
+
+    console.log("🚀 최신 전표 데이터:", slipList); // 최신 데이터 확인
+
     const checkedRows = slipList.data.filter(
       (item) =>
         item.selected &&
         (item.slipDivision === "차변(출금)" ||
           item.slipDivision === "대변(입금)")
     );
+
     if (checkedRows.length === 0) {
       showModal(
         "/animations/warning.json",
@@ -435,16 +479,16 @@ function Slip() {
       );
       return;
     }
-    const taxDataArray = checkedRows.map((row) => {
-      const taxVal = row.slipDivision === "차변(출금)" ? row.debit : row.credit;
-      const dateOnly = row.slipDate.split("T")[0];
-      return {
-        slipCode: row.slipCode,
-        franCode: franCode,
-        taxDate: dateOnly,
-        taxVal: taxVal || 0,
-      };
-    });
+
+    const taxDataArray = checkedRows.map((row) => ({
+      slipCode: row.slipCode, // ✅ 최신 slipCode가 반영됨
+      franCode: franCode,
+      taxDate: row.slipDate.split("T")[0], // 날짜 포맷 변환
+      taxVal: row.slipDivision === "차변(출금)" ? row.debit : row.credit || 0,
+    }));
+
+    console.log("🚀 세금계산서 요청 데이터:", taxDataArray);
+
     try {
       const result = await createTaxInvoices(taxDataArray);
       if (result) {
@@ -533,7 +577,7 @@ function Slip() {
           />
         </div>
         <div className={styles.searchBtn}>
-          <button onClick={fetchSlips}>조회</button>
+          <button onClick={handleSearch}>조회</button>
         </div>
       </div>
 
@@ -800,15 +844,15 @@ function Slip() {
                       {tab}
                     </button>
                   ))}
-                </div>
-                <div className={styles.searchBox}>
-                  <input
-                    type="text"
-                    placeholder="거래처명 입력"
-                    className={styles.searchInput}
-                    value={vendorSearchText}
-                    onChange={(e) => setVendorSearchText(e.target.value)}
-                  />
+                  <div className={styles.searchBox}>
+                    <input
+                      type="text"
+                      placeholder="거래처명 입력"
+                      className={styles.searchInput}
+                      value={vendorSearchText}
+                      onChange={(e) => setVendorSearchText(e.target.value)}
+                    />
+                  </div>
                 </div>
               </div>
               <div className={styles.tableWrapper}>
