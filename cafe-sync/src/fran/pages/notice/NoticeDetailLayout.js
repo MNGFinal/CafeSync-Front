@@ -1,5 +1,3 @@
-// src/fran/pages/notice/NoticeDetailLayout.js
-
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams, Link } from "react-router-dom";
@@ -14,14 +12,20 @@ function NoticeDetailLayout() {
     const [creationDate, setCreationDate] = useState("");
 
     useEffect(() => {
+        console.log("🔄 공지사항 상세 요청:", noticeCode);
         dispatch(callNoticeDetailAPI({ noticeCode }));
     }, [dispatch, noticeCode]);
 
     useEffect(() => {
+        console.log("📌 Redux에서 가져온 notice:", notice);
         if (notice && notice.noticeDate) {
             setCreationDate(notice.noticeDate);
         }
     }, [notice]);
+
+    if (!notice) {
+        return <div>로딩 중...</div>;
+    }
 
     return (
         <div className={style.wrapperBox}>
@@ -30,11 +34,11 @@ function NoticeDetailLayout() {
                 <div className={style.row}>
                     <div className={style.inlineField}>
                         <label className={style.labelTitle} htmlFor="noticeTitle">제목 :&nbsp;</label>
-                        <input className={style.title} type="text" value={notice.noticeTitle} readOnly />
+                        <input className={style.title} type="text" value={notice.noticeTitle || ""} readOnly />
                     </div>
                     <div className={style.inlineField}>
                         <label className={style.labelCreationDate} htmlFor="creationDate">작성날짜 :&nbsp;</label>
-                        <input className={style.creationDate} type="text" value={notice.noticeDate} readOnly />
+                        <input className={style.creationDate} type="text" value={creationDate || ""} readOnly />
                     </div>
                 </div>
 
@@ -42,7 +46,7 @@ function NoticeDetailLayout() {
                 <div className={style.row}>
                     <div className={style.inlineField}>
                         <label className={style.labelWriter} htmlFor="writer">작성자 :&nbsp;</label>
-                        <input className={style.writer} type="text" value={notice.empName} readOnly />
+                        <input className={style.writer} type="text" value={notice.empName || "정보 없음"} readOnly />
                     </div>
                 </div>
 
@@ -50,20 +54,20 @@ function NoticeDetailLayout() {
                 <div className={style.row}>
                     <div className={style.inlineField}>
                         <label className={style.labelViews} htmlFor="views">조회수 :&nbsp;</label>
-                        <input className={style.views} type="text" value={notice.noticeViews} readOnly />
+                        <input className={style.views} type="text" value={notice.noticeViews || "0"} readOnly />
                     </div>
                 </div>
 
                 {/* 파일첨부 */}
                 <div className={style.row}>
-                        <label className={style.labelAttachment} htmlFor="attachment">파일첨부 :&nbsp;</label>
-                        <input className={style.attachment} type="file" disabled />
+                    <label className={style.labelAttachment} htmlFor="attachment">파일첨부 :&nbsp;</label>
+                    <input className={style.attachment} type="file" disabled />
                 </div>
 
                 {/* 내용 */}
                 <div className={style.row}>
                     <label className={style.labelContent} htmlFor="content">내용 :&nbsp;</label>
-                    <textarea className={style.Content} value={notice.noticeContent} readOnly />
+                    <textarea className={style.Content} value={notice.noticeContent || ""} readOnly />
                 </div>
 
                 {/* 버튼 컨테이너 */}
