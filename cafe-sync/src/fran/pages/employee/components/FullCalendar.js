@@ -38,7 +38,7 @@ const MyCalendar = () => {
   }, [updateTrigger]);
 
   const fetchSchedules = async () => {
-    console.log("🔍 조회할 스케줄 franCode:", franCode);
+    // console.log("🔍 조회할 스케줄 franCode:", franCode);
     if (!franCode) return;
 
     try {
@@ -156,6 +156,7 @@ const MyCalendar = () => {
         setIsModalOpen={setIsModalOpen} 
         franCode={franCode}
         onScheduleUpdate={onScheduleUpdate}
+        existingSchedules={events}
       />
     </div>
   );
