@@ -275,3 +275,149 @@ export async function insertOrderRequest(orderData) {
     };
   }
 }
+
+// ✅ 발주 신청 내역 조회
+export async function findOrderList(franCode) {
+  try {
+    const token = sessionStorage.getItem("accessToken");
+    const apiUrl = `http://localhost:8080/api/fran/order/${franCode}`; // ✅ Path Variable 적용
+
+    const response = await fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("✅ 발주 신청 내역 조회 완료:", data);
+    return data.data; // ResponseDTO에서 실제 데이터 추출
+  } catch (error) {
+    console.error("❌ 발주 신청 내역 조회 오류:", error);
+    return [];
+  }
+}
+
+export async function updateFranOrder(updatedData) {
+  console.log("저장할 목록", updatedData);
+
+  if (!updatedData || updatedData.length === 0) {
+    console.error("❌ 업데이트할 데이터가 없습니다!");
+    return { success: false, message: "업데이트할 데이터가 없습니다." };
+  }
+
+  try {
+    const token = sessionStorage.getItem("accessToken");
+    const apiUrl = `http://localhost:8080/api/fran/order/update`;
+
+    // ✅ orderDetailId가 이상한 숫자거나 없으면 제거
+    const refinedData = updatedData.map((item) => {
+      if (!item.orderDetailId || item.orderDetailId > 2147483647) {
+        const { orderDetailId, ...newItem } = item; // orderDetailId 제거
+        return newItem;
+      }
+      return item;
+    });
+
+    console.log("📌 정제된 데이터 전송:", refinedData);
+
+    const response = await fetch(apiUrl, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(refinedData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+    }
+
+    console.log("✅ 재고 업데이트 성공");
+    return { success: true, message: "성공적으로 저장되었습니다!" };
+  } catch (error) {
+    console.error("❌ 재고 데이터를 업데이트하는 중 오류 발생:", error);
+    return {
+      success: false,
+      message: "저장 중 오류가 발생했습니다. 다시 시도해주세요.",
+    };
+  }
+}
+
+// ✅ 발주 상세 항목 삭제 API (오른쪽 화면)
+export async function deleteFranOrderDetail(deleteData) {
+  console.log("📝 삭제할 발주 상세 내역:", deleteData);
+
+  if (!deleteData || deleteData.length === 0) {
+    console.error("❌ 삭제할 데이터가 없습니다!");
+    return { success: false, message: "삭제할 데이터를 선택해주세요." };
+  }
+
+  try {
+    const token = sessionStorage.getItem("accessToken");
+    const apiUrl = `http://localhost:8080/api/fran/order/delete`;
+
+    const response = await fetch(apiUrl, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(deleteData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+    }
+
+    console.log("✅ 선택된 발주 상세 항목 삭제 성공");
+    return { success: true, message: "삭제 성공!" };
+  } catch (error) {
+    console.error("❌ 발주 삭제 중 오류 발생:", error);
+    return {
+      success: false,
+      message: "삭제 중 오류가 발생했습니다. 다시 시도해주세요.",
+    };
+  }
+}
+
+// ✅ 발주 내역 삭제 API (tbl_order + tbl_order_detail 함께 삭제)
+export async function deleteFranOrders(deleteData) {
+  if (!deleteData || deleteData.length === 0) {
+    console.error("❌ 삭제할 발주를 선택해주세요!");
+    return { success: false, message: "삭제할 발주를 선택해주세요." };
+  }
+
+  try {
+    const token = sessionStorage.getItem("accessToken");
+    const apiUrl = `http://localhost:8080/api/fran/order/fran-order`;
+
+    const response = await fetch(apiUrl, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(deleteData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+    }
+
+    console.log("✅ 선택된 발주 삭제 성공");
+    return { success: true, message: "삭제 성공!" };
+  } catch (error) {
+    console.error("❌ 발주 삭제 중 오류 발생:", error);
+    return {
+      success: false,
+      message: "삭제 중 오류가 발생했습니다. 다시 시도해주세요.",
+    };
+  }
+}
