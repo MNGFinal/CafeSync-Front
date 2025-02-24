@@ -31,6 +31,7 @@
   font-size: 14px;
   font-weight: bold;
   margin-bottom: 5px;
+  width: 75px;
 }
 
 /* 입력 필드 스타일 */
@@ -106,6 +107,7 @@
   text-decoration: none;
   color: #777;
   font-size: 14px;
+  width: 89px;
 }
 
 .find-box a:hover {
