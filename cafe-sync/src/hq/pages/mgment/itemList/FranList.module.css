@@ -208,7 +208,7 @@
 /* 이미지와 기본 정보 상단 배치 */
 .storeTopInfo {
     display: flex;
-    gap: 4rem;
+    gap: 5rem;
     margin-top: 25px;
     margin-bottom: 25px;
     align-items: center;
