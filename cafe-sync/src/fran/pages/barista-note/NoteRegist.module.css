@@ -121,3 +121,41 @@ input {
     text-align: right;
     /* margin-bottom : 380px; */
 }
+
+.labelWriter {
+    width: 110px; /* 내용 라벨의 너비 */
+    display: inline-block;
+    text-align: right;
+}
+
+.labelViews{
+    width: 110px; /* 내용 라벨의 너비 */
+    display: inline-block;
+    text-align: right;
+}
+
+.noteDetailContainer{
+    padding : 50px;
+}
+
+.inlineField {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* 라벨과 인풋 사이의 간격 최소화 */
+}
+
+.writer {
+    border:1px solid #ccc;
+    border-radius: 5px;
+}
+
+.views {
+    border:1px solid #ccc;
+    border-radius: 5px;    
+}
+
+.attachment{
+    border:1px solid #ccc;
+    border-radius: 5px; 
+    
+}

@@ -33,6 +33,8 @@ import Employee from "./fran/pages/employee/Employee";
 import Chat from "./fran/pages/chat/Chat";
 import Notice from "./fran/pages/notice/Notice";
 import NoticeRegist from "./fran/pages/notice/NoticeRegist";
+import NoticeLayout from  "./fran/pages/notice/NoticeLayout"
+import NoticeDetailLayout from "./fran/pages/notice/NoticeDetailLayout";
 import BaristaNote from "./fran/pages/barista-note/BaristaNote";
 import Stats from "./fran/pages/stats/Stats";
 import FranInventory from "./fran/pages/inventory/FranInventory";
@@ -113,6 +115,8 @@ function App() {
             <Route path="schedule" element={<Schedule />} />
             <Route path="dayoff" element={<DayOff />} />
             <Route path="notice" element={<Notice />} />
+            <Route path="/fran/notice" element={<NoticeLayout />} />
+            <Route path="/fran/notice/:noticeCode" element={<NoticeDetailLayout />} />
             <Route path="notice/notice-regist" element={<NoticeRegist />} />
             <Route path="chat" element={<Chat />} />
             <Route path="barista-note" element={<BaristaNote />} />
