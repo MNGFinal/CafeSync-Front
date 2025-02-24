@@ -17,7 +17,7 @@ export async function fetchFrans() {
 
 export async function registFran(franData) {
     try {
-        const response = await fetch("http://localhost:8080/api/hq/mgment/regist", {
+        const response = await fetch("http://localhost:8080/api/hq/mgment", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json", // JSON으로 전송
