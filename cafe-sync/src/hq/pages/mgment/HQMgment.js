@@ -5,7 +5,6 @@ import Modal from "../../../components/Modal";
 import modalStyle from "../../../components/ModalButton.module.css";
 import styles from "./itemList/FranList.module.css";
 import FranRegist from "./itemList/FranRegist"; // ✅ 가맹점 등록 컴포넌트 추가
-import FranDelete from "./itemList/FranDelete"; // ✅ 삭제 기능 분리
 
 
 function HQMgment() {
@@ -51,9 +50,25 @@ function HQMgment() {
 
   // ✅ 삭제 후 리스트에서 제거하는 함수 추가
   const handleDeleteSuccess = (franCode) => {
-    setFranList(franList.filter(fran => fran.franCode !== franCode));
+    setFranList((prevList) => prevList.filter(fran => fran.franCode !== franCode));
     closeModal();
   };
+
+  // ✅ 삭제 기능 함수
+  const handleDeleteFran = async () => {
+    if (!selectedFran) return;
+    const confirmDelete = window.confirm(`${selectedFran.franName} 가맹점을 폐점하시겠습니까?`);
+    if (!confirmDelete) return;
+
+    const success = await deleteFran(selectedFran.franCode);
+    if (success) {
+      alert("가맹점 삭제 성공!");
+      handleDeleteSuccess(selectedFran.franCode); // ✅ 리스트에서 삭제
+    } else {
+      alert("가맹점 삭제 실패");
+    }
+  };
+
 
   return (
     <>
@@ -84,7 +99,6 @@ function HQMgment() {
           />
           <button
             className={styles.searchButton}
-            onClick={() => navigate("/hq/mgment/regist")}
           >
             검색
           </button>
@@ -132,11 +146,8 @@ function HQMgment() {
           },
           {
             text: "폐점",
-            onClick: () => {
-              // 폐점 기능 구현 (예: 폐점 확인 후 API 호출)
-              // 예: handleCloseStore(selectedFran.franCode);
-            },
-            className: modalStyle.deleteButtonB // 모달 버튼 스타일 적용 (선택 사항)
+            onClick: handleDeleteFran, // ✅ 이렇게만 사용하면 됨
+            className: modalStyle.deleteButtonB
           },
         ]}
       >
