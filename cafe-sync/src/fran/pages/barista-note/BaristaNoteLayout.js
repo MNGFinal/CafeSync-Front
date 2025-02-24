@@ -3,8 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import style from './Note.module.css';
-import { callBaristNotesAPI, callSearchNoteAPI, callNoteRegistAPI , callNoteUpdateAPI , callNoteDeleteAPI } from '../../../apis/brista-note/baristaNoteApi';
+import { callBaristNotesAPI, callSearchNoteAPI, callNoteRegistAPI , callNoteUpdateAPI , callNoteDeleteAPI , callBaristNoteDetailAPI } from '../../../apis/brista-note/baristaNoteApi';
 import { useMemo } from 'react';
+import { GET_NOTES } from '../../../modules/NoteModule';
 
 // 추가된 임포트
 import ReactPaginate from 'react-paginate'; // 페이지네이션 컴포넌트
@@ -73,14 +74,27 @@ function BaristaNoteLayout() {
     };
 
     const handleSearchChange = (e) => setSearch(e.target.value);
+
+    const openDetailModal = async (note) => {
+        // 기존 Redux 상태 가져오기
+        const updatedNotes = noteList.map(n =>
+            n.noteCode === note.noteCode ? { ...n, viewCount: (n.viewCount || 0) + 1 } : n
+        );
     
-    const openDetailModal = (note) => {
-        setSelectedNote(note);
-        setNoteTitle(note.noteTitle); // 선택된 노트의 제목 설정
-        setNoteDetail(note.noteDetail); // 선택된 노트의 내용 설정
+        // Redux 상태 즉시 업데이트하여 UI에 반영
+        dispatch({ type: GET_NOTES, payload: updatedNotes });
+    
+        // 서버에 조회수 증가 요청
+        await dispatch(callBaristNoteDetailAPI({ noteCode: note.noteCode }));
+    
+        // 선택된 노트 상태 업데이트
+        setSelectedNote({ ...note, viewCount: (note.viewCount || 0) + 1 });
+        setNoteTitle(note.noteTitle);
+        setNoteDetail(note.noteDetail);
         setIsDetailModalOpen(true);
-        setIsEditMode(false); // 상세보기 모드에서는 수정이 안 되도록 초기화
+        setIsEditMode(false);
     };
+
     const closeDetailModal = () => setIsDetailModalOpen(false);
 
     const handleTitleChange = (e) => setNoteTitle(e.target.value);
@@ -203,7 +217,7 @@ function BaristaNoteLayout() {
                             <div className={style.infoItem}>{note.noteTitle}</div>
                             <div className={style.infoItem}>{note.empName}</div>
                             <div className={style.infoItem}>{note.noteDate}</div>
-                            <div className={style.infoItem}>{note.viewCount || 0}</div>
+                            <div className={style.infoItem}>{note.viewCount}</div>
                         </div>
                     ))
                 ) : (
@@ -286,6 +300,7 @@ function BaristaNoteLayout() {
                         <div className={style.modalDetails}>
                             <p>작성자: {selectedNote.empName}</p>
                             <p>작성일: {selectedNote.noteDate}</p>
+                            <p>조회수: {selectedNote.viewCount}</p>
                         </div>
 
                         {/* 파일 첨부 부분: 첨부된 파일이 있을 때는 파일명, 없을 때는 파일 첨부 버튼 */}

@@ -3,6 +3,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./authSlice"; // ✅ authSlice 불러오기
 import noteReducer from "../modules/NoteModule";
+import noticeReducer from "../modules/NoticeModule";
 
 // ✅ 세션 스토리지에서 초기 상태 불러오기
 const preloadedState = {
@@ -19,6 +20,7 @@ const store = configureStore({
   reducer: {
     auth: authReducer, // ✅ auth 상태 추가
     noteReducer : noteReducer, // ✅ noteReducer 추가
+    noticeReducer : noticeReducer , 
   },
   preloadedState, // ✅ 세션 스토리지에서 Redux 상태 복원
 });

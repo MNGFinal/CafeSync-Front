@@ -1,0 +1,278 @@
+/* 🔹 전체 레이아웃 */
+.defSection {
+  display: flex;
+  gap: 40px;
+  padding: 30px;
+}
+
+/* 🔹 왼쪽 테이블 (세금계산서 목록) */
+.addSection {
+  border: 1px solid #ddd;
+  width: 750px;
+  height: 740px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #fff;
+  overflow: hidden; /* ✅ 내부 요소 스크롤을 위해 설정 */
+}
+
+/* 🔹 오른쪽 패널 */
+.listSection {
+  border: 1px solid #ddd;
+  width: 1000px;
+  height: 740px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 30px;
+  background-color: #f7faff;
+  transition: background 0.3s ease;
+  position: relative; /* ✅ 부모 요소를 relative로 설정해야 absolute가 정상 동작함 */
+}
+
+.searchBox {
+  display: flex;
+  margin: 10px;
+  gap: 10px;
+}
+
+/* 🔹 세금계산서 타이틀 */
+.invoiceTitle {
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #0056b3;
+  padding: 10px;
+  border-bottom: 4px solid #0056b3;
+  width: 100%;
+}
+
+/* 🔹 세금계산서 테이블 */
+.invoiceTable {
+  width: 95%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 🔹 테이블 셀 스타일 */
+.invoiceTable td {
+  border: 1px solid #ddd;
+  padding: 22px 22px;
+  font-size: 16px;
+  color: #333;
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* 🔹 라벨 스타일 */
+.invoiceTable .label {
+  background: #e3efff;
+  font-weight: bold;
+  text-align: right;
+  width: 160px;
+  color: #0047ab;
+  text-align: center;
+}
+
+/* 🔹 짝수 행 배경색 변경 */
+.invoiceTable tr:nth-child(even) {
+  background-color: #f0f7ff;
+}
+
+/* 🔹 체크박스 테이블 스타일 */
+.tableStyle {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+.tableStyle th,
+.tableStyle td {
+  border: 1px solid #ddd;
+  padding: 12px 14px; /* 패딩 조정하여 텍스트 정렬 개선 */
+  text-align: center;
+  font-size: 15px;
+}
+
+.tableStyle thead tr {
+  background-color: #0056b3;
+  color: white;
+  font-weight: bold;
+}
+
+/* 🔹 선택된 행 스타일 */
+.tableStyle tbody tr:hover {
+  background-color: #e3efff;
+  cursor: pointer;
+}
+
+/* 🔹 버튼 스타일 */
+.searchBtn {
+  background-color: #0056b3;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  border-radius: 6px;
+  transition: background 0.3s ease-in-out;
+  height: 30px;
+  width: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.searchBtn:hover {
+  background-color: #003f8a;
+}
+
+/* 🔹 날짜 선택 input */
+input[type="date"] {
+  padding: 8px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+  transition: border 0.3s ease-in-out;
+  height: 30px;
+}
+
+input[type="date"]:focus {
+  border-color: #0056b3;
+  outline: none;
+}
+
+/* 🔹 체크박스 스타일 */
+input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.deleteBtn {
+  background-color: #f84545;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  border-radius: 6px;
+  transition: background 0.3s ease-in-out;
+  height: 30px;
+  width: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  left: 209px;
+}
+
+.deleteBtn:hover {
+  background-color: red;
+}
+
+/* 🔹 PDF 버튼을 오른쪽 상단으로 이동 */
+.pdfBtn {
+  background-color: #f84545;
+  color: white;
+  height: 30px;
+  width: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute; /* ✅ 절대 위치 지정 */
+  top: 20px; /* 상단에서 20px 떨어짐 */
+  right: 30px; /* 오른쪽에서 30px 떨어짐 */
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+  border: none;
+}
+
+.pdfBtn:hover {
+  background-color: red;
+}
+
+.paginationContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+  padding: 10px 0;
+  margin-top: auto;
+  margin-bottom: 10px;
+  background-color: white;
+}
+
+.tableWrapper {
+  flex-grow: 1; /* ✅ 테이블이 가득 차고 남는 공간은 페이징이 차지 */
+  overflow-y: auto; /* ✅ 테이블 스크롤 적용 */
+}
+
+.paginationContainer li {
+  margin: 0 5px;
+}
+
+.paginationContainer a {
+  padding: 4px 11px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  color: #5c1946; /* 버튼 기본 색상 */
+  background-color: white;
+  border: 1px solid #5c1946;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.paginationContainer a:hover {
+  background-color: #5c1946;
+  color: white;
+}
+
+.paginationContainer .activePage a {
+  background-color: #5c1946 !important;
+  color: white !important;
+}
+
+.paginationContainer .disabled a {
+  color: #ccc;
+  border: 1px solid #ccc;
+  cursor: not-allowed;
+}
+
+.noData {
+  width: 100%;
+  height: 740px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-weight: bold;
+  color: grey;
+}
+
+.resetBtn {
+  display: flex;
+  width: 30px;
+  height: 30px;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background-color: #28a745; /* ✅ 상큼한 초록색 */
+  border-radius: 50%; /* ✅ 동그랗게 */
+  border: none; /* ✅ 테두리 제거 */
+  transition: background-color 0.3s ease-in-out, transform 0.2s;
+  color: white; /* ✅ 아이콘이 잘 보이도록 흰색 */
+  font-size: 16px; /* ✅ 아이콘 크기 */
+}
+
+.resetBtn:hover {
+  background-color: #218838; /* ✅ 진한 초록색으로 변경 */
+  transform: scale(1.1); /* ✅ 살짝 커지는 효과 */
+}

@@ -6,13 +6,13 @@ import { registFran } from "../../../../apis/mgment/mgmentApi";
 function FranRegist() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
+        franCode: "",
         franName: "",
         franAddr: "",
+        empCode: "",
         franPhone: "",
         franImage: null,
         memo: "",
-        empCode: "",
-        franCode: ""
     });
 
     const handleChange = (e) => {
@@ -21,7 +21,7 @@ function FranRegist() {
     };
 
     const handleFileChange = (e) => {
-        setFormData({ ...formData, image: e.target.files[0] });
+        setFormData({ ...formData, franImage: e.target.files[0] });
     };
 
 
@@ -45,37 +45,37 @@ function FranRegist() {
 
                 {/* ✅ 가맹점 코드 필드 추가 */}
                 <div className={styles.formGroup}>
-                    <label>가맹점 코드:</label>
+                    <label>가맹점 코드 :</label>
                     <input type="text" name="franCode" value={formData.franCode} onChange={handleChange} required />
                 </div>
 
                 <div className={styles.formGroup}>
-                    <label>점포명:</label>
+                    <label>점포명 :</label>
                     <input type="text" name="franName" value={formData.franName} onChange={handleChange} required />
                 </div>
 
                 <div className={styles.formGroup}>
-                    <label>점포 위치:</label>
+                    <label>점포 위치 :</label>
                     <input type="text" name="franAddr" value={formData.franAddr} onChange={handleChange} required />
                 </div>
 
                 <div className={styles.formGroup}>
-                    <label>점장명:</label>
-                    <input type="text" name="empCode" value={formData.empCode} onChange={handleChange} required />
+                    <label>사원번호 :</label>
+                    <input type="number" name="empCode" value={formData.empCode} onChange={handleChange} required />
                 </div>
 
                 <div className={styles.formGroup}>
-                    <label>매장 대표번호:</label>
+                    <label>매장 대표번호 :</label>
                     <input type="text" name="franPhone" value={formData.franPhone} onChange={handleChange} required />
                 </div>
 
                 <div className={styles.formGroup}>
-                    <label>점포 이미지:</label>
+                    <label>점포 이미지 :</label>
                     <input type="file" name="franImage" onChange={handleFileChange} />
                 </div>
 
                 <div className={styles.formGroup}>
-                    <label>특이사항:</label>
+                    <label>특이사항 :</label>
                     <textarea name="memo" value={formData.memo} onChange={handleChange}></textarea>
                 </div>
 

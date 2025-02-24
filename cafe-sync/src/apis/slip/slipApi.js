@@ -507,3 +507,69 @@ export async function createPnl(pnlData) {
     return null;
   }
 }
+
+// 세금 계산서 조회(가맹점별)
+export async function getFranTaxList(franCode, startDate, endDate) {
+  if (!franCode || !startDate || !endDate) {
+    console.error("❌ 필요한 데이터가 없습니다!");
+    return [];
+  }
+
+  try {
+    let token = sessionStorage.getItem("accessToken");
+    const refreshToken = sessionStorage.getItem("refreshToken");
+    const apiUrl = `http://localhost:8080/api/fran/tax/${franCode}?startDate=${startDate}&endDate=${endDate}`;
+
+    let response = await fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    // 403 응답인 경우 리프레시 토큰을 사용하여 액세스 토큰 갱신 후 재요청
+    if (response.status === 403 && refreshToken) {
+      console.warn("🔄 Access Token 만료됨. Refresh Token으로 갱신 시도...");
+
+      const refreshResponse = await fetch(
+        "http://localhost:8080/api/refresh-token",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ refreshToken }),
+        }
+      );
+
+      if (!refreshResponse.ok) {
+        throw new Error("❌ Refresh Token 갱신 실패! 다시 로그인해야 합니다.");
+      }
+
+      const newTokenData = await refreshResponse.json();
+      const newAccessToken = newTokenData.accessToken;
+      sessionStorage.setItem("accessToken", newAccessToken);
+
+      // 새 토큰으로 재요청
+      response = await fetch(apiUrl, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${newAccessToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+    }
+
+    if (!response.ok) {
+      throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("✅ [프론트] 조회된 세금 계산서 데이터:", data);
+    return data;
+  } catch (error) {
+    console.error("❌ 세금 계산서 데이터를 가져오는 중 오류 발생:", error);
+    return [];
+  }
+}

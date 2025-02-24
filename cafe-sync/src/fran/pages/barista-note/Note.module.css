@@ -259,6 +259,11 @@ textarea {
     margin-bottom: 8px; /* 작성자와 작성일 간의 간격 */
 }
 
+/* 작성일과 조회수 사이 간격 설정 */
+.modalDetails p:nth-child(2) {
+    margin-bottom: 8px; /* 작성일과 조회수 간의 간격 추가 */
+}
+
 /* 작성일과 파일 첨부 사이 간격 설정 */
 .modalDetails p:last-child {
     margin-bottom: 8px; /* 작성일과 파일 첨부 간의 간격 */
