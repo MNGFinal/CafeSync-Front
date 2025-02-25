@@ -573,3 +573,206 @@ export async function getFranTaxList(franCode, startDate, endDate) {
     return [];
   }
 }
+
+// 세금 계산서 삭제
+export async function deleteFranTaxList(selectedInvoices) {
+  if (!selectedInvoices || selectedInvoices.length === 0) {
+    console.error("❌ 삭제할 세금 계산서가 없습니다!");
+    return null;
+  }
+
+  try {
+    let token = sessionStorage.getItem("accessToken");
+    const refreshToken = sessionStorage.getItem("refreshToken");
+
+    // API 엔드포인트 (삭제 요청)
+    const apiUrl = "http://localhost:8080/api/fran/tax"; // ✅ 엔드포인트 맞게 변경
+
+    let response = await fetch(apiUrl, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(selectedInvoices), // ✅ 체크된 tax_id 목록을 전송
+    });
+
+    // 403 (토큰 만료 시) → Refresh Token으로 갱신 후 재요청
+    if (response.status === 403 && refreshToken) {
+      console.warn("🔄 Access Token 만료됨. Refresh Token으로 갱신 시도...");
+      const refreshResponse = await fetch(
+        "http://localhost:8080/api/refresh-token",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ refreshToken }),
+        }
+      );
+
+      if (!refreshResponse.ok) {
+        throw new Error("❌ Refresh Token 갱신 실패! 다시 로그인해야 합니다.");
+      }
+
+      const newTokenData = await refreshResponse.json();
+      token = newTokenData.accessToken;
+      sessionStorage.setItem("accessToken", token);
+
+      // 새 Access Token으로 다시 요청
+      response = await fetch(apiUrl, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(selectedInvoices),
+      });
+    }
+
+    if (!response.ok) {
+      throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+    }
+
+    console.log("✅ 세금 계산서 삭제 성공!");
+    return true;
+  } catch (error) {
+    console.error("❌ 세금 계산서 삭제 중 오류 발생:", error);
+    return false;
+  }
+}
+
+// 손익 계산서 데이터 조회 (가맹점별)
+export async function getFranPnlList(franCode, startDate, endDate) {
+  if (!franCode || !startDate || !endDate) {
+    console.error("❌ 필요한 데이터가 없습니다!");
+    return [];
+  }
+
+  try {
+    let token = sessionStorage.getItem("accessToken");
+    const refreshToken = sessionStorage.getItem("refreshToken");
+    // 실제 서버 엔드포인트에 맞게 URL을 수정하세요.
+    // 예: GET /api/fran/pnl/{franCode}?startDate=2023-01-01&endDate=2023-12-31
+    const apiUrl = `http://localhost:8080/api/fran/pnl/${franCode}?startDate=${startDate}&endDate=${endDate}`;
+
+    let response = await fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    // 403 (Forbidden) → Access Token 만료 시, Refresh Token으로 갱신
+    if (response.status === 403 && refreshToken) {
+      console.warn("🔄 Access Token 만료됨. Refresh Token으로 갱신 시도...");
+
+      const refreshResponse = await fetch(
+        "http://localhost:8080/api/refresh-token",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ refreshToken }),
+        }
+      );
+
+      if (!refreshResponse.ok) {
+        throw new Error("❌ Refresh Token 갱신 실패! 다시 로그인해야 합니다.");
+      }
+
+      const newTokenData = await refreshResponse.json();
+      const newAccessToken = newTokenData.accessToken;
+      sessionStorage.setItem("accessToken", newAccessToken);
+
+      // 새 Access Token으로 다시 요청
+      response = await fetch(apiUrl, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${newAccessToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+    }
+
+    if (!response.ok) {
+      throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("✅ [프론트] 조회된 손익 계산서 데이터:", data);
+    return data; // ← 서버에서 받은 손익계산서 배열(또는 객체)
+  } catch (error) {
+    console.error("❌ 손익 계산서 데이터를 가져오는 중 오류 발생:", error);
+    return []; // 오류 시 빈 배열 반환
+  }
+}
+
+// 손익 계산서 삭제
+export async function deleteFranPnlList(selectedPnlIds) {
+
+  if (!selectedPnlIds || selectedPnlIds.length === 0) {
+    console.error("❌ 삭제할 손익 계산서가 없습니다!");
+    return false;
+  }
+
+  try {
+    let token = sessionStorage.getItem("accessToken");
+    const refreshToken = sessionStorage.getItem("refreshToken");
+
+    // API 엔드포인트 (삭제 요청)
+    const apiUrl = "http://localhost:8080/api/fran/pnl"; // ✅ 엔드포인트 확인 필요
+
+    let response = await fetch(apiUrl, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(selectedPnlIds), // ✅ 체크된 pnlId 목록을 JSON으로 전송
+    });
+
+    // 🔹 403 (토큰 만료 시) → Refresh Token으로 갱신 후 재요청
+    if (response.status === 403 && refreshToken) {
+      console.warn("🔄 Access Token 만료됨. Refresh Token으로 갱신 시도...");
+      const refreshResponse = await fetch(
+        "http://localhost:8080/api/refresh-token",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ refreshToken }),
+        }
+      );
+
+      if (!refreshResponse.ok) {
+        throw new Error("❌ Refresh Token 갱신 실패! 다시 로그인해야 합니다.");
+      }
+
+      const newTokenData = await refreshResponse.json();
+      token = newTokenData.accessToken;
+      sessionStorage.setItem("accessToken", token);
+
+      // 새 Access Token으로 다시 요청
+      response = await fetch(apiUrl, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(selectedPnlIds),
+      });
+    }
+
+    if (!response.ok) {
+      throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+    }
+
+    console.log("✅ 손익 계산서 삭제 성공!");
+    return true;
+  } catch (error) {
+    console.error("❌ 손익 계산서 삭제 중 오류 발생:", error);
+    return false;
+  }
+}
