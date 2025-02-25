@@ -35,3 +35,20 @@ export const callNoticeDetailAPI = ({noticeCode}) => {
         }
     };
 };
+
+export const callIncreaseViewCountAPI = (noticeCode) => {
+    const requestURL = `http://localhost:8080/api/fran/notices/${noticeCode}/increase-view`;
+
+    return async (dispatch) => {
+        const result = await fetch(requestURL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: '*/*',
+            },
+        }).then((response) => response.json());
+        if (result.status === 200) {
+            console.log("조회수 증가 성공");
+        }
+    };
+};

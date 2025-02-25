@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import style from '../barista-note/Note.module.css';
 import { Link } from "react-router-dom";
-import { callNoticesAPI } from '../../../apis/notice/noticeApi';
+import { callNoticesAPI , callIncreaseViewCountAPI} from '../../../apis/notice/noticeApi';
 
 function NoticeLayout() {
     const dispatch = useDispatch();
@@ -12,6 +12,10 @@ function NoticeLayout() {
     useEffect(() => {
         dispatch(callNoticesAPI());
     }, [dispatch]);
+
+    const handleNoticeClick = (noticeCode) => {
+        dispatch(callIncreaseViewCountAPI(noticeCode));
+    };
 
     return (
         <>
@@ -35,7 +39,7 @@ function NoticeLayout() {
                     {/* 공지사항 데이터가 없으면 '데이터 없음' 메시지를 출력 */}
                     {notices && notices.length > 0 ? (
                         notices.map((notice) => (
-                            <Link to={`/fran/notice/${notice.noticeCode}`}>
+                            <Link to={`/fran/notice/${notice.noticeCode}`} onClick={() => handleNoticeClick(notice.noticeCode)}>
                             <div key={notice.noticeCode} className={style.infoRow}>
                                 <div className={style.infoItem}>{notice.noticeCode}</div>
                                 <div className={style.infoItem}>{notice.noticeTitle}</div>
