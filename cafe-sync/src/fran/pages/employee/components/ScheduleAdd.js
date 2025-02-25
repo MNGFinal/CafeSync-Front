@@ -20,7 +20,7 @@ const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode, onScheduleUpdate, 
   const [workers, setWorkers] = useState([
     { empCode: "", empName: "", division: "", scheduleDate: today, key: Date.now() },
   ]);
-  const [addError, setAddError] = useState("");               /* 추가로 인한 에러 */
+  const [addError, setAddError] = useState("");
   const [lottieAnimation, setLottieAnimation] = useState("");
   const [isSModalOpen, setIsSModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
@@ -84,7 +84,7 @@ const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode, onScheduleUpdate, 
 
   useEffect(() => {
     if (workers.length === 0) return;
-    console.log("🛠 workers 변경 감지, 중복 검사 실행");
+    // console.log("🛠 workers 변경 감지, 중복 검사 실행");
 
     const hasDuplicate = workers.some((worker, index, self) =>
       worker.empCode &&
@@ -107,23 +107,23 @@ const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode, onScheduleUpdate, 
       })
     );
 
-    console.log("🔍 새로 추가된 데이터끼리의 중복 여부:", hasDuplicate);
-    console.log("🔍 기존 데이터와의 중복 여부:", hasDBDuplicate);
+    // console.log("🔍 새로 추가된 데이터끼리의 중복 여부:", hasDuplicate);
+    // console.log("🔍 기존 데이터와의 중복 여부:", hasDBDuplicate);
 
     if (hasDuplicate || hasDBDuplicate) {
-      console.log("🚨 중복 발견! 등록 불가");
+      // console.log("🚨 중복 발견! 등록 불가");
       setAddError("동일 근무 시간에 중복된 근로자가 있습니다.");
     } else {
-      console.log("✅ 중복 없음!");
+      // console.log("✅ 중복 없음!");
       setAddError("");
     }
   }, [workers, existingSchedules, scheduleDate]); // 🔥 workers, 기존 스케줄, 날짜 변경 시 실행  
 
   const getFilteredSchedules = (date) => {
-    console.log("기존 데이터 필터링 시작");
-    console.log("필터링할 날짜", date);
+    // console.log("기존 데이터 필터링 시작");
+    // console.log("필터링할 날짜", date);
     return existingSchedules.filter((schedule) => {
-      console.log("기존 스케줄 날짜: ", schedule.date);
+      // console.log("기존 스케줄 날짜: ", schedule.date);
       return schedule.date === date;
     });
   };  
@@ -147,6 +147,13 @@ const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode, onScheduleUpdate, 
   };
 
   const confirmHandler = async () => {
+
+    if (workers.some((w) => !w.empCode || !w.division)) {
+      setLottieAnimation("/animations/warning.json"); // ⚠️ 경고 애니메이션
+      setModalMessage("모든 항목을 입력해주세요.");
+      setIsSModalOpen(true);
+      return;
+    }
 
     if(addError) {
       setLottieAnimation("/animations/warning.json"); // ⚠️ 경고 애니메이션
