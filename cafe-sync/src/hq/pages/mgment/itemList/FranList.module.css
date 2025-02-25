@@ -257,3 +257,11 @@
     font-weight: 600;
     margin-right: 0.5rem;
 }
+
+.deleteFran {
+    color: #a41313;
+    font-size: larger;
+    font-weight: 600;
+    margin-top: 70px;
+    text-align: center;
+}

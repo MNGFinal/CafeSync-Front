@@ -14,6 +14,21 @@ export async function fetchFrans() {
     }
 }
 
+// ✅ 가맹점 상세조회 (GET 요청)
+export const fetchSearchFrans = async (query) => {
+    try {
+        const response = await fetch(`http://localhost:8080/api/mgment/search?query=${query}`);
+        if (!response.ok) {
+            throw new Error("검색 요청 실패");
+        }
+        const data = await response.json();
+        return data.data; // API 응답 구조에 맞게 data.data 반환
+    } catch (error) {
+        console.error("가맹점 검색 실패:", error);
+        return [];
+    }
+};
+
 // ✅ 가맹점 등록 (POST 요청)
 export async function registFran(franData) {
     try {

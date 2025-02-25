@@ -4,7 +4,8 @@ import Modal from "../../../components/Modal";
 import modalStyle from "../../../components/ModalButton.module.css";
 import styles from "./itemList/FranList.module.css";
 import FranRegist from "./itemList/FranRegist"; // ✅ 가맹점 등록 컴포넌트 추가
-
+import SModal from "../../../components/SModal"; // ✅ 이동 후 경로 수정
+import { fetchSearchFrans } from "../../../apis/mgment/mgmentApi"; // ✅ API 경로 맞게 확인
 
 
 function HQMgment() {
@@ -14,8 +15,8 @@ function HQMgment() {
   const [isRegistModalOpen, setIsRegistModalOpen] = useState(false); // ✅ 등록 모달 상태 추가
   const [selectedFran, setSelectedFran] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // ✅ 폐점 확인 모달 상태 추가
-
-
+  const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태
+  const [results, setResults] = useState([]); // 검색 결과 상태
 
   // 가맹점 목록 불러오기
   useEffect(() => {
@@ -79,6 +80,23 @@ function HQMgment() {
     }
   };
 
+  // 검색함수
+  const searchHandler = async () => {
+    if (!searchTerm.trim()) {
+      alert("검색어를 입력하세요.");
+      return;
+    }
+
+    try {
+      const data = await fetchSearchFrans(searchTerm); // ✅ API 호출
+      setResults(data); // ✅ 검색 결과 상태 업데이트
+      console.log("검색 결과:", data); // ✅ 콘솔에서 확인
+    } catch (error) {
+      console.error("검색 중 오류 발생:", error);
+      alert("검색 중 오류가 발생했습니다.");
+    }
+  };
+
 
   return (
     <>
@@ -95,7 +113,7 @@ function HQMgment() {
 
         <div className={styles.dividerContainer}>
           <hr className={styles.divider} />
-          {/* <Outlet /> */}
+
         </div>
         {/*************************************************************************/}
 
@@ -105,13 +123,21 @@ function HQMgment() {
           <input
             type="text"
             placeholder="가맹점을 검색하세요"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className={styles.searchInput}
           />
           <button
             className={styles.searchButton}
+            onClick={searchHandler}
           >
             검색
           </button>
+          <ul>
+            {results.map((fran) => (
+              <li key={fran.id}>{fran.name}</li>
+            ))}
+          </ul>
         </div>
         {/*************************************************************************/}
 
@@ -200,6 +226,27 @@ function HQMgment() {
             </div>
           </div>
         )}
+        <SModal
+          isOpen={isDeleteModalOpen}
+          onClose={closeDeleteModal}
+          buttons={[
+            {
+              text: "확인",
+              onClick: () => handleDeleteFran(false),
+              className: modalStyle.confirmButtonS,
+            },
+            {
+              text: "취소",
+              onClick: () => closeDeleteModal(false),
+              className: modalStyle.cancelButtonS,
+            },
+          ]}
+        >
+          <div>
+            <p className={styles.deleteFran}>{selectedFran?.franName} 가맹점을 정말 폐점하시겠습니까?</p>
+          </div>
+
+        </SModal>
       </Modal>
 
       {/*************************************************************************/}
@@ -210,17 +257,6 @@ function HQMgment() {
       </Modal>
       {/*************************************************************************/}
 
-      {/******************************* 폐점 확인 모달 *******************************/}
-      <Modal isOpen={isDeleteModalOpen} onClose={closeDeleteModal}>
-        <div className={styles.deleteConfirm}>
-          <p>{selectedFran?.franName} 가맹점을 정말 폐점하시겠습니까?</p>
-        </div>
-        <div className={styles.buttonContainer}>
-          <button className={modalStyle.deleteButtonS} onClick={handleDeleteFran}>확인</button>
-          <button className={modalStyle.cancelButtonS} onClick={closeDeleteModal}>취소</button>
-        </div>
-      </Modal>
-      {/*************************************************************************/}
 
     </>
   );

@@ -34,8 +34,9 @@ function Menus() {
 
       console.log("서버에서 넘어온 값", res);
       setList(res.data); // 전체 데이터 저장
-      setSlicedList(res.data.slice(currentPage, currentPage + itemsPerPage)); // 전체 데이터 저장
+      setSlicedList(res.data.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)); // 전체 데이터 저장
       // setCurrentPage(0); // ✅ 카테고리 변경 시 첫 페이지로 초기화
+      console.log("커런트페이지 뭐나올까?", currentPage);
     } catch (error) {
       console.error("메뉴 데이터 로딩 실패:", error);
     }
@@ -46,6 +47,7 @@ function Menus() {
     setCurrentPage(0);
     fetchMenus();
   }, [category]);
+  console.log("카테고리바꿀때?", category);
 
 
 
