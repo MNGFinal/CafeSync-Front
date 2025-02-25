@@ -52,3 +52,18 @@ export const callIncreaseViewCountAPI = (noticeCode) => {
         }
     };
 };
+
+export const callSearchNoticeAPI = ({search}) => {
+    const requestURL = `http://localhost:8080/api/fran/notices/search?search=${search}`
+
+    return async (dispatch,getState) => {
+        const result = await fetch(requestURL,{
+            method : 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: '*/*',
+            },
+        }).then((response) => response.json());
+        dispatch({type:GET_NOTICES , payload: result.data});
+    };
+};
