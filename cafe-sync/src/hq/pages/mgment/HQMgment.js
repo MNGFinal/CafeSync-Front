@@ -80,21 +80,36 @@ function HQMgment() {
     }
   };
 
-  // 검색함수
+  // 검색 함수 (최적화)
   const searchHandler = async () => {
     if (!searchTerm.trim()) {
-      alert("검색어를 입력하세요.");
+      // ✅ 검색어가 없을 경우 전체 리스트 불러오기
+      const allFrans = await fetchFrans();
+      setFranList(allFrans);
       return;
     }
 
     try {
       const data = await fetchSearchFrans(searchTerm); // ✅ API 호출
-      setResults(data); // ✅ 검색 결과 상태 업데이트
-      console.log("검색 결과:", data); // ✅ 콘솔에서 확인
+      setFranList(data); // ✅ 기존 목록을 검색 결과로 교체
+      console.log("검색 결과:", data);
     } catch (error) {
       console.error("검색 중 오류 발생:", error);
       alert("검색 중 오류가 발생했습니다.");
     }
+  };
+
+  // ✅ Enter 키로도 검색 가능하게 이벤트 추가
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      searchHandler();
+    }
+  };
+
+  // ✅ 검색어 초기화 함수 (선택 사항)
+  const clearSearch = () => {
+    setSearchTerm("");
+    searchHandler(); // 전체 리스트 다시 불러오기
   };
 
 
@@ -125,6 +140,7 @@ function HQMgment() {
             placeholder="가맹점을 검색하세요"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleKeyDown} // ✅ Enter 키 검색 추가
             className={styles.searchInput}
           />
           <button
@@ -133,11 +149,6 @@ function HQMgment() {
           >
             검색
           </button>
-          <ul>
-            {results.map((fran) => (
-              <li key={fran.id}>{fran.name}</li>
-            ))}
-          </ul>
         </div>
         {/*************************************************************************/}
 
