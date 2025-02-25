@@ -10,6 +10,7 @@ function NoticeDetailLayout() {
     const notice = useSelector(state => state.noticeReducer.selectedNotice);
 
     const [creationDate, setCreationDate] = useState("");
+    const [isViewCountIncreased, setIsViewCountIncreased] = useState(false);
 
     useEffect(() => {
         console.log("🔄 공지사항 상세 요청:", noticeCode);
@@ -17,11 +18,11 @@ function NoticeDetailLayout() {
     }, [dispatch, noticeCode]);
 
     useEffect(() => {
-        console.log("📌 Redux에서 가져온 notice:", notice);
-        if (notice && notice.noticeDate) {
+        if (notice && notice.noticeDate && !isViewCountIncreased) {
             setCreationDate(notice.noticeDate);
+            setIsViewCountIncreased(true); // 조회수 증가가 이미 이루어졌음을 표시
         }
-    }, [notice]);
+    }, [notice, isViewCountIncreased]);
 
     if (!notice) {
         return <div>로딩 중...</div>;
@@ -62,7 +63,7 @@ function NoticeDetailLayout() {
                 <div className={style.row}>
                     <label className={style.labelAttachment} htmlFor="attachment">파일첨부 :&nbsp;</label>
                     {notice.attachment ? (
-                        <input className = {style.attachment} type="text" value={notice.attachment}/>// Display the file name here
+                        <input className={style.attachment} type="text" value={notice.attachment} />
                     ) : (
                         <span>파일 없음</span>
                     )}

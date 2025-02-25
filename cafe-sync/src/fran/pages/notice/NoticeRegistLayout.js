@@ -31,8 +31,8 @@ function NoticeRegistLayout() {
                         </div>
                     </div>
                     <div className={style.row}>
-                        <label className={style.labelAttachment} htmlFor="baristaNoteAttachment">파일첨부 :&nbsp; </label>
-                        <input className={style.attachment} type="file" />
+                        <label className={style.registAttachment} htmlFor="baristaNoteAttachment">파일첨부 :&nbsp; </label>
+                        <input className={style.registFile} type="file" />
                     </div>
                     <div className={style.row}>
                         <label className={style.labelContent} htmlFor="baristaNoteContent">노트내용 :&nbsp; </label>

@@ -115,6 +115,12 @@ input {
     text-align: right;
 }
 
+.registAttachment{
+    width: 120px; /* 첨부파일 라벨의 너비 */
+    display: inline-block;
+    text-align: right;
+}
+
 .labelContent {
     width: 120px; /* 내용 라벨의 너비 */
     display: inline-block;
@@ -156,6 +162,13 @@ input {
 
 .attachment{
     border:1px solid #ccc;
-    border-radius: 5px; 
-    
+    border-radius: 5px;
+}
+
+.registFile{
+    border-radius: 5px;
+}
+
+.registFile{
+    width : 100%
 }
