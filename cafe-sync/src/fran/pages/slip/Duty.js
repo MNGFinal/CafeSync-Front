@@ -259,7 +259,7 @@ function Duty() {
               </tr>
             </thead>
             <tbody>
-              {currentPageData.length > 0 ? (
+              {currentPageData.length > 0 &&
                 currentPageData.map((invoice) => (
                   <tr
                     key={invoice.taxId}
@@ -278,30 +278,14 @@ function Duty() {
                     <td>{invoice.slip?.venCode?.venName ?? "-"}</td>
                     <td>{invoice.franchise?.franName ?? "-"}</td>
                     <td>
-                      {(invoice.slip?.debit != null
+                      {(invoice.slip?.debit != null && invoice.slip.debit !== 0
                         ? invoice.slip.debit
                         : invoice.slip?.credit
                       )?.toLocaleString("ko-KR")}{" "}
                       원
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan="6"
-                    style={{
-                      textAlign: "center",
-                      padding: "20px",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                      color: "#888",
-                    }}
-                  >
-                    조회된 데이터가 없습니다.
-                  </td>
-                </tr>
-              )}
+                ))}
             </tbody>
           </table>
 

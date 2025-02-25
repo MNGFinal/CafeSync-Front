@@ -229,8 +229,8 @@ function Slip() {
   }, [codeModalOpen, codeModalType]);
 
   // 전표 조회
-  const fetchSlips = async (start, end, validate = false) => {
-    // 🚀 validate가 true일 경우에만 날짜 유효성 검사 실행
+  const fetchSlips = async (start, end, validate = true) => {
+    // 🚀 날짜 유효성 검사 추가 (기본적으로 실행)
     if (validate && !isValidDateRange()) return;
 
     try {
@@ -256,10 +256,12 @@ function Slip() {
   };
 
   const handleSearch = () => {
-    setIsSearchClicked(true); // ✅ 조회 버튼 클릭 여부 표시
+    setIsSearchClicked(true);
 
-    // 🚀 이미 날짜가 선택되어 있다면 유효성 검사 실행하지 않음
-    fetchSlips(startDate, endDate, false); // ✅ 유효성 검사 없이 실행
+    // 🚀 날짜 유효성 검사 추가
+    if (!isValidDateRange()) return;
+
+    fetchSlips(startDate, endDate, true); // ✅ 유효성 검사 적용
   };
 
   // 새 행 추가
@@ -512,6 +514,7 @@ function Slip() {
       );
       return;
     }
+
     const checkedRows = slipList.data.filter((item) => item.selected);
     if (checkedRows.length === 0) {
       showModal(
@@ -520,6 +523,7 @@ function Slip() {
       );
       return;
     }
+
     const pnlId = `PNL-${Date.now()}`;
     const totalRevenue = checkedRows.reduce(
       (sum, row) => sum + (row.credit || 0),
@@ -535,6 +539,8 @@ function Slip() {
       totalRevenue !== 0
         ? `${Math.round((netProfit / totalRevenue) * 100)}%`
         : "0%";
+
+    // ✅ franCode 추가
     const pnlData = {
       pnlId: pnlId,
       period: new Date().toISOString().split("T")[0],
@@ -543,16 +549,21 @@ function Slip() {
       operProfit: operatingProfit,
       netProfit: netProfit,
       ratio: ratio,
+      franCode: parseInt(franCode, 10), // 가맹점 코드 추가
       slipCodes: checkedRows.map((row) => ({ slipCode: row.slipCode })),
     };
+
     console.log("🚀 생성된 손익 계산서 데이터:", pnlData);
+
     try {
       const result = await createPnl(pnlData);
       if (result) {
         showModal("/animations/success-check.json", "손익 계산서 생성 성공!");
-        await fetchSlips();
+        // ✅ 저장 후 최신 데이터 불러오기
+        await fetchSlips(startDate, endDate, false);
       }
     } catch (error) {
+      console.error(error);
       showModal("/animations/error.json", "손익 계산서 생성 실패!");
     }
   };
