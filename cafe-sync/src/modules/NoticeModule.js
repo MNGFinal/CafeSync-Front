@@ -9,8 +9,8 @@ const initialState = {
 };
 
 // 액션 타입 정의
-export const GET_NOTICES = 'note/GET_NOTICES';
-export const GET_NOTICE = 'note/GET_NOTICE';
+export const GET_NOTICES = 'notice/GET_NOTICES';
+export const GET_NOTICE = 'notice/GET_NOTICE';
 
 // 액션 생성자 정의
 export const actions = createActions({

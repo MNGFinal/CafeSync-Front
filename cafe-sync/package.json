@@ -8,7 +8,7 @@
     "@fullcalendar/interaction": "^6.1.15",
     "@fullcalendar/react": "^6.1.15",
     "@lottiefiles/react-lottie-player": "^3.6.0",
-    "@reduxjs/toolkit": "^2.5.1",
+    "@reduxjs/toolkit": "^2.6.0",
     "autotable": "^1.0.0",
     "cra-template": "1.2.0",
     "date-fns": "^4.1.0",
