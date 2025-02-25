@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import Modal from "../../../../components/Modal";
+import SModal from "../../../../components/SModal";
+import { Player } from "@lottiefiles/react-lottie-player";
 import modalStyle from "../../../../components/ModalButton.module.css";
 import style from "../styles/ScheduleAdd.module.css";
 
-const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode, onScheduleUpdate }) => {
-  console.log('ScheduleAdd에서 본 franCode', franCode);
-
+const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode, onScheduleUpdate, existingSchedules }) => {
   const today = new Date().toISOString().split("T")[0];
   
   const divisionOption = [
@@ -17,10 +17,13 @@ const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode, onScheduleUpdate }
 
   const [workerList, setWorkerList] = useState([]);
   const [scheduleDate, setScheduleDate] = useState(today);
-  
   const [workers, setWorkers] = useState([
-    { empCode: "", empName: "", division: "", key: Date.now() },
+    { empCode: "", empName: "", division: "", scheduleDate: today, key: Date.now() },
   ]);
+  const [addError, setAddError] = useState("");               /* 추가로 인한 에러 */
+  const [lottieAnimation, setLottieAnimation] = useState("");
+  const [isSModalOpen, setIsSModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
   
   useEffect( () => { if (franCode) { fetchWorkers(); } }, [franCode] );
     
@@ -46,14 +49,12 @@ const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode, onScheduleUpdate }
     }
   }
 
-  // useEffect(() => {
-  //   console.log('workerList 잘 들어오니', workerList);
-  // }, [workerList]);
-
   // ✅ 근로자 추가
   const addWorkerHandler = () => {
-    setWorkers([...workers, { empCode: "", empName: "", division: "", key: Date.now() }]);
+    const newWorker = { empCode: "", empName: "", division: "", scheduleDate: scheduleDate, key: Date.now() };
+    setWorkers((prevWorkers) => [...prevWorkers, newWorker]);
   };
+  
 
   // ✅ 근로자 삭제
   const rmWorkerHandler = (removeKey) => {
@@ -63,19 +64,72 @@ const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode, onScheduleUpdate }
   // ✅ 근로자/근로 시간 변경
   const workerChangeHandler = (e, key) => {
     const { name, value } = e.target;
-    setWorkers(
-      workers.map((worker) => {
-        if(worker.key === key) {
-          if(name === "worker") {
-            const selectedWorker = workerList.find(w => Number(w.empCode) === Number(value));
-            console.log('selectedWorker 정보 확인', selectedWorker)
-            return { ...worker, empCode: value, empName: selectedWorker ? selectedWorker.empName : "알 수 없음" };
+  
+    setWorkers((prevWorkers) =>
+      prevWorkers.map((worker) => {
+        if (worker.key === key) {
+          const updatedWorker = { ...worker, [name]: value, scheduleDate };
+          // ✅ empCode 값이 들어올 때 empName을 찾아 함께 저장
+          if (name === "worker") {
+            const selectedWorker = workerList.find(w => w.empCode === value);
+            updatedWorker.empCode = value;
+            updatedWorker.empName = selectedWorker ? selectedWorker.empName : "";
           }
-          return { ...worker, [name]: value };
+        return updatedWorker;
         }
         return worker;
       })
     );
+  };
+
+  useEffect(() => {
+    if (workers.length === 0) return;
+    console.log("🛠 workers 변경 감지, 중복 검사 실행");
+
+    const hasDuplicate = workers.some((worker, index, self) =>
+      worker.empCode &&
+      worker.division &&
+      self.some(
+        (w, i) => i !== index && w.empCode === worker.empCode && w.division === worker.division
+      )
+    );
+
+    const hasDBDuplicate = workers.some((worker) =>
+      existingSchedules.some((schedule) => {
+        const scheduleDateFormatted = new Date(schedule.date).toISOString().split("T")[0];
+        const workerDateFormatted = new Date(worker.scheduleDate).toISOString().split("T")[0];
+
+        return (
+          String(schedule.emp) === String(worker.empCode) &&
+          Number(schedule.extendedProps.scheduleDivision) === Number(worker.division) &&
+          scheduleDateFormatted === workerDateFormatted
+        );
+      })
+    );
+
+    console.log("🔍 새로 추가된 데이터끼리의 중복 여부:", hasDuplicate);
+    console.log("🔍 기존 데이터와의 중복 여부:", hasDBDuplicate);
+
+    if (hasDuplicate || hasDBDuplicate) {
+      console.log("🚨 중복 발견! 등록 불가");
+      setAddError("동일 근무 시간에 중복된 근로자가 있습니다.");
+    } else {
+      console.log("✅ 중복 없음!");
+      setAddError("");
+    }
+  }, [workers, existingSchedules, scheduleDate]); // 🔥 workers, 기존 스케줄, 날짜 변경 시 실행  
+
+  const getFilteredSchedules = (date) => {
+    console.log("기존 데이터 필터링 시작");
+    console.log("필터링할 날짜", date);
+    return existingSchedules.filter((schedule) => {
+      console.log("기존 스케줄 날짜: ", schedule.date);
+      return schedule.date === date;
+    });
+  };  
+
+  const scheduleDateChangeHandler = (e) => {
+    setScheduleDate(e.target.value);
   };
 
   const prepareScheduleData = () => {
@@ -93,6 +147,14 @@ const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode, onScheduleUpdate }
   };
 
   const confirmHandler = async () => {
+
+    if(addError) {
+      setLottieAnimation("/animations/warning.json"); // ⚠️ 경고 애니메이션
+      setModalMessage("동일 근무 시간에 중복된 근로자가 있습니다. \n 수정 후 다시 시도하세요.");
+      setIsSModalOpen(true);
+      return;
+    }
+
     const scheduleData = prepareScheduleData();
     console.log("보낼 스케줄 정보: ", scheduleData);
 
@@ -111,21 +173,35 @@ const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode, onScheduleUpdate }
       }
 
       console.log("스케줄 등록 성공!!!!!");
-      alert("스케줄 등록 성공");
+      setLottieAnimation("/animations/success-check.json");
+      setModalMessage("스케줄을 정상 등록하였습니다.");
+      setIsSModalOpen(true);
+      setIsModalOpen(true);  // 성공했을 때만 모달 닫을 수 있도록 플래그 설정
 
       if (onScheduleUpdate) {
         onScheduleUpdate(savedSchedules.data);
       };
 
-      closeHandler();
+      // closeHandler();
     } catch (error) {
       console.log("스케줄 등록 실 패 !", error);
-      alert("스케줄 등록 실패");
+      // alert("스케줄 등록 실패");
+      setLottieAnimation("/animations/warning.json");
+      setModalMessage("스케줄 등록에 실패하였습니다.");
+      setIsSModalOpen(true);
+      setIsModalOpen(false);
     }
   }
 
+  const closeSmodalHandler = () => {
+    setIsSModalOpen(false);
+    if (lottieAnimation === "/animations/success-check.json") {
+      closeHandler(); // ✅ 성공한 경우만 기존 모달 닫기
+    }
+  };
+
   const closeHandler = () => {
-    setWorkers([{ empCode: "", empName: "", division: "", key: Date.now() }]);
+    setWorkers([{ empCode: "", empName: "", division: "", scheduleDate:today , key: Date.now() }]);
     setIsModalOpen(false);
   };
 
@@ -152,10 +228,11 @@ const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode, onScheduleUpdate }
         <div className={style.addContainer}>
           <div className={style.dateContainer}>
             <span>날짜</span>
-            <input type="date" defaultValue={today} onChange={(e) => setScheduleDate(e.target.value)}/>
+            <input type="date" onChange={scheduleDateChangeHandler}/>
           </div>
           <div >
-            <h3 style={{marginBottom: "10px"}}>근로자 추가</h3>
+            <span className={style.spanH3}>근로자 추가</span>
+            {addError && <p style={{ display: "inline-block", color: "red", marginBotton: "10px", fontSize: "12px" }}>{addError}</p>}
 
             <div className={style.workerListContainer}>
               {workers.map(({ worker, division, key }, index) => (
@@ -164,7 +241,6 @@ const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode, onScheduleUpdate }
                   <select
                     name="worker"
                     value={worker}
-                    // value={worker?.empCode || ""}  // undefined 방지
                     onChange={(e) => workerChangeHandler(e, key)}
                     className={style.workerBox}
                   >
@@ -202,7 +278,30 @@ const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode, onScheduleUpdate }
             </div>
           </div>
         </div>
-        
+        <SModal
+          isOpen={isSModalOpen}
+          onClose={() => setIsSModalOpen(false)}
+          buttons={[
+            {
+              text: "확인",
+              onClick: closeSmodalHandler,
+              className: modalStyle.confirmButtonS,
+            },
+          ]}
+        >
+          <div style={{ textAlign: "center" }}>
+            <Player
+              autoplay
+              loop={false} // ✅ 애니메이션 반복 X
+              keepLastFrame={true} // ✅ 애니메이션이 끝나도 마지막 프레임 유지
+              src={lottieAnimation} // ✅ 동적으로 변경됨
+              style={{ height: "100px", width: "100px", margin: "0 auto" }}
+            />
+            {/* <br /> */}
+            <span style={{marginTop: "15px", whiteSpace: "pre-line"}}>{modalMessage}</span>
+            <br />
+          </div>
+        </SModal>
       </Modal>
     </div>
   );
