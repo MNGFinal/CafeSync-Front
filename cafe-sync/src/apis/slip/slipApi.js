@@ -573,3 +573,71 @@ export async function getFranTaxList(franCode, startDate, endDate) {
     return [];
   }
 }
+
+// 세금 계산서 삭제
+export async function deleteFranTaxList(selectedInvoices) {
+  if (!selectedInvoices || selectedInvoices.length === 0) {
+    console.error("❌ 삭제할 세금 계산서가 없습니다!");
+    return null;
+  }
+
+  try {
+    let token = sessionStorage.getItem("accessToken");
+    const refreshToken = sessionStorage.getItem("refreshToken");
+
+    // API 엔드포인트 (삭제 요청)
+    const apiUrl = "http://localhost:8080/api/fran/tax"; // ✅ 엔드포인트 맞게 변경
+
+    let response = await fetch(apiUrl, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(selectedInvoices), // ✅ 체크된 tax_id 목록을 전송
+    });
+
+    // 403 (토큰 만료 시) → Refresh Token으로 갱신 후 재요청
+    if (response.status === 403 && refreshToken) {
+      console.warn("🔄 Access Token 만료됨. Refresh Token으로 갱신 시도...");
+      const refreshResponse = await fetch(
+        "http://localhost:8080/api/refresh-token",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ refreshToken }),
+        }
+      );
+
+      if (!refreshResponse.ok) {
+        throw new Error("❌ Refresh Token 갱신 실패! 다시 로그인해야 합니다.");
+      }
+
+      const newTokenData = await refreshResponse.json();
+      token = newTokenData.accessToken;
+      sessionStorage.setItem("accessToken", token);
+
+      // 새 Access Token으로 다시 요청
+      response = await fetch(apiUrl, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(selectedInvoices),
+      });
+    }
+
+    if (!response.ok) {
+      throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+    }
+
+    console.log("✅ 세금 계산서 삭제 성공!");
+    return true;
+  } catch (error) {
+    console.error("❌ 세금 계산서 삭제 중 오류 발생:", error);
+    return false;
+  }
+}

@@ -51,10 +51,8 @@ function Slip() {
   const [isSearchClicked, setIsSearchClicked] = useState(false);
 
   useEffect(() => {
-    if (!franCode) return;
-
     const today = new Date();
-    const todayStr = today.toISOString().split("T")[0];
+    const todayStr = today.toISOString().split("T")[0]; // 오늘 날짜
 
     const oneMonthAgo = new Date();
     oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
@@ -63,9 +61,8 @@ function Slip() {
     setStartDate(oneMonthAgoStr);
     setEndDate(todayStr);
 
-    // ✅ 초기 데이터 로딩 시에는 날짜 검증 없이 실행
     fetchSlips(oneMonthAgoStr, todayStr, false);
-  }, [franCode]);
+  }, []);
 
   // 벤더 필터링 함수
   const getFilteredVendorList = () => {
@@ -433,19 +430,25 @@ function Slip() {
       showModal("/animations/warning.json", "삭제할 데이터가 없습니다!");
       return;
     }
+
     const checkedRows = slipList.data.filter(
       (item) => item.selected && item.slipCode
     );
+
     if (checkedRows.length === 0) {
       showModal("/animations/warning.json", "삭제할 행을 선택하세요!");
       return;
     }
+
     const idArray = checkedRows.map((row) => row.slipCode);
+
     try {
       const result = await deleteSlipList(idArray);
       if (result) {
         showModal("/animations/success-check.json", "삭제 성공!");
-        await fetchSlips();
+
+        // ✅ 삭제 후 최신 데이터 다시 불러오기
+        await fetchSlips(startDate, endDate, false);
       }
     } catch (error) {
       console.error(error);
