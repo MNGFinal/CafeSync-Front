@@ -12,12 +12,14 @@ const initialState = {
 export const GET_NOTICES = 'notice/GET_NOTICES';
 export const GET_NOTICE = 'notice/GET_NOTICE';
 export const POST_NOTICE = 'notice/POST_NOTICE';
+export const PUT_NOTICE = 'notice/PUT_NOTICE';
 
 // 액션 생성자 정의
 export const actions = createActions({
     [GET_NOTICES]: () => {}, // GET_NOTICES 액션
     [GET_NOTICE]: () => {},  // GET_NOTICE 액션
     [POST_NOTICE] : () => {},
+    [PUT_NOTICE] : () => {}
 });
 
 // 리듀서 정의
@@ -33,8 +35,12 @@ const noticeReducer = handleActions(
         }),
         [POST_NOTICE]: (state, action) => ({
             ...state,
-            data: [action.payload, ...state.data], // 새로 등록된 공지사항을 목록 앞에 추가
+            data: action.payload, // 새로 등록된 공지사항을 목록 앞에 추가  [action.payload, ...state.data]
         }),
+        [PUT_NOTICE] : (state , action) => ({
+            ...state,
+            data : action.payload
+        })
     },
     initialState
 );
