@@ -65,7 +65,7 @@ function NoticeDetailLayout() {
                     {notice.attachment ? (
                         <input className={style.attachment} type="text" value={notice.attachment} />
                     ) : (
-                        <span>파일 없음</span>
+                        <div className={style.attachment}><span>파일 없음</span></div>
                     )}
                 </div>
 
