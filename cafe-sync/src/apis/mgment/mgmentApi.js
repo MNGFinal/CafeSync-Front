@@ -88,3 +88,4 @@ export async function updateFran(franCode, updateData) {
         return false; // 수정 실패
     }
 }
+

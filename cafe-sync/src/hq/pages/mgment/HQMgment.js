@@ -16,7 +16,6 @@ function HQMgment() {
   const [selectedFran, setSelectedFran] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // ✅ 폐점 확인 모달 상태 추가
   const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태
-  const [results, setResults] = useState([]); // 검색 결과 상태
 
   // 가맹점 목록 불러오기
   useEffect(() => {
@@ -40,15 +39,30 @@ function HQMgment() {
     setIsModalOpen(false);
   };
 
-  // ✅ 등록 모달 열기
+  // ✅ 등록 모달 열기 (새로운 가맹점 등록)
   const openRegistModal = () => {
+    setSelectedFran(null); // 등록 모드에서는 기존 데이터 없음
     setIsRegistModalOpen(true);
   };
 
-  // ✅ 등록 모달 닫기
-  const closeRegistModal = () => {
-    setIsRegistModalOpen(false);
+  // ✅ 수정 모달 열기 (기존 가맹점 수정)
+  const openModifyModal = () => {
+    if (!selectedFran) return;
+    setIsRegistModalOpen(true);
   };
+
+  const closeRegistModal = () => {
+    console.log("🚀 closeRegistModal 실행됨! (모달 닫기)");
+    setIsRegistModalOpen(false);
+
+    setTimeout(() => {
+      console.log("✅ isRegistModalOpen 최신 값:", isRegistModalOpen);
+      if (isRegistModalOpen) {
+        setIsRegistModalOpen(false); // 한번 더 강제 업데이트
+      }
+    }, 300);
+  };
+
 
   // ✅ 삭제 확인 모달 열기
   const openDeleteModal = () => {
@@ -106,11 +120,7 @@ function HQMgment() {
     }
   };
 
-  // ✅ 검색어 초기화 함수 (선택 사항)
-  const clearSearch = () => {
-    setSearchTerm("");
-    searchHandler(); // 전체 리스트 다시 불러오기
-  };
+
 
 
   return (
@@ -183,10 +193,7 @@ function HQMgment() {
         buttons={[
           {
             text: "수정",
-            onClick: () => {
-              // 수정 기능 구현 (예: 해당 가맹점 수정 페이지로 이동)
-              // 예: navigate(`/hq/mgment/edit/${selectedFran.franCode}`);
-            },
+            onClick: openModifyModal, // ✅ 수정 버튼 클릭 시 수정 모달 열기
             className: modalStyle.modifyButtonB // 모달 버튼 스타일 적용 (선택 사항)
           },
           {
@@ -261,8 +268,14 @@ function HQMgment() {
       {/*************************************************************************/}
       {/******************************* 등록 모달창 *******************************/}
 
+      {/* ✅ 등록 & 수정 모달 */}
       <Modal isOpen={isRegistModalOpen} onClose={closeRegistModal}>
-        <FranRegist onClose={closeRegistModal} />
+        {console.log("✅ onClose 전달됨!")}  // ✅ 로그 추가
+        <FranRegist
+          onClose={closeRegistModal}
+          existingFran={selectedFran}
+          setFranList={setFranList}
+          fetchFrans={fetchFrans} />
       </Modal>
       {/*************************************************************************/}
 
