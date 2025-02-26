@@ -84,6 +84,7 @@ const ScheduleModify = ({ isModifyModalOpen, setIsModifyModalOpen, franCode, onS
     } else {
       setWorkerToDelete(worker);  // 삭제할 worker 정보 설정
       setIsDeleteModalOpen(true);  // 삭제 확인 모달 열기
+      setLottieAnimation("/animations/identify.json");
       setModalMessage("해당 스케줄은 기존에 등록되어 있던 스케줄입니다. \n 정말로 삭제하시겠습니까?" );
     }
   };
@@ -150,6 +151,7 @@ const ScheduleModify = ({ isModifyModalOpen, setIsModifyModalOpen, franCode, onS
         franCode: franCode,
         empName: worker.empName,
         scheduleCode: worker.key,
+        isNew: worker.isNew,
       }
     });
   };
@@ -194,47 +196,74 @@ const ScheduleModify = ({ isModifyModalOpen, setIsModifyModalOpen, franCode, onS
       return;
     }
   
-    const newWorkers = workers.filter(worker => worker.isNew);
-    const modifiedWorkers = workers.filter(worker => !worker.isNew);
-  
-    const modifyScheduleData = prepareScheduleData().filter(worker => !worker.isNew);
-    console.log("보낼 스케줄 정보:", modifyScheduleData);
-    console.log("modifiedWorkers:", modifiedWorkers);
+    const scheduleData = prepareScheduleData();
+    const modifyScheduleData = scheduleData.filter(worker => worker.scheduleCode && !worker.isNew);
+    
+    // 추가되는 데이터에 scheduleCode 제거
+    const addScheduleData = scheduleData
+                            .filter(worker => !worker.scheduleCode || worker.isNew)
+                            .map(({ scheduleCode, ...worker }) => worker);
+
+
+    console.log('modifyScheduleData?', modifyScheduleData);
+    console.log('addScheduleData?', addScheduleData);
   
     try {
-      // PUT 요청 - modifiedWorkers 배열을 한 번에 보내기
-      const responseModify = await fetch("http://localhost:8080/api/fran/schedule", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(modifyScheduleData), // 배열 전체를 한 번에 전송
-      });
+      let savedSchedules = [];    // 변경된 스케줄 저장될 배열
+      const requests = [];        // 요청을 보낼 Promise 배열
 
-      const savedSchedules = await responseModify.json();
-      console.log('세이브 된 스케줄 자료', savedSchedules);
-  
-      if (!responseModify.ok) {
-        const errorDetails = await responseModify.text();  // 응답 본문에 오류 내용 추가
-        console.error("수정 실패:", errorDetails);
-        throw new Error("수정 실패");
+      if (modifyScheduleData.length > 0) {
+        // PUT 요청 - modifiedWorkers 배열을 한 번에 보내기
+        const responseModify = fetch("http://localhost:8080/api/fran/schedule", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(modifyScheduleData), // 배열 전체를 한 번에 전송
+        })
+        .then(res => {
+          if(!res.ok) throw new Error("수정 실패");
+          return res.json();
+        });
+        
+        requests.push(responseModify)
+        // const modifyResult = await responseModify.json();
+        // savedSchedules = [ ...savedSchedules, ...modifyResult.data ];
       }
   
-      // POST 요청 - 새로운 데이터 추가
-    //   const responseAdd = await fetch("http://localhost:8080/api/fran/schedule", {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify(newWorkers),
-    //   });
+      if (addScheduleData.length > 0) {
+        // POST 요청 - 새로운 데이터 추가
+        const responseAdd = fetch("http://localhost:8080/api/fran/schedule", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(addScheduleData),
+        })
+        .then(res => {
+          if (!res.ok) throw new Error("새로운 데이터 추가 실패");
+          return res.json();
+        });
+
+        requests.push(responseAdd)
+        // const addResult = await responseAdd.json();
+        // savedSchedules = [ ...savedSchedules, ...addResult.data ];
+      }
+
+      if (requests.length > 0) {
+        const results = await Promise.all(requests);
+        
+        results.forEach(result => {
+          if (result && result.data) {
+            savedSchedules = [ ...savedSchedules, ...result.data ];
+          }
+        });
+      }
   
-    //   if (!responseAdd.ok) throw new Error("새로운 데이터 추가 실패");
-  
-      console.log("스케줄 수정 성공!");
+      console.log("스케줄 수정 성공!", savedSchedules);
       setLottieAnimation("/animations/success-check.json");
       setModalMessage("스케줄이 정상 수정되었습니다.");
       setIsSModalOpen(true);
       setIsModifyModalOpen(true);
 
       if (onScheduleUpdate) {
-        onScheduleUpdate(savedSchedules.data);
+        onScheduleUpdate(savedSchedules);
       };
 
     } catch (error) {
@@ -379,6 +408,13 @@ const ScheduleModify = ({ isModifyModalOpen, setIsModifyModalOpen, franCode, onS
           ]}
         >
           <div style={{ textAlign: "center" }}>
+            <Player
+              autoplay
+              loop={false} // ✅ 애니메이션 반복 X
+              keepLastFrame={true} // ✅ 애니메이션이 끝나도 마지막 프레임 유지
+              src={lottieAnimation} // ✅ 동적으로 변경됨
+              style={{ height: "100px", width: "100px", margin: "0 auto" }}
+            />
             <span style={{marginTop: "15px", whiteSpace: "pre-line"}}>{modalMessage}</span>
             <br />
           </div>
