@@ -32,7 +32,8 @@ const MyCalendar = () => {
       classNames: [`division-${schedule.scheduleDivision}`],
     }));
   
-    setEvents((prevEvents) => [...prevEvents, ...formattedNewEvents]);
+    // setEvents((prevEvents) => [...prevEvents, ...formattedNewEvents]);
+    setEvents(formattedNewEvents);
     setUpdateTrigger((prev) => !prev);
   };
 

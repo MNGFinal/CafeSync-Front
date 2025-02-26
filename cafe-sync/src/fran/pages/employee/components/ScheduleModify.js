@@ -28,6 +28,8 @@ const ScheduleModify = ({ isModifyModalOpen, setIsModifyModalOpen, franCode, onS
     const selectedDate = e.target.value;
     setScheduleDate(selectedDate);
 
+    setWorkers([]);
+
     // 기존 스케줄 중 해당 날짜와 데이터 필터링
     const schedulesForDate = existingSchedules.filter(
       (schedule) => schedule.date === selectedDate
@@ -45,10 +47,15 @@ const ScheduleModify = ({ isModifyModalOpen, setIsModifyModalOpen, franCode, onS
     })
     console.log("✅ 변환된 workers 배열:", formattedWorkers);
 
-    setWorkers(formattedWorkers);
+    setWorkers(() => formattedWorkers);
   };
 
   useEffect( () => { if (franCode) { fetchWorkers(); } }, [franCode] );
+  useEffect(() => {
+    if (isModifyModalOpen) {
+        setWorkers([]); // 기존 데이터 비우기
+    }
+  }, [isModifyModalOpen]);
     
   const fetchWorkers = async () => {
     if(!franCode) return;
@@ -264,6 +271,7 @@ const ScheduleModify = ({ isModifyModalOpen, setIsModifyModalOpen, franCode, onS
 
       if (onScheduleUpdate) {
         onScheduleUpdate(savedSchedules);
+        setWorkers(savedSchedules);
       };
 
     } catch (error) {
@@ -275,7 +283,6 @@ const ScheduleModify = ({ isModifyModalOpen, setIsModifyModalOpen, franCode, onS
     }
   };
   
-
   const closeSmodalHandler = () => {
     setIsSModalOpen(false);
     if (lottieAnimation === "/animations/success-check.json") {
