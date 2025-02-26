@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import style from '../barista-note/Note.module.css';
 import { Link } from "react-router-dom";
-import { callNoticesAPI , callIncreaseViewCountAPI, callSearchNoticeAPI } from '../../../apis/notice/noticeApi';
+import { callNoticesAPI , callIncreaseViewCountAPI, callSearchNoticeAPI , callNoticeDetailAPI } from '../../../apis/notice/noticeApi';
+import { useNavigate } from "react-router-dom";
 
 function NoticeLayout() {
     const dispatch = useDispatch();
     const notices = useSelector(state => state.noticeReducer.data); // state.notice.notices에서 데이터를 가져옵니다.
+    const navigate = useNavigate();
     const [search, setSearch] = useState('');
 
     // 컴포넌트가 처음 렌더링될 때 공지사항 데이터를 불러옵니다.
@@ -14,8 +16,14 @@ function NoticeLayout() {
         dispatch(callNoticesAPI());
     }, [dispatch]);
 
+    // 🔹 현재 로그인한 사용자 정보 가져오기 (Redux 또는 sessionStorage)
+    const user = JSON.parse(sessionStorage.getItem("user")); // 세션에서 유저 정보 가져오기
+    const userAuthority = user?.authority; // authority 값 확인
+
     const handleNoticeClick = (noticeCode) => {
-        dispatch(callIncreaseViewCountAPI(noticeCode));
+        dispatch(callIncreaseViewCountAPI(noticeCode)); // 조회수 증가 API 호출
+        dispatch(callNoticeDetailAPI({ noticeCode })); // 상세 정보 조회 API 호출
+        navigate(`/fran/notice/${noticeCode}`); // 상세 페이지로 이동
     };
 
     const handleSearchChange = (e) => setSearch(e.target.value);
@@ -33,9 +41,13 @@ function NoticeLayout() {
             <div className={style.upperBox}>
                 <input className={style.inputBox} type="text" placeholder="게시글검색"  value={search} onChange={handleSearchChange} />
                 <button className={style.searchButton} onClick={handleSearch}>검색</button>
+                {userAuthority === "ADMIN" ? (
                 <Link to="/fran/notice/notice-regist">
-                    <button className={style.registButton}>등록</button>
+                        <button className={style.registButton}>등록</button>
                 </Link>
+                ) : (
+                    <button className={style.rightPlaceholder}>등록</button>  // 등록 버튼이 없을 때 공간 유지
+                )}
             </div>
 
             <div className={style.lowerBox}>
@@ -47,18 +59,15 @@ function NoticeLayout() {
                     <div className={style.infoItem}>조회수</div>
                 </div>
                 <div className={style.NoticeData}>
-                    {/* 공지사항 데이터가 없으면 '데이터 없음' 메시지를 출력 */}
                     {notices && notices.length > 0 ? (
                         notices.map((notice) => (
-                            <Link to={`/fran/notice/${notice.noticeCode}`} onClick={() => handleNoticeClick(notice.noticeCode)}>
-                            <div key={notice.noticeCode} className={style.infoRow}>
+                            <div key={notice.noticeCode} className={style.infoRow} onClick={() => handleNoticeClick(notice.noticeCode)} style={{ cursor: 'pointer' }}>
                                 <div className={style.infoItem}>{notice.noticeCode}</div>
                                 <div className={style.infoItem}>{notice.noticeTitle}</div>
                                 <div className={style.infoItem}>{notice.empName}</div>
                                 <div className={style.infoItem}>{notice.noticeDate}</div>
                                 <div className={style.infoItem}>{notice.noticeViews}</div>
                             </div>
-                        </Link>
                         ))
                     ) : (
                         <div className={style.noData}>데이터 없음</div>
