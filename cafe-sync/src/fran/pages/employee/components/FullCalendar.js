@@ -5,6 +5,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import st from "../styles/FullCalendar.module.css";
 import ScheduleAdd from "./ScheduleAdd";
+import ScheduleModify from "./ScheduleModify";
 
 const MyCalendar = () => {
   const franCode = useSelector(
@@ -12,7 +13,9 @@ const MyCalendar = () => {
   );
   const [events, setEvents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModifyModalOpen, setIsModifyModalOpen] = useState(false);
   const [updateTrigger, setUpdateTrigger] = useState(false);
+  // const [selectedEvent, setSelectedEvent] = useState(null);
   const calendarRef = useRef();
 
   useEffect( () => { fetchSchedules(); }, [] );
@@ -78,7 +81,22 @@ const MyCalendar = () => {
     return scheduleTypes[division] || "알 수 없음";
   };
 
-  
+  // const eventClickHandler = (clickInfo) => {
+  //   setSelectedEvent({
+  //     id: clickInfo.event.id,
+  //     title: clickInfo.event.title,
+  //     date: clickInfo.event.date,
+  //     emp: clickInfo.event.extendedProps.emp,
+  //     scheduleDivision: clickInfo.event.extendedProps.scheduleDivision,
+  //   });
+  //   setIsModifyModalOpen(true);
+  //   console.log('선택한 이벤트', selectedEvent);
+  // };
+
+  // const closeModifyModal = () => {
+  //   setIsModifyModalOpen(false);
+  //   setSelectedEvent(null);
+  // }
 
   return (
     <div className={`${st.cal} test-class`}>
@@ -91,7 +109,7 @@ const MyCalendar = () => {
         headerToolbar={{
           start: "prev next today",
           center: "title",
-          end: "addEventBtn dayGridWeek",
+          end: "addEventBtn modifyEventBtn dayGridWeek",
           // dayGridMonth
         }}
         customButtons={{
@@ -99,9 +117,14 @@ const MyCalendar = () => {
             text: "스케줄 등록",
             click: () => setIsModalOpen(true),
           },
+          modifyEventBtn: {
+            text: "스케줄 수정",
+            click: () => setIsModifyModalOpen(true),
+          },
         }}
         events={events}
         eventOrder="scheduleDivision"
+        // eventClick={eventClickHandler}
         views={{
           // dayGridMonth: {
           //   dayMaxEventRows: 3,
@@ -158,6 +181,16 @@ const MyCalendar = () => {
         onScheduleUpdate={onScheduleUpdate}
         existingSchedules={events}
       />
+      {/* 스케줄 수정 모달 */}
+      {isModifyModalOpen && (
+        <ScheduleModify 
+          isModifyModalOpen={isModifyModalOpen}
+          setIsModifyModalOpen={setIsModifyModalOpen}
+          franCode={franCode}
+          onScheduleUpdate={onScheduleUpdate}
+          existingSchedules={events}
+        />
+      )}
     </div>
   );
 };
