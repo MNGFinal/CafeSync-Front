@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Duty.module.css";
-import { getFranTaxList } from "../../../apis/slip/slipApi";
+import { getFranTaxList, deleteFranTaxList } from "../../../apis/slip/slipApi";
 import { useSelector } from "react-redux";
 import SModal from "../../../components/SModal";
 import { Player } from "@lottiefiles/react-lottie-player";
@@ -8,6 +8,7 @@ import modalStyle from "../../../components/ModalButton.module.css";
 import ReactPaginate from "react-paginate";
 import { AiOutlineReload } from "react-icons/ai";
 import generateInvoicePDF from "../../../config/generateInvoicePDF";
+import { useNavigate } from "react-router-dom"; // 👈 페이지 이동을 위한 훅 추가
 
 function Duty() {
   const franCode = useSelector(
@@ -15,7 +16,7 @@ function Duty() {
   );
 
   // 세금 계산서(TaxDTO) 데이터를 API로부터 받아올 상태
-  const [invoiceData, setInvoiceData] = useState([]);
+  const [invoiceData, setInvoiceData] = useState([]); // ✅ 빈 배열을 초기값으로 설정
 
   const [selectedInvoice, setSelectedInvoice] = useState(null);
 
@@ -26,11 +27,16 @@ function Duty() {
   const [currentPage, setCurrentPage] = useState(0); // 현재 페이지 상태 추가
   const itemsPerPage = 12; // 페이지당 12개씩 표시
   const [totalPages, setTotalPages] = useState(1); // 전체 페이지 수 상태
+  const [lottieAnimation, setLottieAnimation] = useState(
+    "/animations/warning.json"
+  );
 
   // ✅ 현재 페이지에서 보여줄 데이터 계산
   // ✅ 현재 페이지에서 보여줄 데이터 계산
   const offset = currentPage * itemsPerPage;
-  const currentPageData = invoiceData.slice(offset, offset + itemsPerPage);
+  const currentPageData = Array.isArray(invoiceData)
+    ? invoiceData.slice(offset, offset + itemsPerPage)
+    : [];
 
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -40,6 +46,58 @@ function Duty() {
 
   const [isModalOpen, setIsModalOpen] = useState(false); // 🔥 모달 상태 추가
   const [modalMessage, setModalMessage] = useState(""); // 🔥 모달 메시지 추가
+
+  const navigate = useNavigate(); // 👈 페이지 이동 함수
+
+  const [selectedInvoices, setSelectedInvoices] = useState([]); // 선택된 세금계산서 목록
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedInvoices(invoiceData.map((invoice) => invoice.taxId)); // 모든 taxId 추가
+    } else {
+      setSelectedInvoices([]); // 선택 해제
+    }
+  };
+
+  const handleSelectRow = (taxId) => {
+    setSelectedInvoices(
+      (prevSelected) =>
+        prevSelected.includes(taxId)
+          ? prevSelected.filter((id) => id !== taxId) // 체크 해제
+          : [...prevSelected, taxId] // 체크 추가
+    );
+  };
+
+  const deleteSelectedInvoices = async () => {
+    if (selectedInvoices.length === 0) {
+      setLottieAnimation("/animations/warning.json"); // ❗️경고 애니메이션
+      setModalMessage("삭제할 세금 계산서를 선택해주세요.");
+      setIsModalOpen(true);
+      return;
+    }
+
+    try {
+      await deleteFranTaxList(selectedInvoices); // ✅ API 호출 (삭제할 taxId 배열 전달)
+
+      setInvoiceData(
+        invoiceData.filter(
+          (invoice) => !selectedInvoices.includes(invoice.taxId)
+        )
+      ); // ✅ UI에서도 삭제 반영
+      setSelectedInvoices([]); // ✅ 선택 목록 초기화
+
+      // ✅ 성공 애니메이션 적용
+      setLottieAnimation("/animations/success-check.json");
+      setModalMessage("선택된 세금 계산서가 삭제되었습니다.");
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error("삭제 오류:", error);
+
+      setLottieAnimation("/animations/error.json"); // ❌ 실패 애니메이션
+      setModalMessage("삭제 중 오류가 발생했습니다.");
+      setIsModalOpen(true);
+    }
+  };
 
   const handleSearch = () => {
     if (!startDate || !endDate) {
@@ -79,19 +137,38 @@ function Duty() {
     fetchInvoices(1); // 전체 조회
   };
 
-  // 페이지 로드시 franCode가 있을 때 API 호출
   useEffect(() => {
     if (franCode) {
       getFranTaxList(franCode, defaultStartDate, defaultEndDate)
         .then((data) => {
-          // data가 TaxDTO 배열이라고 가정
-          setInvoiceData(data.data);
+          console.log("API 응답 데이터:", data); // 디버깅용 로그
+          const receivedData = Array.isArray(data.data) ? data.data : [];
+
+          setInvoiceData(receivedData);
+
+          if (receivedData.length === 0) {
+            setModalMessage("조회된 세금 계산서 데이터가 없습니다.");
+            setIsModalOpen(true);
+
+            // 3초 후 이전 페이지로 이동
+            setTimeout(() => {
+              navigate(-1); // 👈 이전 페이지로 이동
+            }, 3000);
+          }
         })
         .catch((error) => {
           console.error("세금 계산서 데이터를 가져오는 중 오류:", error);
+          setInvoiceData([]); // 에러 발생 시 빈 배열 설정
+          setModalMessage("데이터를 불러오는 중 오류가 발생했습니다.");
+          setIsModalOpen(true);
+
+          // 3초 후 이전 페이지로 이동
+          setTimeout(() => {
+            navigate(-1);
+          }, 3000);
         });
     }
-  }, [franCode]);
+  }, [franCode, navigate]);
 
   // 행 클릭 시 상세 표시를 위해 상태 업데이트
   const handleRowClick = (invoice) => {
@@ -152,7 +229,12 @@ function Duty() {
             <button className={styles.resetBtn} onClick={handleReset}>
               <AiOutlineReload />
             </button>
-            <button className={styles.deleteBtn}>삭제</button>
+            <button
+              className={styles.deleteBtn}
+              onClick={deleteSelectedInvoices}
+            >
+              삭제
+            </button>
           </div>
 
           {/* 세금 계산서 목록 테이블 */}
@@ -160,7 +242,14 @@ function Duty() {
             <thead>
               <tr>
                 <th>
-                  <input type="checkbox" />
+                  <input
+                    type="checkbox"
+                    onChange={handleSelectAll}
+                    checked={
+                      selectedInvoices.length === invoiceData.length &&
+                      invoiceData.length > 0
+                    }
+                  />
                 </th>
                 <th>세금 계산서 번호</th>
                 <th>발행 일자</th>
@@ -170,28 +259,33 @@ function Duty() {
               </tr>
             </thead>
             <tbody>
-              {currentPageData.map((invoice) => (
-                <tr
-                  key={invoice.taxId}
-                  onClick={() => handleRowClick(invoice)}
-                  style={{ cursor: "pointer" }}
-                >
-                  <td>
-                    <input type="checkbox" />
-                  </td>
-                  <td>{invoice.taxId}</td>
-                  <td>{invoice.taxDate}</td>
-                  <td>{invoice.slip?.venCode.venName}</td>
-                  <td>{invoice.franchise?.franName}</td>
-                  <td>
-                    {(invoice.slip?.debit != null
-                      ? invoice.slip.debit
-                      : invoice.slip?.credit
-                    )?.toLocaleString("ko-KR")}{" "}
-                    원
-                  </td>
-                </tr>
-              ))}
+              {currentPageData.length > 0 &&
+                currentPageData.map((invoice) => (
+                  <tr
+                    key={invoice.taxId}
+                    onClick={() => handleRowClick(invoice)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={selectedInvoices.includes(invoice.taxId)}
+                        onChange={() => handleSelectRow(invoice.taxId)}
+                      />
+                    </td>
+                    <td>{invoice.taxId}</td>
+                    <td>{invoice.taxDate}</td>
+                    <td>{invoice.slip?.venCode?.venName ?? "-"}</td>
+                    <td>{invoice.franchise?.franName ?? "-"}</td>
+                    <td>
+                      {(invoice.slip?.debit != null && invoice.slip.debit !== 0
+                        ? invoice.slip.debit
+                        : invoice.slip?.credit
+                      )?.toLocaleString("ko-KR")}{" "}
+                      원
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
 
@@ -322,7 +416,7 @@ function Duty() {
             autoplay
             loop={false}
             keepLastFrame={true}
-            src="/animations/warning.json" // ✅ Warning 애니메이션 적용
+            src={lottieAnimation} // ✅ 상태 적용
             style={{ height: "100px", width: "100px", margin: "0 auto" }}
           />
           <p
@@ -330,7 +424,7 @@ function Duty() {
               fontSize: "16px",
               fontWeight: "bold",
               textAlign: "center",
-              paddingTop: "14px",
+              paddingTop: "18px",
             }}
           >
             {modalMessage}

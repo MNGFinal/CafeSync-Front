@@ -1,10 +1,10 @@
 import { useState } from "react";
 import styles from "./FranRegist.module.css"; // 스타일 파일 추가
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { registFran } from "../../../../apis/mgment/mgmentApi";
 
 function FranRegist({ onClose }) {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const [formData, setFormData] = useState({
         franCode: "",
         franName: "",
@@ -31,7 +31,7 @@ function FranRegist({ onClose }) {
         try {
             await registFran(formData); // API 요청
             alert("가맹점 등록 성공!");
-            navigate("/hq/mgment"); // 등록 후 목록 페이지로 이동
+            onClose();
         } catch (error) {
             console.error("등록 중 오류 발생:", error); // ✅ 에러 확인
             alert("등록 중 오류 발생");
