@@ -67,6 +67,18 @@
     transform: scale(1.1); /* hover 시 크기 살짝 커지기 */
 }
 
+.rightPlaceholder {
+    padding: 8px 16px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 15px;
+    visibility: hidden; /* 요소는 보이지 않지만 공간을 유지 */
+}
+
 /*------------------------------------------------------------*/
 
 /* 하단 박스 컨테이너 스타일 */
