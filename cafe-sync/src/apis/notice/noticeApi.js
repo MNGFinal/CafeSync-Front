@@ -1,6 +1,6 @@
 // src/apis/notice/noticeApi.js
 
-import { GET_NOTICES , GET_NOTICE , POST_NOTICE , PUT_NOTICE } from '../../modules/NoticeModule.js'
+import { GET_NOTICES , GET_NOTICE , POST_NOTICE , PUT_NOTICE , DELETE_NOTICE } from '../../modules/NoticeModule.js'
 
 export const callNoticesAPI = () => {
     const requestURL = `http://localhost:8080/api/fran/notices`;
@@ -165,6 +165,50 @@ export const callNoticeUpdateAPI = ({ noticeTitle, noticeContent, noticeDate, us
         }
     };
 };
+
+export const callNoticeDeleteAPI = ({ noticeCode }) => {
+    const requestURL = `http://localhost:8080/api/fran/notices/${noticeCode}`;
+
+    return async (dispatch) => {
+        const accessToken = sessionStorage.getItem("accessToken");
+        const sessionUser = JSON.parse(sessionStorage.getItem("user"));
+        const sessionUserId = sessionUser ? sessionUser.userId : null;
+
+        if (!accessToken) {
+            alert("❌ 로그인 정보가 없습니다. 다시 로그인해주세요.");
+            return;
+        }
+
+        if (!sessionUserId) {  
+            alert("❌ 자신이 작성한 글만 삭제할 수 있습니다.");
+            return;
+        }
+
+        try {
+            const response = await fetch(requestURL, {
+                method: 'DELETE',
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${accessToken}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+            }
+
+            const jsonData = await response.json();
+            console.log("📢 노트 삭제 응답:", jsonData);
+
+            dispatch({ type: DELETE_NOTICE, payload: jsonData });
+        } catch (error) {
+            console.error("🚨 API 요청 중 오류 발생:", error);
+            alert(`🚨 오류 발생: ${error.message}`);
+        }
+    };
+};
+
 
 
 
