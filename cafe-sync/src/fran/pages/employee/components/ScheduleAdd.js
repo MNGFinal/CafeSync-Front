@@ -31,9 +31,12 @@ const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode, onScheduleUpdate, 
     if(!franCode) return;
     
     try {
-      const responseWorker = await fetch(
-        `http://localhost:8080/api/fran/employee/workers/${franCode}`
-      );
+      let token = sessionStorage.getItem("accessToken");
+      const responseWorker = await fetch(`http://localhost:8080/api/fran/employee/workers/${franCode}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      });
 
       if(!responseWorker.ok) {throw new Error("근로자 응답 실패")};
 
@@ -166,9 +169,11 @@ const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode, onScheduleUpdate, 
     console.log("보낼 스케줄 정보: ", scheduleData);
 
     try {
+      let token = sessionStorage.getItem("accessToken");
       const resopnse = await fetch("http://localhost:8080/api/fran/schedule", {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify(scheduleData)
