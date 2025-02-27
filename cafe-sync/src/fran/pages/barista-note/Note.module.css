@@ -369,5 +369,19 @@ hr {
     opacity: 0.5;
     cursor: not-allowed;
   }
+
+.closeButtonContainer {
+    display: flex;
+    justify-content: flex-end; /* 왼쪽 정렬 */
+    width: 100%; /* 전체 너비 사용 */
+}
+
+.closeButton {
+    cursor: pointer;
+    font-weight: bold;
+    color: #333; /* x 버튼 색상 */
+    background: none;
+    border: none;
+}
   
   

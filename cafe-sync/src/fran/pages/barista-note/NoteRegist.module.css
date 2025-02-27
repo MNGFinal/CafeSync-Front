@@ -93,7 +93,8 @@ input {
     display: flex;
     justify-content: center;
     gap: 20px;
-    margin-top: 20px; /* Adds spacing from the content above */
+    /* margin-top: 20px; Adds spacing from the content above */
+    padding-bottom: 2000px;
 }
 
 /* 각 라벨에 개별적인 너비 설정 */
@@ -168,18 +169,17 @@ input {
     width : 100%
 }
 
+.closeButtonContainer {
+    display: flex;
+    justify-content: flex-end; /* 왼쪽 정렬 */
+    width: 100%; /* 전체 너비 사용 */
+    padding-bottom : 5px;
+}
+
 .closeButton {
-    position: absolute; /* 부모 요소에 대해 절대 위치 설정 */
-    top: 10px; /* 상단에서 10px 떨어지게 설정 */
-    right: 15px; /* 오른쪽에서 10px 떨어지게 설정 */
-    font-size: 24px; /* 버튼 크기 */
-    color: #333; /* 버튼 색상 */
     cursor: pointer;
+    font-weight: bold;
+    color: #333; /* x 버튼 색상 */
+    background: none;
+    border: none;
 }
-
-/* 닫기 버튼 호버 효과 */
-.closeButton:hover {
-    color: #f44336; /* hover 시 빨간색으로 변환 */
-}
-
-
