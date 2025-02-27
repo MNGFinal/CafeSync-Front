@@ -10,13 +10,13 @@ function HQCoffeeList() {
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태
 
 
-  // 메뉴 클릭 시 모달 열기
+  // 메뉴 클릭 시 상세페이지 모달 열기
   const handleMenuClick = (menu) => {
     setSelectedMenu(menu);
     setIsModalOpen(true);
   };
 
-  // 모달 닫기
+  // 상세페이지 모달 닫기
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedMenu(null);
