@@ -67,6 +67,18 @@
     transform: scale(1.1); /* hover 시 크기 살짝 커지기 */
 }
 
+.rightPlaceholder {
+    padding: 8px 16px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 15px;
+    visibility: hidden; /* 요소는 보이지 않지만 공간을 유지 */
+}
+
 /*------------------------------------------------------------*/
 
 /* 하단 박스 컨테이너 스타일 */
@@ -279,21 +291,6 @@ hr {
     margin-bottom: 8px; /* 파일 첨부와 내용 간의 간격 */
 }
 
-/* 닫기 버튼 스타일 */
-.closeButton {
-    position: absolute; /* 부모 요소에 대해 절대 위치 설정 */
-    top: 10px; /* 상단에서 10px 떨어지게 설정 */
-    right: 15px; /* 오른쪽에서 10px 떨어지게 설정 */
-    font-size: 24px; /* 버튼 크기 */
-    color: #333; /* 버튼 색상 */
-    cursor: pointer;
-}
-
-/* 닫기 버튼 호버 효과 */
-.closeButton:hover {
-    color: #f44336; /* hover 시 빨간색으로 변환 */
-}
-
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@페이지 네이션@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 .paginationContainer {
@@ -372,5 +369,19 @@ hr {
     opacity: 0.5;
     cursor: not-allowed;
   }
+
+.closeButtonContainer {
+    display: flex;
+    justify-content: flex-end; /* 왼쪽 정렬 */
+    width: 100%; /* 전체 너비 사용 */
+}
+
+.closeButton {
+    cursor: pointer;
+    font-weight: bold;
+    color: #333; /* x 버튼 색상 */
+    background: none;
+    border: none;
+}
   
   

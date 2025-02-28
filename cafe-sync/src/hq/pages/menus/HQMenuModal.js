@@ -1,6 +1,6 @@
-import style from './MenuModal.module.css';
+import style from '../../../fran/pages/menus/modal/MenuModal.module.css';
 
-const MenuModal = ({ menu, onClose, setSelectedMenu, fetchMenus }) => {
+const HQMenuModal = ({ menu, onClose, setSelectedMenu, fetchMenus }) => {
 
 
     // Sold Out 버튼을 눌렀을 때 soldOut 처리
@@ -64,4 +64,4 @@ const MenuModal = ({ menu, onClose, setSelectedMenu, fetchMenus }) => {
     );
 };
 
-export default MenuModal;
+export default HQMenuModal;
