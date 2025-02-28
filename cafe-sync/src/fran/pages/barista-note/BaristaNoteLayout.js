@@ -6,6 +6,10 @@ import style from './Note.module.css';
 import { callBaristNotesAPI, callSearchNoteAPI, callNoteRegistAPI , callNoteUpdateAPI , callNoteDeleteAPI , callBaristNoteDetailAPI } from '../../../apis/brista-note/baristaNoteApi';
 import { useMemo } from 'react';
 import { GET_NOTES } from '../../../modules/NoteModule';
+import SModal from "../../../components/SModal";
+import modalStyle from "../../../components/ModalButton.module.css";
+import Lottie from "lottie-react"; // Lottie 애니메이션을 위한 라이브러리
+import { Player } from "@lottiefiles/react-lottie-player";
 
 // 추가된 임포트
 import ReactPaginate from 'react-paginate'; // 페이지네이션 컴포넌트
@@ -16,6 +20,45 @@ function BaristaNoteLayout() {
     const user = useSelector((state) => state.auth.user); // ✅ user 객체 가져오기
     const userId = user?.userId || null; // ✅ user 객체에서 userId 추출
     const noteList = useMemo(() => (Array.isArray(notes) ? notes : []), [notes]);
+
+    /* ----------------------------------삭제모달---------------------------------------------- */
+
+    // 삭제 모달 관련 상태 추가
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [noteToDelete, setNoteToDelete] = useState(null);
+    const [lottieAnimation, setLottieAnimation] = useState("");
+    const [modalMessage, setModalMessage] = useState(""); 
+
+    // 삭제 모달 열기 함수
+    const openDeleteModal = (noteCode) => {
+        setNoteToDelete(noteCode);
+        setLottieAnimation("/animations/warning.json"); // 경고 애니메이션 설정
+        setModalMessage("정말로 이 공지사항을 삭제하시겠습니까?");
+        setIsDeleteModalOpen(true);
+    };
+
+    // 삭제 모달 닫기 함수
+    const closeDeleteModal = () => {
+        setIsDeleteModalOpen(false);
+        setNoteToDelete(null);
+    };
+
+    // 삭제 확정 핸들러
+    const confirmHandler = async () => {
+        if (noteToDelete) {
+            await dispatch(callNoteDeleteAPI({ noteCode: noteToDelete }));
+            dispatch(callBaristNotesAPI()); // 노트 삭제 후 목록 갱신
+            closeDeleteModal();
+        }
+    };
+
+    // 삭제 버튼 클릭 시 모달 띄우도록 변경
+    const handleDeleteNote = (noteCode) => {
+        openDeleteModal(noteCode);
+    };
+    
+    /* -------------------------------------------------------------------------------- */
+
 
     console.log("🔍 Redux에서 가져온 user 객체:", user);
     console.log("📢 최종 userId:", userId);
@@ -142,13 +185,13 @@ function BaristaNoteLayout() {
     };
 
     // 삭제버튼을 추가하는 메소드
-    const handleDeleteNote = async (noteCode) => {
-        if (window.confirm('정말로 이 노트를 삭제하시겠습니까?')) {
-            await dispatch(callNoteDeleteAPI({ noteCode }));
-            dispatch(callBaristNotesAPI()); // 노트 삭제 후 갱신
-            closeDetailModal();
-        }
-    };
+    // const handleDeleteNote = async (noteCode) => {
+    //     if (window.confirm('정말로 이 노트를 삭제하시겠습니까?')) {
+    //         await dispatch(callNoteDeleteAPI({ noteCode }));
+    //         dispatch(callBaristNotesAPI()); // 노트 삭제 후 갱신
+    //         closeDetailModal();
+    //     }
+    // };
 
     const handleUpdateNote = async () => {
         if (!noteTitle.trim() || !noteDetail.trim()) {
@@ -207,6 +250,7 @@ function BaristaNoteLayout() {
                     <div className={style.infoItem}>작성일</div>
                     <div className={style.infoItem}>조회수</div>
                 </div>
+                <div className={style.NoticeData}>
                 {notesToDisplay.length > 0 ? (
                     notesToDisplay.map((note) => (
                         <div key={note.noteCode} className={style.infoRow} onClick={() => openDetailModal(note)}>
@@ -220,6 +264,7 @@ function BaristaNoteLayout() {
                 ) : (
                     <div>데이터가 없습니다.</div>
                 )}
+                </div>
 
             {/* 페이지네이션 위치 조정 */}
             <div className={style.paginationContainer}>
@@ -351,6 +396,40 @@ function BaristaNoteLayout() {
                         )}
                     </div>
                 </div>
+            )}
+
+            {/* 삭제 확인 모달 */}
+            {isDeleteModalOpen && (
+                <SModal
+                    isOpen={isDeleteModalOpen}
+                    onClose={() => setIsDeleteModalOpen(false)}  // 모달 닫기
+                    buttons={[
+                        {
+                            text: "삭제",
+                            onClick: () => confirmHandler(),  // 삭제 확정 시 호출
+                            className: modalStyle.deleteButtonS,
+                        },
+                        {
+                            text: "취소",
+                            onClick: () => setIsDeleteModalOpen(false),  // 취소 시 모달 닫기
+                            className: modalStyle.cancelButtonS,
+                        },
+                    ]}
+                >
+                    <div style={{ textAlign: "center" }}>
+                        {/* Lottie 애니메이션: Player 컴포넌트 사용 */}
+                        <Player
+                            autoplay
+                            loop={false} // 애니메이션 반복 X
+                            keepLastFrame={true} // 애니메이션 끝난 후 마지막 프레임 유지
+                            src={lottieAnimation} // 동적으로 변경됨
+                            style={{ height: "100px", width: "100px", margin: "0 auto" }}
+                        />
+                        <span style={{ marginTop: "15px", whiteSpace: "pre-line" }}>
+                            {modalMessage}
+                        </span>
+                    </div>
+                </SModal>
             )}
 
         </>

@@ -4,6 +4,10 @@ import { callNoticeRegistAPI } from "../../../apis/notice/noticeApi";  // API �
 import style from "../barista-note/NoteRegist.module.css";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import SModal from "../../../components/SModal";
+import modalStyle from "../../../components/ModalButton.module.css";
+import { Player } from "@lottiefiles/react-lottie-player"; // ✅ Lottie Player 추가
+
 
 function NoticeRegistLayout() {
 
@@ -16,6 +20,12 @@ function NoticeRegistLayout() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    /* ---------------------------------등록모달--------------------------------- */
+
+    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+    const [lottieAnimation, setLottieAnimation] = useState("");
+    const [modalMessage, setModalMessage] = useState("");
+
     useEffect(() => {
         const today = new Date();
         const formattedDate = today.toISOString().split('T')[0]; // YYYY-MM-DD 형식
@@ -24,19 +34,23 @@ function NoticeRegistLayout() {
 
     const handleRegistClick = async () => {
         const noticeDate = new Date().toISOString(); // 현재 날짜와 시간
-        
-        // API 호출
-        await dispatch(callNoticeRegistAPI({
-            noticeTitle,
-            noticeContent,
-            noticeDate,  // 서버에 전달할 날짜 (시간 포함)
-            userId,
-            attachment,
-        }));
     
-        // 등록 후 목록 화면으로 리다이렉트 (상태 업데이트 후)
-        navigate("/fran/notice", { replace: true });
+            const result = await dispatch(callNoticeRegistAPI({
+                noticeTitle,
+                noticeContent,
+                noticeDate,  // 서버에 전달할 날짜 (시간 포함)
+                userId,
+                attachment,
+            }));
+    
+
+            setLottieAnimation("/animations/success-check.json");
+            setModalMessage("공지사항을 정상 등록하였습니다.");
+            setIsSuccessModalOpen(true);
     };
+
+    /* ---------------------------------등록모달--------------------------------- */
+    
     
 
     return (
@@ -90,6 +104,39 @@ function NoticeRegistLayout() {
                         </Link>
                     </div>
                 </div>
+                 {/* ✅ 등록 성공 모달 */}
+                {isSuccessModalOpen && (
+                    <SModal
+                        isOpen={isSuccessModalOpen}
+                        onClose={() => {
+                            setIsSuccessModalOpen(false);
+                            navigate("/fran/notice", { replace: true }); // ✅ 모달 닫은 후 목록 이동
+                        }}
+                        buttons={[
+                            {
+                                text: "확인",
+                                onClick: () => {
+                                    setIsSuccessModalOpen(false);
+                                    navigate("/fran/notice", { replace: true });
+                                },
+                                className: modalStyle.confirmButtonS,
+                            },
+                        ]}
+                    >
+                        <div style={{ textAlign: "center" }}>
+                            <Player
+                                autoplay
+                                loop={false}
+                                keepLastFrame={true}
+                                src={lottieAnimation}
+                                style={{ height: "100px", width: "100px", margin: "0 auto" }}
+                            />
+                            <span style={{ marginTop: "15px", whiteSpace: "pre-line" }}>
+                                {modalMessage}
+                            </span>
+                        </div>
+                    </SModal>
+            )}
             </div>
         </>
     );
