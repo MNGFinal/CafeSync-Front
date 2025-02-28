@@ -5,6 +5,10 @@ import { callNoticesAPI, callNoticeDetailAPI, callNoticeUpdateAPI , callNoticeDe
 import { useNavigate } from "react-router-dom";
 import style from "../../pages/barista-note/NoteRegist.module.css";
 import {RESET_NOTICE_DETAIL} from '../../../modules/NoticeModule';
+import SModal from "../../../components/SModal";
+import modalStyle from "../../../components/ModalButton.module.css";
+import Lottie from "lottie-react"; // Lottie 애니메이션을 위한 라이브러리
+import { Player } from "@lottiefiles/react-lottie-player";
 
 function NoticeDetailLayout() {
     const { noticeCode } = useParams();
@@ -21,6 +25,93 @@ function NoticeDetailLayout() {
     const [isViewCountIncreased, setIsViewCountIncreased] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     const [editNotice, setEditNotice] = useState({});
+
+    /* ----------------------------------삭제모달---------------------------------------------- */
+    
+        // 삭제 모달 관련 상태 추가
+        const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+        const [noteToDelete, setNoteToDelete] = useState(null);
+        const [lottieAnimation, setLottieAnimation] = useState("");
+        const [modalMessage, setModalMessage] = useState("");
+    
+        // 삭제 모달 열기 함수
+        const openDeleteModal = (noteCode) => {
+            setNoteToDelete(noteCode);
+            setLottieAnimation("/animations/warning.json"); // 경고 애니메이션 설정
+            setModalMessage("정말로 이 공지사항을 삭제하시겠습니까?");
+            setIsDeleteModalOpen(true);
+        };
+    
+        // 삭제 모달 닫기 함수
+        const closeDeleteModal = () => {
+            setIsDeleteModalOpen(false);
+            setNoteToDelete(null);
+        };
+    
+        // 삭제 확정 핸들러
+        const confirmHandler = async () => {
+            if (noteToDelete) {
+                await dispatch(callNoticeDeleteAPI({ noticeCode: noteToDelete }));
+                dispatch(callNoticesAPI()); // 공지 목록 갱신
+                closeDeleteModal(); // 모달 닫기
+                navigate("/fran/notice"); // 공지 목록 페이지로 이동
+            }
+        };
+    
+        // 삭제 버튼 클릭 시 모달 띄우도록 변경
+        const handleDeleteNote = (noteCode) => {
+            openDeleteModal(noteCode);
+        };
+        
+    /* -------------------------------------------------------------------------------- */
+    /* ----------------------------------등록모달--------------------------------------- */
+    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+    const [successLottieAnimation, setSuccessLottieAnimation] = useState("");
+    const [successModalMessage, setSuccessModalMessage] = useState("");
+
+    const handleSaveClick = async () => {
+        if (editNotice.noticeCode === 0) {
+            console.log("❌ 잘못된 공지사항 코드입니다.");
+            return;
+        }
+    
+        const now = new Date();
+        const koreaTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+        const formattedDate = koreaTime.toISOString().split(".")[0];
+    
+        const updatedNotice = {
+            ...editNotice,
+            noticeDate: formattedDate,
+        };
+    
+        setCreationDate(formattedDate);
+    
+        try {
+            await dispatch(callNoticeUpdateAPI(updatedNotice));
+            dispatch(callNoticeDetailAPI({ noticeCode }));
+    
+            // ✅ 수정 성공 모달 띄우기
+            setSuccessLottieAnimation("/animations/success-check.json");
+            setSuccessModalMessage("공지사항을 정상적으로 수정하였습니다.");
+            setIsSuccessModalOpen(true);
+            
+        } catch (error) {
+            console.error("🚨 공지사항 수정 중 오류 발생:", error);
+            alert("🚨 공지사항 수정에 실패했습니다.");
+        }
+    
+        setIsEditMode(false);
+    };
+    
+    const closeSuccessModal = () => {
+        setIsSuccessModalOpen(false);
+        navigate("/fran/notice"); // ✅ 성공 모달 닫힌 후 목록 페이지로 이동
+    };
+
+
+
+
+    /* -------------------------------------------------------------------------------- */
 
     const isOwner = sessionUser && sessionUser.userId === notice?.userId;
 
@@ -58,57 +149,29 @@ function NoticeDetailLayout() {
         });
     };
 
-    const handleSaveClick = () => {
-        if (editNotice.noticeCode === 0) {
-            console.log("❌ 잘못된 공지사항 코드입니다.");
-            return;
-        }
-    
-        // 수정 시 현재 시간을 한국 시간으로 갱신
-        const now = new Date();
-        const koreaTime = new Date(now.getTime() + 9 * 60 * 60 * 1000); // UTC+9 (한국 시간)
-    
-        // 밀리초(.sss)와 'Z' 제거
-        const formattedDate = koreaTime.toISOString().split(".")[0];
-    
-        const updatedNotice = {
-            ...editNotice,
-            noticeDate: formattedDate, // 수정 시 작성시간을 한국 시간으로 설정
-        };
-    
-        setCreationDate(formattedDate); // ✅ 상태를 직접 업데이트하여 UI 즉시 반영
-    
-        // 수정된 공지사항을 API로 업데이트
-        dispatch(callNoticeUpdateAPI(updatedNotice)).then(() => {
-            // API 호출 후 상태가 갱신되면 다시 detail 페이지를 불러오도록 설정
-            dispatch(callNoticeDetailAPI({ noticeCode })); // 수정 후 갱신된 내용을 다시 불러오기
-        });
-    
-        setIsEditMode(false); // 저장 후 다시 읽기 모드로 변경
-    };
-
     const handleDeleteClick = () => {
         if (!isOwner) {
             alert("❌ 자신이 작성한 글만 삭제할 수 있습니다.");
             return;
         }
     
-        if (window.confirm("⚠️ 정말로 삭제하시겠습니까?")) {
-            dispatch(callNoticeDeleteAPI({ noticeCode }))
-                .then(() => {
-                    alert("✅ 공지사항이 삭제되었습니다.");
+        // if (window.confirm("⚠️ 정말로 삭제하시겠습니까?")) {
+        //     dispatch(callNoticeDeleteAPI({ noticeCode }))
+        //         .then(() => {
+        //             alert("✅ 공지사항이 삭제되었습니다.");
                     
-                    // ✅ 삭제된 공지를 제외한 새로운 목록으로 상태 업데이트
-                    dispatch(callNoticesAPI()); 
+        //             // ✅ 삭제된 공지를 제외한 새로운 목록으로 상태 업데이트
+        //             dispatch(callNoticesAPI()); 
     
-                    // ✅ 삭제된 공지의 상세 페이지가 보이지 않도록 이동
-                    navigate("/fran/notice"); 
-                })
-                .catch((error) => {
-                    console.error("🚨 삭제 중 오류 발생:", error);
-                    alert("🚨 삭제에 실패했습니다.");
-                });
-        }
+        //             // ✅ 삭제된 공지의 상세 페이지가 보이지 않도록 이동
+        //             navigate("/fran/notice"); 
+        //         })
+        //         .catch((error) => {
+        //             console.error("🚨 삭제 중 오류 발생:", error);
+        //             alert("🚨 삭제에 실패했습니다.");
+        //         });
+        // }
+        openDeleteModal(noticeCode);
     };
 
     if (!notice) {
@@ -187,10 +250,70 @@ function NoticeDetailLayout() {
                                 <button className={style.returnToList} onClick={handleDeleteClick}>삭제</button>
                             </>
                         )
+                        
                     )}
                 </div>
             </div>
+        {/* 삭제 확인 모달 */}
+        {isDeleteModalOpen && (
+            <SModal
+                isOpen={isDeleteModalOpen}
+                onClose={closeDeleteModal} // 모달 닫기
+                buttons={[
+                    {
+                        text: "삭제",
+                        onClick: () => confirmHandler(),  // 삭제 확정 시 호출
+                        className: modalStyle.deleteButtonS,
+                    },
+                    {
+                        text: "취소",
+                        onClick: closeDeleteModal,  // 취소 시 모달 닫기
+                        className: modalStyle.cancelButtonS,
+                    },
+                ]}
+            >
+                <div style={{ textAlign: "center" }}>
+                    <Player
+                        autoplay
+                        loop={false} // 애니메이션 반복 X
+                        keepLastFrame={true} // 애니메이션 끝난 후 마지막 프레임 유지
+                        src={lottieAnimation} // 동적으로 변경됨
+                        style={{ height: "100px", width: "100px", margin: "0 auto" }}
+                    />
+                    <span style={{ marginTop: "15px", whiteSpace: "pre-line" }}>
+                        {modalMessage}
+                    </span>
+                </div>
+            </SModal>
+        )}
+        {isSuccessModalOpen && (
+            <SModal
+                isOpen={isSuccessModalOpen}
+                onClose={closeSuccessModal}
+                buttons={[
+                    {
+                        text: "확인",
+                        onClick: closeSuccessModal,
+                        className: modalStyle.confirmButtonS,
+                    },
+                ]}
+            >
+                <div style={{ textAlign: "center" }}>
+                    <Player
+                        autoplay
+                        loop={false}
+                        keepLastFrame={true}
+                        src={successLottieAnimation}
+                        style={{ height: "100px", width: "100px", margin: "0 auto" }}
+                    />
+                    <span style={{ marginTop: "15px", whiteSpace: "pre-line" }}>
+                        {successModalMessage}
+                    </span>
+                </div>
+            </SModal>
+        )}
         </div>
+        
     );
 }
 
