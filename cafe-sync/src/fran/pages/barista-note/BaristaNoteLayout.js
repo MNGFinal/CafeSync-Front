@@ -159,9 +159,6 @@ function BaristaNoteLayout() {
         // 세션에서 가져온 user.id와 selectedNote.userId를 비교
         const sessionUserId = user?.userId;  // `user`는 Redux store에서 가져온 사용자 정보
     
-        console.log("🔍 sessionUserId:", sessionUserId);
-        console.log("🔍 selectedNote.userId:", selectedNote?.userId);
-    
         if (selectedNote.userId !== sessionUserId) {
             alert("❌ 자신이 작성한 글만 수정할 수 있습니다.");
             return;
