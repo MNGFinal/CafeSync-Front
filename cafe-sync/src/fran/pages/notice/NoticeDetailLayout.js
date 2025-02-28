@@ -37,7 +37,7 @@ function NoticeDetailLayout() {
         // 삭제 모달 열기 함수
         const openDeleteModal = (noteCode) => {
             setNoteToDelete(noteCode);
-            setLottieAnimation("/animations/warning.json"); // 경고 애니메이션 설정
+            setLottieAnimation("/animations/identify.json"); // 경고 애니메이션 설정
             setModalMessage("정말로 이 공지사항을 삭제하시겠습니까?");
             setIsDeleteModalOpen(true);
         };
@@ -53,8 +53,19 @@ function NoticeDetailLayout() {
             if (noteToDelete) {
                 await dispatch(callNoticeDeleteAPI({ noticeCode: noteToDelete }));
                 dispatch(callNoticesAPI()); // 공지 목록 갱신
-                closeDeleteModal(); // 모달 닫기
-                navigate("/fran/notice"); // 공지 목록 페이지로 이동
+                
+                // ✅ 삭제 완료 메시지 설정
+                setLottieAnimation("/animations/success-check.json"); 
+                setModalMessage("공지사항이 삭제되었습니다.");
+                
+                // ✅ 성공 모달 다시 띄우기
+                setIsDeleteModalOpen(true);
+        
+                // ✅ 확인 버튼 클릭 시 목록으로 이동
+                setTimeout(() => {
+                    closeDeleteModal(); 
+                    navigate("/fran/notice");
+                }, 2000); // 2초 후 이동
             }
         };
     
@@ -63,8 +74,7 @@ function NoticeDetailLayout() {
             openDeleteModal(noteCode);
         };
         
-    /* -------------------------------------------------------------------------------- */
-    /* ----------------------------------등록모달--------------------------------------- */
+    /* ----------------------------------수정모달--------------------------------------- */
     const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
     const [successLottieAnimation, setSuccessLottieAnimation] = useState("");
     const [successModalMessage, setSuccessModalMessage] = useState("");
@@ -258,26 +268,41 @@ function NoticeDetailLayout() {
         {isDeleteModalOpen && (
             <SModal
                 isOpen={isDeleteModalOpen}
-                onClose={closeDeleteModal} // 모달 닫기
-                buttons={[
-                    {
-                        text: "삭제",
-                        onClick: () => confirmHandler(),  // 삭제 확정 시 호출
-                        className: modalStyle.deleteButtonS,
-                    },
-                    {
-                        text: "취소",
-                        onClick: closeDeleteModal,  // 취소 시 모달 닫기
-                        className: modalStyle.cancelButtonS,
-                    },
-                ]}
+                onClose={() => {
+                    if (modalMessage === "공지사항이 삭제되었습니다.") {
+                        navigate("/fran/notice"); // ✅ 삭제 완료 후 이동
+                    }
+                    closeDeleteModal();
+                }}
+                buttons={
+                    modalMessage === "공지사항이 삭제되었습니다."
+                        ? [
+                            {
+                                text: "확인",
+                                onClick: () => navigate("/fran/notice"), 
+                                className: modalStyle.confirmButtonS,
+                            },
+                        ]
+                        : [
+                            {
+                                text: "삭제",
+                                onClick: confirmHandler, 
+                                className: modalStyle.deleteButtonS,
+                            },
+                            {
+                                text: "취소",
+                                onClick: closeDeleteModal,
+                                className: modalStyle.cancelButtonS,
+                            },
+                        ]
+                }
             >
                 <div style={{ textAlign: "center" }}>
                     <Player
                         autoplay
-                        loop={false} // 애니메이션 반복 X
-                        keepLastFrame={true} // 애니메이션 끝난 후 마지막 프레임 유지
-                        src={lottieAnimation} // 동적으로 변경됨
+                        loop={false}
+                        keepLastFrame={true}
+                        src={lottieAnimation} 
                         style={{ height: "100px", width: "100px", margin: "0 auto" }}
                     />
                     <span style={{ marginTop: "15px", whiteSpace: "pre-line" }}>
