@@ -1,47 +1,61 @@
 import { useEffect, useState } from "react";
 import style from "../styles/Complain.module.css"
+import Modal from "../../../../components/Modal"
+import SModal from "../../../../components/SModal"
+import modalStyle from "../../../../components/ModalButton.module.css"
 
 
 const ComplainList = ({franCode}) => {
   const today = new Date();
-  const getToday = today.toISOString().split("T")[0]
-  const getOneMonthAgo = () => {
-    today.setMonth(today.getMonth() - 1);
-    return today.toISOString().split("T")[0];
+  const getFirstDayOfMonth = () => {
+    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+    return `${firstDay.getFullYear()}-${String(firstDay.getMonth() + 1).padStart(2, "0")}-${String(firstDay.getDate()).padStart(2, "0")}`;
   };
-  const [prevDate, setPrevDate] = useState(getOneMonthAgo);
-  const [nowDate, setNowDate] = useState(getToday);
+  const getLastDayOfMonth = () => {
+    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    return `${lastDay.getFullYear()}-${String(lastDay.getMonth() + 1).padStart(2, "0")}-${String(lastDay.getDate()).padStart(2, "0")}`;
+  };
+  const [firstDate, setFirstDate] = useState(getFirstDayOfMonth);
+  const [lastDate, setLastDate] = useState(getLastDayOfMonth);
   const [complainList, setComplainList] = useState([]);
+  const [seletedComplain, setSelectedComplain] = useState(null);
+  const [isBModalOpen, setIsBModalOpen] = useState(false);
+
+  const clickDetailHandler = (complain) => {
+    setSelectedComplain(complain);
+    setIsBModalOpen(true);
+  }
+
+  const fetchComplains = async () => {
+    if(!franCode) return;
+
+    try {
+      console.log('컴플레인 조회 시작! :', franCode);
+      let token = sessionStorage.getItem("accessToken");
+      const responseComplain = await fetch(
+        `http://localhost:8080/api/fran/complain/${franCode}?startDate=${firstDate}&endDate=${lastDate}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log('혹시 찍히나?', responseComplain);
+
+      if (!responseComplain.ok) {
+        throw new Error("컴플레인 응답 실패");
+      }
+
+      const complainData = await responseComplain.json();
+      console.log('complainData',complainData)
+      setComplainList(complainData.data);
+    } catch (error) {
+      console.log('조회 오류!', error);
+      setComplainList([]);
+    }
+  };
 
   useEffect(() => {
-    const fetchComplains = async () => {
-      if(!franCode) return;
-
-      try {
-        console.log('컴플레인 조회 시작! :', franCode);
-        let token = sessionStorage.getItem("accessToken");
-        const responseComplain = await fetch(
-          `http://localhost:8080/api/fran/complain/${franCode}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        console.log('혹시 찍히나?', responseComplain);
-
-        if (!responseComplain.ok) {
-          throw new Error("컴플레인 응답 실패");
-        }
-
-        const complainData = await responseComplain.json();
-        console.log('complainData',complainData)
-        setComplainList(complainData.data);
-      } catch (error) {
-        console.log('조회 오류!', error);
-      }
-    };
-    
     fetchComplains();
   }, [franCode]);
   
@@ -52,33 +66,45 @@ const ComplainList = ({franCode}) => {
         <div className={style.searchBox + " " + style.Box}>
           <div className={style.dateSection}>
             <span className={style.period}>기간</span>
-            <input type="date" value={prevDate} onChange={(e) => setPrevDate(e.target.value)} />
+            <input type="date" value={firstDate} onChange={(e) => setFirstDate(e.target.value)} />
             <span className={style.waveSpan}> ~ </span>
-            <input type="date" value={nowDate} onChange={(e) => setNowDate(e.target.value)}/>
+            <input type="date" value={lastDate} onChange={(e) => setLastDate(e.target.value)}/>
           </div>
           <div>
-            <button className={style.searchBtn}>조회</button>
+            <button className={style.searchBtn} onClick={fetchComplains}>조회</button>
           </div>
         </div>
         <div className={style.listBox + " " + style.Box}>
           {/* <span>조회된 내용 들어갈 영역</span> */}
           <table className={style.listTable}>
+            <tbody>
             {complainList.length > 0 ? (
               complainList.map(({complainDate, complainDivision, complainDetail}, index) => (
-                <tr key={index}>
-                  <td>{new Date(complainDate).toLocaleString()}</td>
-                  <td>{complainDivision === 1 ? "서비스" : complainDivision === 2 ? "위생" : "기타"}</td>
-                  <td>{complainDetail}</td>
-                </tr>
+                  <tr 
+                    key={index} 
+                    onClick={() => clickDetailHandler({ complainDate, complainDivision, complainDetail })} 
+                    style={{ cursor: "pointer" }}
+                  >
+                    <td>{new Date(complainDate).toLocaleString()}</td>
+                    <td>{complainDivision === 1 ? "서비스" : complainDivision === 2 ? "위생" : "기타"}</td>
+                    <td>{complainDetail}</td>
+                  </tr>
               ))
             ) : (
-              <tr>
-                <td colSpan="3" style={{ textAlign: "center", color: "gray" }}>
-                  등록된 컴플레인이 없습니다.
-                </td>
-              </tr>
+                <tr>
+                  <td colSpan="3" style={{ textAlign: "center", color: "gray" }}>
+                    해당 기간 내에 등록된 컴플레인이 없습니다.
+                  </td>
+                </tr>
             )}
+            </tbody>
           </table>
+          {isBModalOpen && (
+            <Modal onClose={() => setIsBModalOpen(false)}>
+              {/* 여기 이따가 상세 조회로 넘어가도록 만들기 */}
+              <h1>일단 뜨긴 뜨니?</h1>
+            </Modal>
+          )}
         </div>
       </div>
       <div className={style.pagingBox}>
