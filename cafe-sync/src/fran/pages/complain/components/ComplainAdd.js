@@ -12,6 +12,7 @@ const ComplainAdd = ({franCode}) => {
     { label: "위생", value: 2 }, 
     { label: "기타", value: 3 },
   ]
+  console.log('커밋용')
   
   return(
     <>

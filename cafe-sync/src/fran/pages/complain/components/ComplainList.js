@@ -18,6 +18,7 @@ const ComplainList = ({franCode}) => {
       if(!franCode) return;
 
       try {
+        console.log('컴플레인 조회 시작! :', franCode);
         let token = sessionStorage.getItem("accessToken");
         const responseComplain = await fetch(
           `http://localhost:8080/api/fran/complain/${franCode}`,
@@ -27,12 +28,14 @@ const ComplainList = ({franCode}) => {
             },
           }
         );
+        console.log('혹시 찍히나?', responseComplain);
 
         if (!responseComplain.ok) {
           throw new Error("컴플레인 응답 실패");
         }
 
         const complainData = await responseComplain.json();
+        console.log('complainData',complainData)
         setComplainList(complainData.data);
       } catch (error) {
         console.log('조회 오류!', error);
@@ -61,11 +64,11 @@ const ComplainList = ({franCode}) => {
           {/* <span>조회된 내용 들어갈 영역</span> */}
           <table className={style.listTable}>
             {complainList.length > 0 ? (
-              complainList.map(({complainDate, division, content}, index) => (
+              complainList.map(({complainDate, complainDivision, complainDetail}, index) => (
                 <tr key={index}>
                   <td>{new Date(complainDate).toLocaleString()}</td>
-                  <td>{division === 1 ? "서비스" : division === 2 ? "위생" : "기타"}</td>
-                  <td>{content}</td>
+                  <td>{complainDivision === 1 ? "서비스" : complainDivision === 2 ? "위생" : "기타"}</td>
+                  <td>{complainDetail}</td>
                 </tr>
               ))
             ) : (

@@ -4,6 +4,7 @@ import ComplainList from "./components/ComplainList"
 import style from "./styles/Complain.module.css"
 
 function Complain() {
+  console.log('커밋용')
   const franCode = useSelector(
     (state) => state.auth?.user?.franchise?.franCode ?? null
   );
