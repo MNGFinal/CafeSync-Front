@@ -61,9 +61,12 @@ const ScheduleModify = ({ isModifyModalOpen, setIsModifyModalOpen, franCode, onS
     if(!franCode) return;
     
     try {
-      const responseWorker = await fetch(
-        `http://localhost:8080/api/fran/employee/workers/${franCode}`
-      );
+      let token = sessionStorage.getItem("accessToken");
+      const responseWorker = await fetch(`http://localhost:8080/api/fran/employee/workers/${franCode}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      });
 
       if(!responseWorker.ok) {throw new Error("근로자 응답 실패")};
 
@@ -100,14 +103,24 @@ const ScheduleModify = ({ isModifyModalOpen, setIsModifyModalOpen, franCode, onS
   const deleteWorkHandler = async (worker) => {
     if (worker && !worker.isNew) {
       try {
-        const response = await fetch(`http://localhost:8080/api/schedule/${worker.key}`, {
+        let token = sessionStorage.getItem("accessToken");
+        const response = await fetch(`http://localhost:8080/api/fran/schedule/${worker.key}`, {
           method: "DELETE",
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json" ,
+          },
         });
   
         if (!response.ok) throw new Error("삭제 실패");
   
         console.log("기존 데이터 삭제 성공!");
-        setWorkers(workers.filter(w => w.key !== worker.key));  // 프론트에서 삭제 처리
+        // setWorkers(workers.filter(w => w.key !== worker.key));
+        // setWorkers(prevWorkers => prevWorkers.filter(w => w.key !== worker.key));
+        onScheduleUpdate((prevSchedules) => {
+          prevSchedules.filter((schedule) => schedule.id !== worker.key);
+        });
+
         setLottieAnimation("/animations/success-check.json");
         setModalMessage("스케줄을 정상 삭제하였습니다.");
         setIsDeleteModalOpen(false);
@@ -163,30 +176,105 @@ const ScheduleModify = ({ isModifyModalOpen, setIsModifyModalOpen, franCode, onS
     });
   };
 
+  const normalizeData = (item) => ({
+    empCode: String(item.empCode || item.emp),  // 숫자를 문자열로 변환
+    division: String(item.division || item.extendedProps?.scheduleDivision),  // 숫자를 문자열로 변환
+    scheduleDate: item.scheduleDate 
+        ? item.scheduleDate.split("T")[0] 
+        : item.date 
+            ? item.date.split("T")[0] 
+            : "",  // ✅ `undefined`이면 빈 문자열("")로 처리
+  });
+
   useEffect(() => {
-    if (workers.length === 0) return;
-    console.log("🛠 workers 변경 감지, 중복 검사 실행");
-  
-    // ✅ 새로 추가된 데이터끼리의 중복 여부만 검사
-    const hasDuplicate = workers.some((worker, index, self) =>
-      worker.empCode &&
-      worker.division &&
-      self.some(
-        (w, i) => i !== index && w.empCode === worker.empCode && w.division === worker.division
+    if (workers.length === 0 || existingSchedules.length === 0) return;
+    console.log("🛠 workers 변경 감지, 기존 데이터 & 새 데이터 중복 검사 실행");
+
+    console.log("📌 기존 데이터 (existingSchedules):", existingSchedules);
+    console.log("📌 수정된 workers:", workers);
+
+    // ✅ 기존 데이터(`existingSchedules`) 변환
+    const normalizedExisting = existingSchedules.map(schedule => normalizeData(schedule));
+
+    // ✅ 수정된 기존 데이터(`isNew: false`)만 필터링
+    const modifiedWorkers = workers.filter(worker => !worker.isNew).map(worker => normalizeData(worker));
+
+    // ✅ 기존 데이터에서 수정된 데이터와 동일한 `id`(또는 `key`)를 가진 데이터 제외
+    const filteredExisting = normalizedExisting.filter(schedule =>
+      !modifiedWorkers.some(worker => 
+        worker.key === schedule.id || worker.key === schedule.key // ✅ ID(또는 key)가 같다면 제외
       )
     );
-  
-    console.log("🔍 새로 추가된 데이터끼리의 중복 여부:", hasDuplicate);
-  
-    if (hasDuplicate) {
-      console.log("🚨 중복 발견! 등록 불가");
-      setAddError("동일 근무 시간에 중복된 근로자가 있습니다.");
+
+    // ✅ 기존 데이터끼리 중복 검사 (수정된 데이터는 제외)
+    const hasDuplicateWithinExisting = filteredExisting.some((schedule, index, self) =>
+      self.some((s, i) => i !== index &&
+        String(s.empCode) === String(schedule.empCode) &&
+        String(s.division) === String(schedule.division) &&
+        s.scheduleDate === schedule.scheduleDate
+      )
+    );
+
+    // ✅ 기존 데이터 vs 수정된 기존 데이터 중복 검사
+    const hasDuplicateWithModified = modifiedWorkers.some(worker =>
+      normalizedExisting.some(schedule => {
+        if (schedule.id === worker.key || schedule.key === worker.key) {
+          return false; // ✅ 원래 값이면 중복 검사 제외
+        }
+        return (
+          String(schedule.empCode) === String(worker.empCode) &&
+          String(schedule.division) === String(worker.division) &&
+          schedule.scheduleDate === worker.scheduleDate
+        );
+      })
+    );    
+
+    // ✅ 새로 추가된 데이터(`isNew: true`)만 필터링
+    const newWorkers = workers.filter(worker => worker.isNew).map(worker => normalizeData(worker));
+    console.log("🆕 새롭게 추가된 workers:", newWorkers);
+
+    // ✅ 기존 데이터 vs 새로 추가된 데이터 중복 검사
+    const hasDuplicateWithDB = newWorkers.some(worker =>
+      normalizedExisting.some(schedule =>
+        String(schedule.empCode) === String(worker.empCode) &&
+        String(schedule.division) === String(worker.division) &&
+        schedule.scheduleDate === worker.scheduleDate
+      )
+    );
+
+    // ✅ 새로 입력한 데이터끼리(`newWorkers` 내부) 중복 검사
+    const hasDuplicateWithinWorkers = newWorkers.some((worker, index, self) =>
+      self.some((w, i) =>
+        i !== index &&
+        String(w.empCode) === String(worker.empCode) &&
+        String(w.division) === String(worker.division) &&
+        w.scheduleDate === worker.scheduleDate
+      )
+    );
+
+    console.log("🔍 기존 데이터끼리 중복 여부:", hasDuplicateWithinExisting);
+    console.log("🔍 기존 데이터 vs 수정된 데이터 중복 여부:", hasDuplicateWithModified);
+    console.log("🔍 DB 데이터와 새 데이터 간 중복 여부:", hasDuplicateWithDB);
+    console.log("🔍 새로 입력한 데이터끼리 중복 여부:", hasDuplicateWithinWorkers);
+
+    if (hasDuplicateWithinExisting) {
+      console.log("🚨 기존 데이터끼리 중복 발견! DB 데이터가 중복됨");
+      setAddError("DB에 동일 날짜, 동일 근무 시간에 중복된 근로자가 있습니다.");
+    } else if (hasDuplicateWithModified) {
+      console.log("🚨 기존 데이터와 수정된 데이터 중복 발견! 등록 불가");
+      setAddError("수정된 스케줄이 기존 스케줄과 중복됩니다.");
+    } else if (hasDuplicateWithDB) {
+      console.log("🚨 DB 데이터와 새로 추가된 데이터 중복 발견! 등록 불가");
+      setAddError("DB에 동일 날짜, 동일 근무 시간에 중복된 근로자가 있습니다.");
+    } else if (hasDuplicateWithinWorkers) {
+      console.log("🚨 새로 입력한 데이터끼리 중복 발견! 등록 불가");
+      setAddError("동일 날짜, 동일 근무 시간에 중복된 근로자가 있습니다.");
     } else {
       console.log("✅ 중복 없음!");
       setAddError("");
     }
-  }, [workers, scheduleDate]);
-  
+  }, [workers, scheduleDate, existingSchedules]);
+
   // ✅ 수정 확인 핸들러
   const modifyHandler = async () => {
     if (workers.some((w) => !w.empCode || !w.division)) {
@@ -218,12 +306,16 @@ const ScheduleModify = ({ isModifyModalOpen, setIsModifyModalOpen, franCode, onS
     try {
       let savedSchedules = [];    // 변경된 스케줄 저장될 배열
       const requests = [];        // 요청을 보낼 Promise 배열
+      let token = sessionStorage.getItem("accessToken");
 
       if (modifyScheduleData.length > 0) {
         // PUT 요청 - modifiedWorkers 배열을 한 번에 보내기
         const responseModify = fetch("http://localhost:8080/api/fran/schedule", {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json" 
+          },
           body: JSON.stringify(modifyScheduleData), // 배열 전체를 한 번에 전송
         })
         .then(res => {
@@ -240,7 +332,10 @@ const ScheduleModify = ({ isModifyModalOpen, setIsModifyModalOpen, franCode, onS
         // POST 요청 - 새로운 데이터 추가
         const responseAdd = fetch("http://localhost:8080/api/fran/schedule", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json" 
+          },
           body: JSON.stringify(addScheduleData),
         })
         .then(res => {

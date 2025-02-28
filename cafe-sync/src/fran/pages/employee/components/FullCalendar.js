@@ -20,22 +20,27 @@ const MyCalendar = () => {
 
   useEffect( () => { fetchSchedules(); }, [] );
 
-  const onScheduleUpdate = (newSchedules) => {
-    const formattedNewEvents = newSchedules.map((schedule) => ({
-      id: schedule.scheduleCode,
-      title: `${getScheduleType(schedule.scheduleDivision)} - ${schedule.empName}`,
-      date: schedule.scheduleDate,
-      emp: schedule.empCode,
-      extendedProps: {
-        scheduleDivision: schedule.scheduleDivision,
-      },
-      classNames: [`division-${schedule.scheduleDivision}`],
-    }));
-  
-    // setEvents((prevEvents) => [...prevEvents, ...formattedNewEvents]);
-    setEvents(formattedNewEvents);
-    setUpdateTrigger((prev) => !prev);
+  const onScheduleUpdate = async () => {
+    await fetchSchedules(); // 리랜더링으로 항상 최신 데이터 유지
   };
+
+  // const onScheduleUpdate = (newSchedules) => {
+  //   const formattedNewEvents = newSchedules.map((schedule) => ({
+  //     id: schedule.scheduleCode,
+  //     title: `${getScheduleType(schedule.scheduleDivision)} - ${schedule.empName}`,
+  //     date: schedule.scheduleDate,
+  //     emp: schedule.empCode,
+  //     extendedProps: {
+  //       scheduleDivision: schedule.scheduleDivision,
+  //     },
+  //     classNames: [`division-${schedule.scheduleDivision}`],
+  //   }));
+  
+  //   setEvents((prevEvents) => [...prevEvents, ...formattedNewEvents]);
+  //   // setEvents(formattedNewEvents);
+  //   // setEvents((prevSchedules) => newSchedules(prevSchedules));
+  //   setUpdateTrigger((prev) => !prev);
+  // };
 
   useEffect(() => {
     console.log("📌 새로운 이벤트가 추가됨:", events);
@@ -46,9 +51,12 @@ const MyCalendar = () => {
     if (!franCode) return;
 
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/fran/schedule/${franCode}`
-      );
+      let token = sessionStorage.getItem("accessToken");
+      const response = await fetch(`http://localhost:8080/api/fran/schedule/${franCode}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      });
 
       if (!response.ok) {
         throw new Error("서버 응답 실패");
