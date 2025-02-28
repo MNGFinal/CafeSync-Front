@@ -75,6 +75,27 @@ function NoticeDetailLayout() {
         };
         
     /* ----------------------------------수정모달--------------------------------------- */
+
+
+    const [isEditConfirmModalOpen, setIsEditConfirmModalOpen] = useState(false);  // 수정 확인 모달 상태
+
+    // 수정 모드로 들어가기 전에 확인 모달을 띄우는 함수
+    const openEditConfirmModal = () => {
+        setModalMessage("수정하시겠습니까?");  // 수정 확인 메시지 설정
+        setLottieAnimation("/animations/identify.json"); 
+        setIsEditConfirmModalOpen(true);  // 수정 확인 모달 열기
+    };
+
+    const closeEditConfirmModal = () => {
+        setIsEditConfirmModalOpen(false);  // 수정 확인 모달 닫기
+    };
+
+    const handleConfirmEdit = () => {
+        setIsEditMode(true);  // 수정 모드로 전환
+        closeEditConfirmModal();  // 모달 닫기
+    };
+
+    /* ----------------------------------수정모달--------------------------------------- */
     const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
     const [successLottieAnimation, setSuccessLottieAnimation] = useState("");
     const [successModalMessage, setSuccessModalMessage] = useState("");
@@ -117,9 +138,6 @@ function NoticeDetailLayout() {
         setIsSuccessModalOpen(false);
         navigate("/fran/notice"); // ✅ 성공 모달 닫힌 후 목록 페이지로 이동
     };
-
-
-
 
     /* -------------------------------------------------------------------------------- */
 
@@ -256,7 +274,7 @@ function NoticeDetailLayout() {
                             </>
                         ) : (
                             <>
-                                <button className={style.registButton} onClick={handleEditClick}>수정</button>
+                                <button className={style.registButton} onClick={openEditConfirmModal}>수정</button>
                                 <button className={style.returnToList} onClick={handleDeleteClick}>삭제</button>
                             </>
                         )
@@ -337,6 +355,39 @@ function NoticeDetailLayout() {
                 </div>
             </SModal>
         )}
+        {/* 수정 확인 모달 */}
+        {isEditConfirmModalOpen && (
+                <SModal
+                    isOpen={isEditConfirmModalOpen}
+                    onClose={closeEditConfirmModal}  // 모달 닫기
+                    buttons={[
+                        {
+                            text: "수정",
+                            onClick: handleConfirmEdit,  // 수정 확정 시 호출
+                            className: modalStyle.confirmButtonS,
+                        },
+                        {
+                            text: "취소",
+                            onClick: closeEditConfirmModal,  // 취소 시 모달 닫기
+                            className: modalStyle.cancelButtonS,
+                        },
+                    ]}
+                >
+                    <div style={{ textAlign: "center" }}>
+                        {/* Lottie 애니메이션: Player 컴포넌트 사용 */}
+                        <Player
+                            autoplay
+                            loop={false} // 애니메이션 반복 X
+                            keepLastFrame={true} // 애니메이션 끝난 후 마지막 프레임 유지
+                            src={lottieAnimation} // 동적으로 변경됨
+                            style={{ height: "100px", width: "100px", margin: "0 auto" }}
+                        />
+                        <span style={{ marginTop: "15px", whiteSpace: "pre-line" }}>
+                            {modalMessage}
+                        </span>
+                    </div>
+                </SModal>
+            )}
         </div>
         
     );
