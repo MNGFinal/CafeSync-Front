@@ -33,7 +33,7 @@ import Employee from "./fran/pages/employee/Employee";
 import Chat from "./fran/pages/chat/Chat";
 import Notice from "./fran/pages/notice/Notice";
 import NoticeRegist from "./fran/pages/notice/NoticeRegist";
-import NoticeLayout from  "./fran/pages/notice/NoticeLayout"
+import NoticeLayout from "./fran/pages/notice/NoticeLayout"
 import NoticeDetailLayout from "./fran/pages/notice/NoticeDetailLayout";
 import BaristaNote from "./fran/pages/barista-note/BaristaNote";
 import Stats from "./fran/pages/stats/Stats";
@@ -52,6 +52,7 @@ import HQFranInventory from "./hq/pages/inventory/HQFranInventory";
 import HQVendor from "./hq/pages/inventory/HQVendor";
 import HQOrders from "./hq/pages/inventory/HQOrders";
 import HQMenus from "./hq/pages/menus/HQMenus";
+import HQMenuList from "./hq/pages/menus/HQCoffeeList";
 import HQSlip from "./hq/pages/slip/HQSlip";
 import HQDuty from "./hq/pages/slip/HQDuty";
 import HQIncome from "./hq/pages/slip/HQIncome";
@@ -138,7 +139,10 @@ function App() {
             <Route path="fran-inventory" element={<HQFranInventory />} />
             <Route path="vendor" element={<HQVendor />} />
             <Route path="orders" element={<HQOrders />} />
-            <Route path="menus" element={<HQMenus />} />
+            <Route path="menus" element={<HQMenus />}>
+              <Route index element={<HQMenuList />} /> {/* ✅ 기본으로 표시될 컴포넌트 */}
+            </Route>
+
             <Route path="menus/regist" element={<HQRegist />} />
             <Route path="discontinue-menus" element={<HQDiscontinue />} />
             <Route path="slip" element={<HQSlip />} />
