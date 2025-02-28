@@ -21,7 +21,7 @@ function HQMenus() {
       goods: 4,
     };
 
-    // 카테고리별로 메뉴
+    // 카테고리별로 메뉴 리스트 가져오기
     const categoryCode = categoryMap[category];
     if (!categoryCode) return;
 

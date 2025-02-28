@@ -73,7 +73,7 @@ function FranRegist({ onClose, existingFran, setFranList, fetchFrans, onConfirm 
                 </div>
 
                 <div className={styles.formGroup}>
-                    <label>점포명 :</label>
+                    <label>가맹점 명 :</label>
                     <input
                         type="text"
                         name="franName"
@@ -84,7 +84,7 @@ function FranRegist({ onClose, existingFran, setFranList, fetchFrans, onConfirm 
                 </div>
 
                 <div className={styles.formGroup}>
-                    <label>점포 위치 :</label>
+                    <label>가맹점 위치 :</label>
                     <input
                         type="text"
                         name="franAddr"
@@ -105,7 +105,7 @@ function FranRegist({ onClose, existingFran, setFranList, fetchFrans, onConfirm 
                 </div>
 
                 <div className={styles.formGroup}>
-                    <label>매장 대표번호 :</label>
+                    <label>가맹점 대표번호 :</label>
                     <input
                         type="text"
                         name="franPhone"
@@ -115,7 +115,7 @@ function FranRegist({ onClose, existingFran, setFranList, fetchFrans, onConfirm 
                 </div>
 
                 <div className={styles.formGroup}>
-                    <label>점포 이미지 :</label>
+                    <label>가맹점 이미지 :</label>
                     <input
                         type="file"
                         name="franImage"
