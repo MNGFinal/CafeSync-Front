@@ -34,7 +34,43 @@
 /* ************************************************************* */
 /* ComplainAdd.js 전용 */
 /* ************************************************************* */
+.addTable tr th,
+.addTable tr td {
+    padding-top: 10px;
+}
 
+.addTable th {
+    text-align: left;
+}
+
+.addTable td input,
+.addTable td select {
+    padding-left: 10px;
+    width: 200px;
+    height: 25px;
+}
+
+.addTable th + td {
+    padding-left: 30px;
+}
+
+.addTextarea {
+    max-height: 370px;
+    overflow-y: auto;
+    font-size: 13px;
+    padding: 20px;
+}
+
+.btnSection {
+    display: flex;
+    gap: 40px;
+    padding: 20px;
+    justify-content: center;
+}
+
+.btnSection button {
+    border-radius: 10px;
+}
 
 /* ************************************************************* */
 /* ComplainList.js 전용 */
