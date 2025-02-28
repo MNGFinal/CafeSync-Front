@@ -1,45 +1,20 @@
 import style from '../../../fran/pages/menus/modal/MenuModal.module.css';
-import modalStyles from '../../../components/Modal.module.css';
+import modalStyle from '../../../components/Modal.module.css';
 import HQModalStyles from './HQMenuModal.module.css';
 import Modal from '../../../components/Modal';
+import SModal from '../../../components/SModal';
 import { useState } from 'react';
-
+import { Player } from "@lottiefiles/react-lottie-player"; // ✅ Lottie 애니메이션 추가
 
 const HQMenuModal = ({ menu, onClose, setSelectedMenu, fetchMenus }) => {
 
 
     const [isEditModalOpen, setIsEditModalOpen] = useState(false); // ✅ 수정 모달 상태
     const [editedMenu, setEditedMenu] = useState({ ...menu }); // ✅ 수정 가능한 상태 저장
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [lottieAnimation, setLottieAnimation] = useState("");
+    const [modalMessage, setModalMessage] = useState("");
 
-    // Sold Out 버튼을 눌렀을 때 soldOut 처리
-    const onClickHandler = async () => {
-
-        try {
-            const response = await fetch(`http://localhost:8080/api/fran/menus/${menu.menuCode}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    ...menu,
-                    orderableStatus: menu.orderableStatus ? false : true, // 'soldOut' 상태에 맞게 판매 여부 수정 (0: sold out, 1: available)
-                }),
-            });
-
-            if (response.ok) {
-                console.log("메뉴 상태가 성공적으로 업데이트되었습니다.");
-                setSelectedMenu({
-                    ...menu,
-                    orderableStatus: menu.orderableStatus ? false : true,
-                })
-                fetchMenus();
-            } else {
-                console.error("서버 요청 실패:", response);
-            }
-        } catch (error) {
-            console.error("에러 발생:", error);
-        }
-    };
 
     // ✅ 수정 모달 열기
     const openEditModal = () => {
@@ -71,7 +46,7 @@ const HQMenuModal = ({ menu, onClose, setSelectedMenu, fetchMenus }) => {
             if (response.ok) {
                 console.log("✅ 메뉴 수정 성공!");
                 fetchMenus(); // ✅ 수정 후 리스트 새로고침
-                closeEditModal(); // ✅ 수정 모달 닫기
+                onClose(); // ✅ 수정 모달 닫기
             } else {
                 console.error("❌ 수정 실패");
             }
@@ -117,8 +92,8 @@ const HQMenuModal = ({ menu, onClose, setSelectedMenu, fetchMenus }) => {
                         isOpen={true}
                         onClose={closeEditModal}
                         buttons={[
-                            { text: "확인", onClick: onModifySubmit },
-                            { text: "취소", onClick: closeEditModal, className: "confirmButton" },
+                            { text: "확인", onClick: onModifySubmit, className: modalStyle.confirmButtonS, },
+                            { text: "취소", onClick: closeEditModal, className: "confirmButton", className: modalStyle.confirmButtonS },
                         ]}
                     >
                         <div className={HQModalStyles.container}>
@@ -145,6 +120,34 @@ const HQMenuModal = ({ menu, onClose, setSelectedMenu, fetchMenus }) => {
                                 />
                             </div>
                         </div>
+
+
+                        {/* ✅ 모달 추가 (애니메이션 포함) */}
+                        <SModal
+                            isOpen={isModalOpen}
+                            onClose={() => setIsModalOpen(false)}
+                            buttons={[
+                                {
+                                    text: "확인",
+                                    onClick: () => setIsModalOpen(false),
+                                    className: modalStyle.confirmButtonS,
+                                },
+                            ]}
+                        >
+                            <div style={{ textAlign: "center" }}>
+                                <Player
+                                    autoplay
+                                    loop={false} // ✅ 애니메이션 반복 X
+                                    keepLastFrame={true} // ✅ 애니메이션이 끝나도 마지막 프레임 유지
+                                    src={lottieAnimation} // ✅ 동적으로 변경됨
+                                    style={{ height: "100px", width: "100px", margin: "0 auto" }}
+                                />
+                                <br />
+                                <p>{modalMessage}</p>
+                            </div>
+                        </SModal>
+
+
                     </Modal>
                 )}
 
