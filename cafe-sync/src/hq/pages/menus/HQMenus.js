@@ -12,6 +12,8 @@ function HQMenus() {
   const [currentPage, setCurrentPage] = useState(0); // 현재 페이지
   const itemsPerPage = 10; // ✅ 페이지당 10개(5개 × 2줄) 표시
 
+
+
   // 메뉴 데이터 가져오기
   async function fetchMenus() {
     const categoryMap = {
