@@ -93,7 +93,8 @@ input {
     display: flex;
     justify-content: center;
     gap: 20px;
-    margin-top: 20px; /* Adds spacing from the content above */
+    /* margin-top: 20px; Adds spacing from the content above */
+    padding-bottom: 2000px;
 }
 
 /* 각 라벨에 개별적인 너비 설정 */
@@ -110,6 +111,12 @@ input {
 }
 
 .labelAttachment {
+    width: 120px; /* 첨부파일 라벨의 너비 */
+    display: inline-block;
+    text-align: right;
+}
+
+.registAttachment{
     width: 120px; /* 첨부파일 라벨의 너비 */
     display: inline-block;
     text-align: right;
@@ -154,8 +161,25 @@ input {
     border-radius: 5px;    
 }
 
-.attachment{
-    border:1px solid #ccc;
-    border-radius: 5px; 
-    
+.registFile{
+    border-radius: 5px;
+}
+
+.registFile{
+    width : 100%
+}
+
+.closeButtonContainer {
+    display: flex;
+    justify-content: flex-end; /* 왼쪽 정렬 */
+    width: 100%; /* 전체 너비 사용 */
+    padding-bottom : 5px;
+}
+
+.closeButton {
+    cursor: pointer;
+    font-weight: bold;
+    color: #333; /* x 버튼 색상 */
+    background: none;
+    border: none;
 }

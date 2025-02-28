@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { fetchFrans, deleteFran } from "../../../apis/mgment/mgmentApi";
 import Modal from "../../../components/Modal";
 import modalStyle from "../../../components/ModalButton.module.css";
 import styles from "./itemList/FranList.module.css";
 import FranRegist from "./itemList/FranRegist"; // ✅ 가맹점 등록 컴포넌트 추가
-import FranDelete from "./itemList/FranDelete"; // ✅ 삭제 기능 분리
+import SModal from "../../../components/SModal"; // ✅ 이동 후 경로 수정
+import { fetchSearchFrans } from "../../../apis/mgment/mgmentApi"; // ✅ API 경로 맞게 확인
 
 
 function HQMgment() {
@@ -14,8 +14,8 @@ function HQMgment() {
   const [isModalOpen, setIsModalOpen] = useState(false);  // ✅ 상세 모달 상태 추가
   const [isRegistModalOpen, setIsRegistModalOpen] = useState(false); // ✅ 등록 모달 상태 추가
   const [selectedFran, setSelectedFran] = useState(null);
-  const navigate = useNavigate();
-
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // ✅ 폐점 확인 모달 상태 추가
+  const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태
 
   // 가맹점 목록 불러오기
   useEffect(() => {
@@ -39,21 +39,89 @@ function HQMgment() {
     setIsModalOpen(false);
   };
 
-  // ✅ 등록 모달 열기
+  // ✅ 등록 모달 열기 (새로운 가맹점 등록)
   const openRegistModal = () => {
+    setSelectedFran(null); // 등록 모드에서는 기존 데이터 없음
     setIsRegistModalOpen(true);
   };
 
-  // ✅ 등록 모달 닫기
+  // ✅ 수정 모달 열기 (기존 가맹점 수정)
+  const openModifyModal = () => {
+    if (!selectedFran) return;
+    setIsRegistModalOpen(true);
+  };
+
   const closeRegistModal = () => {
+    console.log("🚀 closeRegistModal 실행됨! (모달 닫기)");
     setIsRegistModalOpen(false);
+
+    setTimeout(() => {
+      console.log("✅ isRegistModalOpen 최신 값:", isRegistModalOpen);
+      if (isRegistModalOpen) {
+        setIsRegistModalOpen(false); // 한번 더 강제 업데이트
+      }
+    }, 300);
+  };
+
+
+  // ✅ 삭제 확인 모달 열기
+  const openDeleteModal = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  // ✅ 삭제 확인 모달 닫기
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
   };
 
   // ✅ 삭제 후 리스트에서 제거하는 함수 추가
   const handleDeleteSuccess = (franCode) => {
-    setFranList(franList.filter(fran => fran.franCode !== franCode));
+    setFranList((prevList) => prevList.filter(fran => fran.franCode !== franCode));
     closeModal();
   };
+
+  // ✅ 삭제 기능 함수
+  const handleDeleteFran = async () => {
+    if (!selectedFran) return;
+
+    const success = await deleteFran(selectedFran.franCode);
+    if (success) {
+      // alert("가맹점 삭제 성공!");
+      handleDeleteSuccess(selectedFran.franCode); // ✅ 리스트에서 삭제
+      closeDeleteModal(); // ✅ 모달 닫기 추가
+    } else {
+      alert("가맹점 삭제 실패");
+    }
+  };
+
+  // 검색 함수 (최적화)
+  const searchHandler = async () => {
+    if (!searchTerm.trim()) {
+      // ✅ 검색어가 없을 경우 전체 리스트 불러오기
+      const allFrans = await fetchFrans();
+      setFranList(allFrans);
+      return;
+    }
+
+    try {
+      const data = await fetchSearchFrans(searchTerm); // ✅ API 호출
+      setFranList(data); // ✅ 기존 목록을 검색 결과로 교체
+      console.log("검색 결과:", data);
+    } catch (error) {
+      console.error("검색 중 오류 발생:", error);
+      alert("검색 중 오류가 발생했습니다.");
+    }
+  };
+
+  // ✅ Enter 키로도 검색 가능하게 이벤트 추가
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      searchHandler();
+    }
+  };
+
+
+
 
   return (
     <>
@@ -70,7 +138,7 @@ function HQMgment() {
 
         <div className={styles.dividerContainer}>
           <hr className={styles.divider} />
-          {/* <Outlet /> */}
+
         </div>
         {/*************************************************************************/}
 
@@ -80,18 +148,19 @@ function HQMgment() {
           <input
             type="text"
             placeholder="가맹점을 검색하세요"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleKeyDown} // ✅ Enter 키 검색 추가
             className={styles.searchInput}
           />
           <button
             className={styles.searchButton}
-            onClick={() => navigate("/hq/mgment/regist")}
+            onClick={searchHandler}
           >
             검색
           </button>
         </div>
         {/*************************************************************************/}
-
-
 
         {/****************************** 가맹점 리스트 ******************************/}
         <div className={styles.gridContainer}>
@@ -124,19 +193,13 @@ function HQMgment() {
         buttons={[
           {
             text: "수정",
-            onClick: () => {
-              // 수정 기능 구현 (예: 해당 가맹점 수정 페이지로 이동)
-              // 예: navigate(`/hq/mgment/edit/${selectedFran.franCode}`);
-            },
+            onClick: openModifyModal, // ✅ 수정 버튼 클릭 시 수정 모달 열기
             className: modalStyle.modifyButtonB // 모달 버튼 스타일 적용 (선택 사항)
           },
           {
             text: "폐점",
-            onClick: () => {
-              // 폐점 기능 구현 (예: 폐점 확인 후 API 호출)
-              // 예: handleCloseStore(selectedFran.franCode);
-            },
-            className: modalStyle.deleteButtonB // 모달 버튼 스타일 적용 (선택 사항)
+            onClick: openDeleteModal, // ✅ 폐점 버튼 클릭 시 삭제 확인 모달 열기
+            className: modalStyle.deleteButtonB
           },
         ]}
       >
@@ -146,6 +209,8 @@ function HQMgment() {
             <div className={styles.modalHeader}>
               <h2 className={styles.modalTitle}>{selectedFran.franName} 가맹점 조회</h2>
             </div>
+
+            <hr className={styles.line} />
 
             {/* 점포 이미지 및 이름, 주소 */}
             <div className={styles.storeTopInfo}>
@@ -159,7 +224,7 @@ function HQMgment() {
                 <p className={styles.storeAddr}>{selectedFran.franAddr}</p>
               </div>
             </div>
-
+            <hr className={styles.line} />
             {/* 세부 정보 */}
             <div className={styles.detailInfo}>
               <p>
@@ -177,15 +242,48 @@ function HQMgment() {
             </div>
           </div>
         )}
+        <SModal
+          isOpen={isDeleteModalOpen}
+          onClose={closeDeleteModal}
+          buttons={[
+            {
+              text: "확인",
+              onClick: () => handleDeleteFran(false),
+              className: modalStyle.confirmButtonS,
+            },
+            {
+              text: "취소",
+              onClick: () => closeDeleteModal(false),
+              className: modalStyle.cancelButtonS,
+            },
+          ]}
+        >
+          <div>
+            <p className={styles.deleteFran}>{selectedFran?.franName} 가맹점을 정말 폐점하시겠습니까?</p>
+          </div>
+
+        </SModal>
       </Modal>
 
       {/*************************************************************************/}
       {/******************************* 등록 모달창 *******************************/}
 
       <Modal isOpen={isRegistModalOpen} onClose={closeRegistModal}>
-        <FranRegist onClose={closeRegistModal} />
+        <FranRegist
+          onClose={closeRegistModal} // 🔥 취소 버튼용 → 수정 모달만 닫음
+          onConfirm={() => {  // 🔥 확인 버튼용 → 수정 & 상세 모달 둘 다 닫음
+            closeRegistModal();
+            closeModal();
+          }}
+          existingFran={selectedFran}
+          setFranList={setFranList}
+          fetchFrans={fetchFrans}
+        />
       </Modal>
+
       {/*************************************************************************/}
+
+
     </>
   );
 }

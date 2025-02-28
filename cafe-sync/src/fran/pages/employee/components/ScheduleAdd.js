@@ -7,8 +7,6 @@ import style from "../styles/ScheduleAdd.module.css";
 
 const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode, onScheduleUpdate, existingSchedules }) => {
   const today = new Date().toISOString().split("T")[0];
-  
-  console.log('커밋용');
 
   const divisionOption = [
     { label: "오픈", value: 1 }, 
@@ -321,4 +319,4 @@ const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode, onScheduleUpdate, 
   );
 };
 
-export default ScheduleAdd;
+export default ScheduleAdd

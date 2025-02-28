@@ -1,22 +1,22 @@
 import { useState } from "react";
-import styles from "./MenuList.module.css";
-import MenuModal from "../modal/MenuModal";
+import styles from "../../../fran/pages/menus/itemList/MenuList.module.css";
+import HQMenuModal from "../../../hq/pages/menus/HQMenuModal";
 import { useOutletContext } from "react-router-dom";
 
-function CoffeeList() {
+function HQCoffeeList() {
   const { list, fetchMenus } = useOutletContext();
 
   const [selectedMenu, setSelectedMenu] = useState(null); // 선택한 메뉴 정보 저장
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태
 
 
-  // 메뉴 클릭 시 모달 열기
+  // 메뉴 클릭 시 상세페이지 모달 열기
   const handleMenuClick = (menu) => {
     setSelectedMenu(menu);
     setIsModalOpen(true);
   };
 
-  // 모달 닫기
+  // 상세페이지 모달 닫기
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedMenu(null);
@@ -49,7 +49,7 @@ function CoffeeList() {
 
       {/* 모달 표시 */}
       {isModalOpen && selectedMenu && (
-        <MenuModal
+        <HQMenuModal
           menu={selectedMenu}
           setSelectedMenu={setSelectedMenu}
           onClose={closeModal}
@@ -60,4 +60,4 @@ function CoffeeList() {
   );
 }
 
-export default CoffeeList;
+export default HQCoffeeList;
