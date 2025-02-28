@@ -6,6 +6,9 @@ import modalStyle from "../../../../components/ModalButton.module.css";
 import style from "../styles/ScheduleAdd.module.css";
 
 const ScheduleModify = ({ isModifyModalOpen, setIsModifyModalOpen, franCode, onScheduleUpdate, existingSchedules }) => {
+
+  console.log('커밋용');
+
   const divisionOption = [
     { value: "1", label: "오픈" },
     { value: "2", label: "미들" },

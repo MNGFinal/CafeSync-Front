@@ -18,6 +18,8 @@ const MyCalendar = () => {
   // const [selectedEvent, setSelectedEvent] = useState(null);
   const calendarRef = useRef();
 
+  console.log('커밋용');
+
   useEffect( () => { fetchSchedules(); }, [] );
 
   const onScheduleUpdate = async () => {
