@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { Outlet } from "react-router-dom";
-import HQCategoryButtons from "../../../hq/pages/menus/HQCategoryButtons";
+import HQCategoryButtons from "./HQCategoryButtons";
 import styles from "../../../fran/pages/menus/page/Menus.module.css";
 
 function HQMenus() {
