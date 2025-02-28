@@ -268,15 +268,19 @@ function HQMgment() {
       {/*************************************************************************/}
       {/******************************* 등록 모달창 *******************************/}
 
-      {/* ✅ 등록 & 수정 모달 */}
       <Modal isOpen={isRegistModalOpen} onClose={closeRegistModal}>
-        {console.log("✅ onClose 전달됨!")}  // ✅ 로그 추가
         <FranRegist
-          onClose={closeRegistModal}
+          onClose={closeRegistModal} // 🔥 취소 버튼용 → 수정 모달만 닫음
+          onConfirm={() => {  // 🔥 확인 버튼용 → 수정 & 상세 모달 둘 다 닫음
+            closeRegistModal();
+            closeModal();
+          }}
           existingFran={selectedFran}
           setFranList={setFranList}
-          fetchFrans={fetchFrans} />
+          fetchFrans={fetchFrans}
+        />
       </Modal>
+
       {/*************************************************************************/}
 
 
