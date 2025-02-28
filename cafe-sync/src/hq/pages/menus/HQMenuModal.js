@@ -1,10 +1,11 @@
 import style from '../../../fran/pages/menus/modal/MenuModal.module.css';
-import modalStyle from '../../../components/Modal.module.css';
+import modalStyle from '../../../components/ModalButton.module.css';
 import HQModalStyles from './HQMenuModal.module.css';
 import Modal from '../../../components/Modal';
 import SModal from '../../../components/SModal';
 import { useState } from 'react';
 import { Player } from "@lottiefiles/react-lottie-player"; // ✅ Lottie 애니메이션 추가
+
 
 const HQMenuModal = ({ menu, onClose, setSelectedMenu, fetchMenus }) => {
 
@@ -34,6 +35,8 @@ const HQMenuModal = ({ menu, onClose, setSelectedMenu, fetchMenus }) => {
 
     // ✅ 수정 완료 버튼 클릭 시 처리
     const onModifySubmit = async () => {
+
+
         try {
             const response = await fetch(`http://localhost:8080/api/hq/menus/${editedMenu.menuCode}`, {
                 method: "PUT",
@@ -45,16 +48,18 @@ const HQMenuModal = ({ menu, onClose, setSelectedMenu, fetchMenus }) => {
 
             if (response.ok) {
                 console.log("✅ 메뉴 수정 성공!");
+                setIsModalOpen(true);
                 fetchMenus(); // ✅ 수정 후 리스트 새로고침
                 onClose(); // ✅ 수정 모달 닫기
             } else {
                 console.error("❌ 수정 실패");
+                setIsModalOpen(true);
             }
         } catch (error) {
             console.error("❌ 서버 오류:", error);
+
         }
     };
-
 
 
 
@@ -92,8 +97,8 @@ const HQMenuModal = ({ menu, onClose, setSelectedMenu, fetchMenus }) => {
                         isOpen={true}
                         onClose={closeEditModal}
                         buttons={[
-                            { text: "확인", onClick: onModifySubmit, className: modalStyle.confirmButtonS, },
-                            { text: "취소", onClick: closeEditModal, className: "confirmButton", className: modalStyle.confirmButtonS },
+                            { text: "확인", onClick: onModifySubmit, className: modalStyle.confirmButtonS },
+                            { text: "취소", onClick: closeEditModal, className: modalStyle.confirmButtonS },
                         ]}
                     >
                         <div className={HQModalStyles.container}>
