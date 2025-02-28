@@ -7,8 +7,6 @@ import style from "../styles/ScheduleAdd.module.css";
 
 const ScheduleModify = ({ isModifyModalOpen, setIsModifyModalOpen, franCode, onScheduleUpdate, existingSchedules }) => {
 
-  console.log('커밋용');
-
   const divisionOption = [
     { value: "1", label: "오픈" },
     { value: "2", label: "미들" },
@@ -106,11 +104,11 @@ const ScheduleModify = ({ isModifyModalOpen, setIsModifyModalOpen, franCode, onS
   const deleteWorkHandler = async (worker) => {
     if (worker && !worker.isNew) {
       try {
-        let token = sessionStorage.getItem("accessToken");
+        // let token = sessionStorage.getItem("accessToken");
         const response = await fetch(`http://localhost:8080/api/fran/schedule/${worker.key}`, {
           method: "DELETE",
           headers: { 
-            Authorization: `Bearer ${token}`,
+            // Authorization: `Bearer ${token}`,
             "Content-Type": "application/json" ,
           },
         });
