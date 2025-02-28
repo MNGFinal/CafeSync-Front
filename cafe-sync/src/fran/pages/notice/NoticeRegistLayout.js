@@ -26,12 +26,6 @@ function NoticeRegistLayout() {
     const [lottieAnimation, setLottieAnimation] = useState("");
     const [modalMessage, setModalMessage] = useState("");
 
-    useEffect(() => {
-        const today = new Date();
-        const formattedDate = today.toISOString().split('T')[0]; // YYYY-MM-DD 형식
-        setCreationDate(formattedDate);
-    }, []);
-
     const handleRegistClick = async () => {
         const noticeDate = new Date().toISOString(); // 현재 날짜와 시간
     
@@ -50,6 +44,12 @@ function NoticeRegistLayout() {
     };
 
     /* ---------------------------------등록모달--------------------------------- */
+
+    useEffect(() => {
+        const today = new Date();
+        const formattedDate = today.toISOString().split('T')[0]; // YYYY-MM-DD 형식
+        setCreationDate(formattedDate);
+    }, []);
     
     
 
