@@ -10,6 +10,8 @@ function Header() {
   // ✅ Redux에서 가맹점 이름, 직원 이름, 직급 가져오기
   const { user } = useSelector((state) => state.auth);
   const franName = user?.franchise?.franName || "알 수 없음";
+  const name = user?.employee?.empName || "알 수 없음";
+  const jobName = user?.job?.jobName || "알 수 없음";
 
   const onLogout = () => {
     if (window.confirm("로그아웃 하시겠습니까?")) {
@@ -26,7 +28,7 @@ function Header() {
 
       {/* 가운데: 가맹점 + 직원 이름 + 직급 표시 */}
       <div className="fran-name">
-        카페싱크 - {franName}
+        {franName} - {name} {jobName}
       </div>
 
       {/* 오른쪽: 로그아웃 */}
