@@ -93,3 +93,29 @@ hr {
     border-top: 1px solid #ddd;
     margin: 15px 0;
 }
+
+.modifyButton {
+    background: #6A1B9A;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 70px;
+    margin: 10px;
+    margin-top: 20px;
+    font-size: 16px;
+}
+
+.deleteButton {
+    background: #6A1B9A;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 70px;
+    margin: 10px;
+    margin-top: 20px;
+    font-size: 16px;
+}

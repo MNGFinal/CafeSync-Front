@@ -54,6 +54,7 @@
   padding-top: 15px;
   padding-bottom: 20px;
   position: relative;
+  flex-shrink: 0;
 }
 
 .menu-item {
