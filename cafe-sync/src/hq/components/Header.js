@@ -9,7 +9,9 @@ function Header() {
 
   // ✅ Redux에서 직원 이름 가져오기
   const { user } = useSelector((state) => state.auth);
-  const empName = user?.employee?.empName || "직원"; // 기본값 설정
+  const franName = user?.franchise?.franName || "알 수 없음";
+  const name = user?.employee?.empName || "알 수 없음";
+  const jobName = user?.job?.jobName || "알 수 없음";
 
   const onLogout = () => {
     if (window.confirm("로그아웃 하시겠습니까?")) {
@@ -25,7 +27,9 @@ function Header() {
       <img src="/images/logo/cafe-sync-logo1.png" className="logo" alt="logo" />
 
       {/* 가운데: 본사 직원 이름 */}
-      <div className="fran-name">카페싱크(본사) - {empName}</div>
+      <div className="fran-name">
+        {franName} - {name} {jobName}
+      </div>
 
       {/* 오른쪽: 로그아웃 버튼 */}
       <button className="logout-btn" onClick={onLogout}>
