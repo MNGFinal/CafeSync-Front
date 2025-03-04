@@ -307,7 +307,7 @@ function BaristaNoteLayout() {
                             <div className={style.infoItem}>{note.noteCode}</div>
                             <div className={style.infoItem}>{note.noteTitle}</div>
                             <div className={style.infoItem}>{note.empName}</div>
-                            <div className={style.infoItem}>{note.noteDate}</div>
+                            <div className={style.infoItem}>{new Date(note.noteDate).toISOString().split('T')[0]}</div>
                             <div className={style.infoItem}>{note.viewCount}</div>
                         </div>
                     ))
@@ -391,7 +391,7 @@ function BaristaNoteLayout() {
                         <hr />
                         <div className={style.modalDetails}>
                             <p>작성자: {selectedNote.empName}</p>
-                            <p>작성일: {selectedNote.noteDate}</p>
+                            <p>작성일: {new Date(selectedNote.noteDate).toISOString().split('T')[0]}</p>
                             <p>조회수: {selectedNote.viewCount}</p>
                         </div>
 

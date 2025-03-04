@@ -102,6 +102,7 @@ function NoticeDetailLayout() {
     };
 
     /* ----------------------------------수정모달--------------------------------------- */
+    
     const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
     const [successLottieAnimation, setSuccessLottieAnimation] = useState("");
     const [successModalMessage, setSuccessModalMessage] = useState("");
@@ -114,7 +115,7 @@ function NoticeDetailLayout() {
             setIsEditConfirmModalOpen(true);
             return; // 수정 막기
         }
-
+    
         if (editNotice.noticeCode === 0) {
             console.log("❌ 잘못된 공지사항 코드입니다.");
             return;
@@ -122,14 +123,16 @@ function NoticeDetailLayout() {
     
         const now = new Date();
         const koreaTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
-        const formattedDate = koreaTime.toISOString().split(".")[0];
+        const formattedDate = koreaTime.toISOString(); // ISO 형식 (yyyy-MM-ddTHH:mm:ss)
+    
+        // 화면에는 날짜만 보이도록 설정
+        const displayDate = formattedDate.split('T')[0]; // yyyy-MM-dd 형식으로 추출
+        setCreationDate(displayDate);
     
         const updatedNotice = {
             ...editNotice,
-            noticeDate: formattedDate,
+            noticeDate: formattedDate, // 서버로 보낼 때는 ISO 형식 그대로 사용
         };
-    
-        setCreationDate(formattedDate);
     
         try {
             await dispatch(callNoticeUpdateAPI(updatedNotice));
@@ -155,6 +158,18 @@ function NoticeDetailLayout() {
 
     /* -------------------------------------------------------------------------------- */
 
+    useEffect(() => {
+        if (notice && notice.noticeDate && !isViewCountIncreased) {
+            const formattedDate = new Date(notice.noticeDate);
+            const displayDate = formattedDate.toISOString().split('T')[0]; // 날짜만 추출
+            setCreationDate(displayDate);  // 화면에 날짜만 보이게 설정
+            setIsViewCountIncreased(true);
+            setEditNotice({ ...notice });
+        }
+    }, [notice, isViewCountIncreased]);
+
+
+
     const isOwner = sessionUser && sessionUser.userId === notice?.userId;
 
     useEffect(() => {
@@ -163,13 +178,13 @@ function NoticeDetailLayout() {
     }, [dispatch, noticeCode]);
     
 
-    useEffect(() => {
-        if (notice && notice.noticeDate && !isViewCountIncreased) {
-            setCreationDate(notice.noticeDate);  // 기존 작성일자 그대로 사용
-            setIsViewCountIncreased(true);
-            setEditNotice({ ...notice });
-        }
-    }, [notice, isViewCountIncreased]);
+    // useEffect(() => {
+    //     if (notice && notice.noticeDate && !isViewCountIncreased) {
+    //         setCreationDate(notice.noticeDate);  // 기존 작성일자 그대로 사용
+    //         setIsViewCountIncreased(true);
+    //         setEditNotice({ ...notice });
+    //     }
+    // }, [notice, isViewCountIncreased]);
 
     if (!notice) {
         return <div>로딩 중...</div>; // ✅ 데이터 로딩 중이면 기존 데이터 노출 방지

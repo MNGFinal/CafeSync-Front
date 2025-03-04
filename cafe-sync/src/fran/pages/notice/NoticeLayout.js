@@ -97,7 +97,7 @@ function NoticeLayout() {
                                 <div className={style.infoItem}>{notice.noticeCode}</div>
                                 <div className={style.infoItem}>{notice.noticeTitle}</div>
                                 <div className={style.infoItem}>{notice.empName}</div>
-                                <div className={style.infoItem}>{notice.noticeDate}</div>
+                                <div className={style.infoItem}>{new Date(notice.noticeDate).toISOString().split('T')[0]}</div>
                                 <div className={style.infoItem}>{notice.noticeViews}</div>
                             </div>
                         ))
