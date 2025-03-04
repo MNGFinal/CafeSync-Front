@@ -1,0 +1,109 @@
+/* 모달 상단 제목 */
+.title {
+  margin: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #333;
+  font-weight: bold;
+  font-size: 21px;
+}
+
+/* 채팅방 제목 입력 영역 스타일 개선 */
+.modalContent {
+  margin: 10px 0;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* 라벨 스타일: 굵은 글씨와 적당한 여백 추가 */
+.modalContent label {
+  font-weight: bold;
+  font-size: 15px;
+}
+
+/* 인풋창 스타일 개선 */
+.modalContent input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  height: 30px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 인풋창 포커스 시 스타일 */
+.modalContent input[type="text"]:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
+
+/* 전체 컨테이너: 3열 배치 (왼쪽 목록, 중앙 화살표, 오른쪽 목록) */
+.container {
+  display: flex;
+  justify-content: space-between;
+  height: 480px;
+  gap: 20px; /* 열 간격 */
+}
+
+/* 왼쪽 직원목록, 오른쪽 참여자 */
+.empBox,
+.addEmp {
+  flex: 1;
+  border: 1px solid #ccc;
+  padding: 10px;
+  overflow-y: auto;
+  min-width: 200px;
+}
+
+/* 중앙 화살표 영역 */
+.arrowBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 화살표 버튼 스타일 */
+.arrowBtn {
+  padding: 10px 15px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* 리스트 */
+.listBox {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+}
+
+/* label을 inline-flex로 지정하여 체크박스와 텍스트를 같은 라인에 정렬 */
+.listBox li label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px; /* 체크박스와 텍스트 사이 여백 */
+}
+
+.listBox li {
+  display: flex;
+  align-items: center; /* 체크박스와 텍스트를 수직 중앙 정렬 */
+  margin-bottom: 6px; /* 아이템 간 간격 */
+}
+
+/* 체크박스와 텍스트 간 간격 조절 */
+.listBox input[type="checkbox"] {
+  margin-right: 6px;
+}
+
+.empBox h3 {
+  margin: 10px;
+}
+
+.addEmp h3 {
+  margin: 10px;
+}
