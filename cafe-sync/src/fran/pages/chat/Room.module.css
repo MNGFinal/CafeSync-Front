@@ -1,0 +1,232 @@
+/* 🔹 전체 컨테이너 스타일 */
+.roomContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+/* 🔹 상단 고정 헤더 (채팅방 목록 + 검색창) */
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  background-color: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.title h2 {
+  margin: 0;
+}
+
+.searchBox {
+  position: relative;
+  left: 29%;
+}
+
+/* 🔹 검색창 스타일 */
+.searchBox input {
+  width: 225px;
+  height: 30px;
+  text-align: center;
+  outline: none;
+  transition: border 0.3s ease-in-out;
+  position: relative;
+  left: -136px;
+}
+
+/* 🔹 검색창 포커스 스타일 */
+.searchBox input:focus {
+  border: 1px solid rgba(99, 8, 72, 1);
+  box-shadow: 0 0 5px rgba(109, 27, 80, 0.5);
+}
+
+/* 🔹 채팅방 목록에 스크롤 추가 */
+.roomList {
+  flex-grow: 1;
+  overflow-y: auto;
+  max-height: 706px; /* ✅ 스크롤이 활성화될 높이 설정 (조절 가능) */
+  padding: 10px;
+}
+
+/* 🔹 채팅방 개별 카드 */
+.roomCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  background-color: white;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  cursor: pointer; /* 마우스 올리면 포인터 변경 */
+}
+
+/* 🔹 마우스를 올리면 색이 변하면서 강조 */
+.roomCard:hover {
+  background-color: rgba(220, 220, 220, 0.3); /* 살짝 회색톤 강조 */
+  transform: scale(1.02); /* 2% 확대 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+}
+
+/* 🔹 클릭할 때 살짝 눌리는 느낌 */
+.roomCard:active {
+  transform: scale(0.98);
+  background-color: rgba(200, 200, 200, 0.5);
+}
+
+/* 왼쪽 프로필 영역 */
+.profileSection {
+  display: flex;
+  align-items: center;
+}
+
+/* 중앙 정보 영역 */
+.roomDetails {
+  flex: 1;
+  margin: 0 10px;
+}
+
+.roomName {
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+}
+
+.lastMessage {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+/* 오른쪽 시간, 인원수 영역 */
+.timeSection {
+  text-align: right;
+}
+
+.time {
+  font-size: 0.8rem;
+  color: #999;
+  margin: 0;
+  padding-bottom: 10px;
+  width: 115px;
+}
+
+.memberCount {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+/* 🔹 기본 프로필 스타일 */
+.singleProfile,
+.smallProfile {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  margin-right: 5px;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+}
+
+/* 🔹 프로필 사진도 마우스 올리면 살짝 확대 */
+.singleProfile:hover,
+.smallProfile:hover {
+  transform: scale(1.1);
+}
+
+/* 🔹 여러 프로필을 가로로 정렬 */
+.multiProfile {
+  display: flex;
+  align-items: center;
+}
+
+/* 🔹 4개 프로필을 2x2 배치 */
+.gridProfile {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 3px;
+  width: 70px;
+  height: 70px;
+}
+
+/* 🔹 그리드 내 프로필 */
+.gridProfileItem {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* 🔹 "+n" 표시 스타일 */
+.extraCount {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #ccc;
+  color: #fff;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 🔹 3개 프로필을 삼각형 형태로 배치 */
+.triangleProfile {
+  position: relative;
+  width: 50px;
+  height: 50px;
+}
+
+/* 각 프로필 이미지 스타일 */
+.triangleProfileItem {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* 🔹 삼각형 배치 */
+.pos1 {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.pos2 {
+  bottom: 0;
+  left: 0;
+}
+
+.pos3 {
+  bottom: 0;
+  right: 0;
+}
+
+.unreadBadge {
+  /* 원형 배지를 위해 고정된 너비와 높이를 지정 */
+  width: 30px; /* 원의 지름 */
+  height: 30px; /* 원의 지름 */
+  line-height: 30px; /* 수직 정렬 */
+
+  /* 내용 가운데 정렬 */
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+
+  /* 둥근 테두리 */
+  border-radius: 50%;
+
+  /* 배경/글자 스타일 */
+  background-color: red;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: bold;
+
+  /* 약간의 여백 (선택) */
+  margin-left: 5px;
+}

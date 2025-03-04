@@ -1,70 +1,70 @@
 /* src/fran/pages/barista-note/Note.module.css*/
 /* 상단 박스 컨테이너 스타일 */
 .upperBox {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid #ccc;
-    padding: 10px 10px;
-    margin: 20px; /* 상단 박스 외부 여백 */
-    height: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 10px 10px;
+  margin: 20px; /* 상단 박스 외부 여백 */
+  height: 80px;
 }
 
 /* 입력(게시글검색) 스타일 */
 .inputBox {
-    width: 30%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    margin-left: 30px;
-    height:35px;
+  width: 30%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-left: 30px;
+  height: 35px;
 }
 
 /* 오른쪽 영역 (검색 버튼, 등록 버튼) */
 .upperBox > div {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    width: 30%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 30%;
 }
 
 /* 검색 버튼 스타일 */
 .searchButton {
-    padding: 8px 16px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-right: 1000px;
-    transition: background-color 0.3s, transform 0.3s ease-in-out; /* 애니메이션 추가 */
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-right: 1000px;
+  transition: background-color 0.3s, transform 0.3s ease-in-out; /* 애니메이션 추가 */
 }
 
 /* 버튼에 호버 효과 추가 */
 .searchButton:hover {
-    background-color: #0056b3; /* hover 시 색상 변화 */
-    transform: scale(1.1); /* hover 시 크기 살짝 커지기 */
+  background-color: #0056b3; /* hover 시 색상 변화 */
+  transform: scale(1.1); /* hover 시 크기 살짝 커지기 */
 }
 
 /* 등록 버튼 스타일 */
 .registButton {
-    padding: 8px 16px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-right: 15px;
-    transition: background-color 0.3s, transform 0.3s ease-in-out; /* 애니메이션 추가 */
+  padding: 8px 16px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-right: 15px;
+  transition: background-color 0.3s, transform 0.3s ease-in-out; /* 애니메이션 추가 */
 }
 
 /* 버튼에 호버 효과 추가 */
 .registButton:hover {
-    background-color: #218838; /* hover 시 색상 변화 */
-    transform: scale(1.1); /* hover 시 크기 살짝 커지기 */
+  background-color: #218838; /* hover 시 색상 변화 */
+  transform: scale(1.1); /* hover 시 크기 살짝 커지기 */
 }
 
 .rightPlaceholder {
@@ -83,225 +83,306 @@
 
 /* 하단 박스 컨테이너 스타일 */
 .lowerBox {
+  /* --페이지네이션고정을 위한 추가적인 코드-- */
 
-    /* --페이지네이션고정을 위한 추가적인 코드-- */
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* 화면을 꽉 채운 높이로 설정 */
+  justify-content: flex-start; /* 내용 상단 정렬 */
 
-    display: flex;
-    flex-direction: column;
-    height: 100%;  /* 화면을 꽉 채운 높이로 설정 */
-    justify-content: flex-start; /* 내용 상단 정렬 */
-
-    /* --페이지네이션 고정을 위한 추가적인 코드-- */
-    background-color: #f1f1f1; /* 회색 배경 */
-    border: 1px solid #ccc; /* 경계선 */
-    margin: 20px; /* 상단 박스와 동일한 외부 여백 */
-    padding: 10px; /* 상단 박스와 동일한 내부 여백 */
-    height : 655px;
+  /* --페이지네이션 고정을 위한 추가적인 코드-- */
+  background-color: #f1f1f1; /* 회색 배경 */
+  border: 1px solid #ccc; /* 경계선 */
+  margin: 20px; /* 상단 박스와 동일한 외부 여백 */
+  padding: 10px; /* 상단 박스와 동일한 내부 여백 */
+  height: 655px;
 }
 
 /* 번호, 제목, 작성자, 작성일, 조회수 스타일 */
 .infoRow {
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
-    font-weight: bold;
-    border: none;
-    padding-bottom: 5px; /* 경계선과 텍스트 간의 여백 */
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: bold;
+  border: none;
+  padding-bottom: 5px; /* 경계선과 텍스트 간의 여백 */
 }
 
 /* 각 항목에 경계를 추가 */
 .infoItem {
-    padding: 5px 10px;
-    border-right: 1px solid #ccc; /* 오른쪽 경계선 추가 */
-    text-align: center;
-    width: 18%; /* 항목 너비를 고정하여 균등하게 배치 */
+  padding: 5px 10px;
+  border-right: 1px solid #ccc; /* 오른쪽 경계선 추가 */
+  text-align: center;
+  width: 18%; /* 항목 너비를 고정하여 균등하게 배치 */
 }
 
 /* 마지막 항목은 오른쪽 경계선 제거 */
 .infoItem:last-child {
-    border-right: none;
+  border-right: none;
 }
 
 /* 바리스타 노트 데이터 스타일 */
 .baristaNoteData {
-    font-size: 16px;
-    color: #333;
-    margin-top: 10px;
+  font-size: 16px;
+  color: #333;
+  margin-top: 10px;
 }
 
-
 .NoticeData {
-    font-size: 16px;
-    color: #333;
-    margin-top: 10px;
-
+  font-size: 16px;
+  color: #333;
+  margin-top: 10px;
 }
 
 /*----------------------------모달창--------------------------------*/
 
 /* 모달창 오버레이 */
 .modalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* 모달 창 콘텐츠 */
 .modalContent {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 40%;
-    position: relative;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 40%;
+  position: relative;
 }
 
-.modalContentContainer{
-    display:flex;
-    justify-content: center;
+.modalContentContainer {
+  display: flex;
+  justify-content: center;
 }
 
 .modalTitleInput {
-    width: 80%;
-    font-size: 18px;
-    padding: 10px;
-    text-align: center; /* Title centered in the input */
-    margin-bottom : 30px;
-    margin-top:30px;
-    height : 45px;
-    border : 1px solid #ccc;
-    border-radius: 5px;
+  width: 80%;
+  font-size: 18px;
+  padding: 10px;
+  text-align: center; /* Title centered in the input */
+  margin-bottom: 30px;
+  margin-top: 30px;
+  height: 45px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
 /* 모달 하단 버튼들 */
 .modalButtons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
 }
 
 .saveButton {
-    padding: 8px 16px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s, transform 0.3s ease-in-out; /* 애니메이션 추가 */
+  padding: 8px 16px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s, transform 0.3s ease-in-out; /* 애니메이션 추가 */
 }
 
 /* 저장 버튼 호버 효과 */
 .saveButton:hover {
-    background-color: #45a049;
-    transform: scale(1.1);
+  background-color: #45a049;
+  transform: scale(1.1);
 }
 
 .deleteButton {
-    padding: 8px 16px;
-    background-color: rgb(154, 154, 255);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s, transform 0.3s ease-in-out; /* 애니메이션 추가 */
+  padding: 8px 16px;
+  background-color: rgb(154, 154, 255);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s, transform 0.3s ease-in-out; /* 애니메이션 추가 */
 }
 
 /* 저장 버튼 호버 효과 */
 .deleteButton:hover {
-    background-color: rgb(140, 140, 255);
-    transform: scale(1.1);
+  background-color: rgb(140, 140, 255);
+  transform: scale(1.1);
 }
 
 /* 취소 버튼 스타일 (cancelButton) */
 .cancelButton {
-    padding: 8px 16px;
-    background-color: #f44336;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s, transform 0.3s ease-in-out; /* 애니메이션 추가 */
+  padding: 8px 16px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s, transform 0.3s ease-in-out; /* 애니메이션 추가 */
 }
 
 /* 취소 버튼 호버 효과 */
 .cancelButton:hover {
-    background-color: #e53935;
-    transform: scale(1.1);
+  background-color: #e53935;
+  transform: scale(1.1);
 }
 
 /* 파일 첨부 영역 */
 .fileUpload {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 /* 노트 내용 입력 영역 */
 .noteContent {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 /* 텍스트 입력창 스타일 */
-textarea {
-    width: 100%;
-    height: 550px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-top:10px;
+.noteContent textarea {
+  width: 100%;
+  height: 550px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 10px;
 }
 
 .modalButtons {
-    display: flex;
-    justify-content: center; /* 버튼을 가운데 정렬 */
-    gap: 20px; /* 버튼 간 간격을 설정 (20px로 설정, 필요에 따라 조정 가능) */
-    margin-top: 10px;
+  display: flex;
+  justify-content: center; /* 버튼을 가운데 정렬 */
+  gap: 20px; /* 버튼 간 간격을 설정 (20px로 설정, 필요에 따라 조정 가능) */
+  margin-top: 10px;
 }
 
 /* -------------------------------------------------------------------------------- */
 
 /* 작성자와 작성일 사이 간격 설정 */
 .modalDetails p:first-child {
-    margin-bottom: 8px; /* 작성자와 작성일 간의 간격 */
+  margin-bottom: 8px; /* 작성자와 작성일 간의 간격 */
 }
 
 /* 작성일과 조회수 사이 간격 설정 */
 .modalDetails p:nth-child(2) {
-    margin-bottom: 8px; /* 작성일과 조회수 간의 간격 추가 */
+  margin-bottom: 8px; /* 작성일과 조회수 간의 간격 추가 */
 }
 
 /* 작성일과 파일 첨부 사이 간격 설정 */
 .modalDetails p:last-child {
-    margin-bottom: 8px; /* 작성일과 파일 첨부 간의 간격 */
+  margin-bottom: 8px; /* 작성일과 파일 첨부 간의 간격 */
 }
 
 /* hr과 작성자/작성일 간의 간격을 동일하게 설정 */
 hr {
-    margin-bottom: 20px; /* hr과 작성자/작성일 사이 간격 */
+  margin-bottom: 20px; /* hr과 작성자/작성일 사이 간격 */
 }
 
 /* 파일 첨부 항목 스타일 */
 .fileUpload {
-    margin-bottom: 8px; /* 파일 첨부와 내용 간의 간격 */
+  margin-bottom: 8px; /* 파일 첨부와 내용 간의 간격 */
+}
+
+
+/* 닫기 버튼 스타일 */
+.closeButton {
+  position: absolute; /* 부모 요소에 대해 절대 위치 설정 */
+  top: 10px; /* 상단에서 10px 떨어지게 설정 */
+  right: 15px; /* 오른쪽에서 10px 떨어지게 설정 */
+  font-size: 24px; /* 버튼 크기 */
+  color: #333; /* 버튼 색상 */
+  cursor: pointer;
+}
+
+/* 닫기 버튼 호버 효과 */
+.closeButton:hover {
+  color: #f44336; /* hover 시 빨간색으로 변환 */
 }
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@페이지 네이션@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
 .paginationContainer {
-    margin-top: auto; /* 페이지네이션을 하단으로 고정 */
-    padding-bottom : 5px;
-    display: flex;
-    justify-content: center; /* 페이지네이션을 중앙 정렬 */
+  margin-top: auto; /* 페이지네이션을 하단으로 고정 */
+  padding-bottom: 5px;
+  display: flex;
+  justify-content: center; /* 페이지네이션을 중앙 정렬 */
 }
 
 /* ✅ 페이지네이션 스타일 */
 .pagination {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding: 20px 0;
+  gap: 10px; /* 버튼 간격 조정 */
+  margin-top: 10px;
+}
+
+/* 페이지네이션 버튼 스타일 */
+.pagination li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px; /* 버튼 크기 조정 */
+  height: 35px; /* 버튼 크기 조정 */
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  font-size: 16px; /* 글자 크기 조정 */
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+/* 페이지네이션 버튼에 hover 효과 */
+.pagination li:hover {
+  background-color: #590d34;
+  color: white;
+}
+
+/* ✅ 현재 페이지 스타일 */
+.activePage {
+  background-color: #590d34 !important;
+  color: white !important;
+  border-color: #590d34 !important;
+}
+
+/* ✅ 이전/다음 버튼 스타일 */
+.pagination .previous,
+.pagination .next {
+  width: 60px; /* 버튼 크기 동일하게 조정 */
+  height: 35px; /* 버튼 크기 동일하게 조정 */
+  background-color: #f5f5f5;
+  color: #333;
+  font-weight: bold;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px; /* 글자 크기 조정 */
+}
+
+/* 이전/다음 버튼에 hover 효과 */
+.previous:hover,
+.next:hover {
+  background-color: #590d34;
+  color: white;
+}
+
+/* ✅ 페이지네이션 비활성화 상태 */
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
     display: flex;
     justify-content: center;
     list-style: none;
@@ -383,5 +464,3 @@ hr {
     background: none;
     border: none;
 }
-  
-  
