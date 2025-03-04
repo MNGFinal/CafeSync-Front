@@ -1,0 +1,63 @@
+.stats-container {
+    padding: 20px;
+    background: #f8f9fa;
+  }
+  
+  .page-header {
+    background: #5a1a5c;
+    color: white;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 5px;
+  }
+  
+  .sales-summary {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+  }
+  
+  .sales-card {
+    background: white;
+    border: 1px solid #ddd;
+    padding: 20px;
+    text-align: center;
+    width: 220px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .sales-card h2 {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .sales-card p {
+    margin: 5px 0;
+    color: #666;
+    font-size: 14px;
+  }
+  
+  .sales-card span {
+    font-size: 14px;
+    color: gray;
+  }
+  
+  .sales-card .today {
+    color: #0099ff;
+  }
+  
+  .sales-card .week {
+    color: #ff4444;
+  }
+  
+  .sales-card .month {
+    color: #007bff;
+  }
+  
+  .sales-card .year {
+    color: #6a0dad;
+  }
+  
