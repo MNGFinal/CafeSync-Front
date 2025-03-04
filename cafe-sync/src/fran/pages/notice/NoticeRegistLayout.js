@@ -104,7 +104,7 @@ function NoticeRegistLayout() {
                         </Link>
                     </div>
                 </div>
-                 {/* ✅ 등록 성공 모달 */}
+                {/* ✅ 등록 성공 모달 */}
                 {isSuccessModalOpen && (
                     <SModal
                         isOpen={isSuccessModalOpen}
