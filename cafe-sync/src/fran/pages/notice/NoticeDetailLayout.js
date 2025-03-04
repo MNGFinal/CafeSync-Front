@@ -79,11 +79,17 @@ function NoticeDetailLayout() {
 
     const [isEditConfirmModalOpen, setIsEditConfirmModalOpen] = useState(false);  // 수정 확인 모달 상태
 
-    // 수정 모드로 들어가기 전에 확인 모달을 띄우는 함수
     const openEditConfirmModal = () => {
-        setModalMessage("수정하시겠습니까?");  // 수정 확인 메시지 설정
-        setLottieAnimation("/animations/identify.json"); 
-        setIsEditConfirmModalOpen(true);  // 수정 확인 모달 열기
+        // 제목과 내용이 비어 있는지 확인
+        if (!editNotice.noticeTitle || !editNotice.noticeContent) {
+            setModalMessage("제목과 내용을 모두 입력해주세요.");
+            setLottieAnimation("/animations/identify.json");
+            setIsEditConfirmModalOpen(true); // 수정 불가능 모달 열기
+        } else {
+            setModalMessage("수정하시겠습니까?");
+            setLottieAnimation("/animations/identify.json");
+            setIsEditConfirmModalOpen(true); // 수정 가능 모달 열기
+        }
     };
 
     const closeEditConfirmModal = () => {
@@ -101,6 +107,14 @@ function NoticeDetailLayout() {
     const [successModalMessage, setSuccessModalMessage] = useState("");
 
     const handleSaveClick = async () => {
+        // 제목과 내용이 비어 있는지 확인
+        if (!editNotice.noticeTitle || !editNotice.noticeContent) {
+            setModalMessage("제목과 내용을 모두 입력해주세요.");
+            setLottieAnimation("/animations/identify.json");
+            setIsEditConfirmModalOpen(true);
+            return; // 수정 막기
+        }
+
         if (editNotice.noticeCode === 0) {
             console.log("❌ 잘못된 공지사항 코드입니다.");
             return;
@@ -355,39 +369,43 @@ function NoticeDetailLayout() {
                 </div>
             </SModal>
         )}
-        {/* 수정 확인 모달 */}
         {isEditConfirmModalOpen && (
-                <SModal
-                    isOpen={isEditConfirmModalOpen}
-                    onClose={closeEditConfirmModal}  // 모달 닫기
-                    buttons={[
-                        {
-                            text: "수정",
+            <SModal
+                isOpen={isEditConfirmModalOpen}
+                onClose={closeEditConfirmModal}  // 모달 닫기
+                buttons={[
+                    modalMessage === "제목과 내용을 모두 입력해주세요."
+                        ? {
+                            text: "확인", // 제목과 내용이 누락된 경우 "확인" 버튼만 표시
+                            onClick: closeEditConfirmModal,
+                            className: modalStyle.confirmButtonS,
+                        }
+                        : {
+                            text: "수정", // 제목과 내용이 있으면 수정 버튼 표시
                             onClick: handleConfirmEdit,  // 수정 확정 시 호출
                             className: modalStyle.confirmButtonS,
                         },
-                        {
-                            text: "취소",
-                            onClick: closeEditConfirmModal,  // 취소 시 모달 닫기
-                            className: modalStyle.cancelButtonS,
-                        },
-                    ]}
-                >
-                    <div style={{ textAlign: "center" }}>
-                        {/* Lottie 애니메이션: Player 컴포넌트 사용 */}
-                        <Player
-                            autoplay
-                            loop={false} // 애니메이션 반복 X
-                            keepLastFrame={true} // 애니메이션 끝난 후 마지막 프레임 유지
-                            src={lottieAnimation} // 동적으로 변경됨
-                            style={{ height: "100px", width: "100px", margin: "0 auto" }}
-                        />
-                        <span style={{ marginTop: "15px", whiteSpace: "pre-line" }}>
-                            {modalMessage}
-                        </span>
-                    </div>
-                </SModal>
-            )}
+                    modalMessage !== "제목과 내용을 모두 입력해주세요." && { // 제목과 내용이 모두 입력된 경우에만 "취소" 버튼 추가
+                        text: "취소",
+                        onClick: closeEditConfirmModal,  // 취소 시 모달 닫기
+                        className: modalStyle.cancelButtonS,
+                    },
+                ].filter(Boolean)} 
+            >
+                <div style={{ textAlign: "center" }}>
+                    <Player
+                        autoplay
+                        loop={false} // 애니메이션 반복 X
+                        keepLastFrame={true} // 애니메이션 끝난 후 마지막 프레임 유지
+                        src={lottieAnimation} // 동적으로 변경됨
+                        style={{ height: "100px", width: "100px", margin: "0 auto" }}
+                    />
+                    <span style={{ marginTop: "15px", whiteSpace: "pre-line" }}>
+                        {modalMessage}
+                    </span>
+                </div>
+            </SModal>
+        )}
         </div>
         
     );

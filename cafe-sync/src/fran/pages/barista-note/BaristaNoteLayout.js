@@ -29,7 +29,9 @@ function BaristaNoteLayout() {
 
     const handleUpdateNote = async () => {
         if (!noteTitle.trim() || !noteDetail.trim()) {
-            alert('⚠️ 제목과 내용을 입력해주세요!');
+            setLottieAnimation("/animations/identify.json");  // 애니메이션 설정
+            setModalMessage("제목과 내용을 입력해주세요.");   // 모달 메시지 설정
+            setIsSuccessModalOpen(true);  // 모달 열기
             return;
         }
     
@@ -59,7 +61,9 @@ function BaristaNoteLayout() {
 
     const handleSaveNote = async () => {
         if (!noteTitle.trim() || !noteDetail.trim()) {
-            alert('⚠️ 제목과 내용을 입력해주세요!');
+            setLottieAnimation("/animations/identify.json");  // 애니메이션 설정
+            setModalMessage("제목과 내용을 입력해주세요.");   // 모달 메시지 설정
+            setIsSuccessModalOpen(true);  // 모달 열기
             return;
         }
     

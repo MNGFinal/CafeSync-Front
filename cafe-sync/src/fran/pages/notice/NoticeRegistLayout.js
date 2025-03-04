@@ -27,6 +27,14 @@ function NoticeRegistLayout() {
     const [modalMessage, setModalMessage] = useState("");
 
     const handleRegistClick = async () => {
+
+        if (!noticeTitle || !noticeContent) {
+            setLottieAnimation("/animations/identify.json");  // 애니메이션 설정
+            setModalMessage("제목과 내용을 입력해주세요.");   // 모달 메시지 설정
+            setIsSuccessModalOpen(true);  // 모달 열기
+            return; // 등록을 막음
+        }
+
         const noticeDate = new Date().toISOString(); // 현재 날짜와 시간
     
             const result = await dispatch(callNoticeRegistAPI({
