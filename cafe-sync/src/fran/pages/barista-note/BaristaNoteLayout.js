@@ -10,6 +10,7 @@ import SModal from "../../../components/SModal";
 import modalStyle from "../../../components/ModalButton.module.css";
 import Lottie from "lottie-react"; // Lottie 애니메이션을 위한 라이브러리
 import { Player } from "@lottiefiles/react-lottie-player";
+import { useNavigate } from "react-router-dom";
 
 // 추가된 임포트
 import ReactPaginate from 'react-paginate'; // 페이지네이션 컴포넌트
@@ -20,44 +21,109 @@ function BaristaNoteLayout() {
     const user = useSelector((state) => state.auth.user); // ✅ user 객체 가져오기
     const userId = user?.userId || null; // ✅ user 객체에서 userId 추출
     const noteList = useMemo(() => (Array.isArray(notes) ? notes : []), [notes]);
+    const navigate = useNavigate();
 
-    /* ----------------------------------삭제모달---------------------------------------------- */
+    /* ----------------------------------등록모달--------------------------------------- */
 
-    // 삭제 모달 관련 상태 추가
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [noteToDelete, setNoteToDelete] = useState(null);
-    const [lottieAnimation, setLottieAnimation] = useState("");
-    const [modalMessage, setModalMessage] = useState(""); 
+    const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
-    // 삭제 모달 열기 함수
-    const openDeleteModal = (noteCode) => {
-        setNoteToDelete(noteCode);
-        setLottieAnimation("/animations/warning.json"); // 경고 애니메이션 설정
-        setModalMessage("정말로 이 공지사항을 삭제하시겠습니까?");
-        setIsDeleteModalOpen(true);
-    };
+    const handleUpdateNote = async () => {
+        if (!noteTitle.trim() || !noteDetail.trim()) {
+            setLottieAnimation("/animations/identify.json");  // 애니메이션 설정
+            setModalMessage("제목과 내용을 입력해주세요.");   // 모달 메시지 설정
+            setIsSuccessModalOpen(true);  // 모달 열기
+            return;
+        }
+    
+        // 세션에서 가져온 user.id와 selectedNote.userId를 비교
+        const sessionUserId = user?.userId;  // `user`는 Redux store에서 가져온 사용자 정보
+    
+        if (selectedNote.userId !== sessionUserId) {
+            alert("❌ 자신이 작성한 글만 수정할 수 있습니다.");
+            return;
+        }
+    
+        // 수정 시에만 `noteDate`를 현재 시간으로 업데이트
+        const updatedNote = {
+            noteCode: selectedNote.noteCode,
+            noteTitle,
+            noteDetail,
+            noteDate: new Date().toISOString(), // 수정 시 현재 시간으로 업데이트
+            userId: sessionUserId
+        };
+    
+        await dispatch(callNoteUpdateAPI(updatedNote)); // 수정 API 호출
+        dispatch(callBaristNotesAPI());
+        setSuccessLottieAnimation("/animations/success-check.json");
+        setIsUpdateModalOpen("바리스타노트를 정상적으로 수정하였습니다.");
+        closeDetailModal();
+    };    
 
-    // 삭제 모달 닫기 함수
-    const closeDeleteModal = () => {
-        setIsDeleteModalOpen(false);
-        setNoteToDelete(null);
-    };
-
-    // 삭제 확정 핸들러
-    const confirmHandler = async () => {
-        if (noteToDelete) {
-            await dispatch(callNoteDeleteAPI({ noteCode: noteToDelete }));
-            dispatch(callBaristNotesAPI()); // 노트 삭제 후 목록 갱신
-            closeDeleteModal();
+    const handleSaveNote = async () => {
+        if (!noteTitle.trim() || !noteDetail.trim()) {
+            setLottieAnimation("/animations/identify.json");  // 애니메이션 설정
+            setModalMessage("제목과 내용을 입력해주세요.");   // 모달 메시지 설정
+            setIsSuccessModalOpen(true);  // 모달 열기
+            return;
+        }
+    
+        const newNote = {
+            noteTitle,
+            noteDetail,
+            userId,
+            noteDate: new Date().toISOString(), // 현재 시간으로 설정
+        };
+    
+        try {
+            await dispatch(callNoteRegistAPI(newNote)); // 노트 등록 API 호출
+            setIsSuccessModalOpen(true); // 성공 모달 열기
+            setModalMessage("바리스타 노트가 성공적으로 등록되었습니다.");
+            setLottieAnimation("/animations/success-check.json"); // 성공 애니메이션
+            closeModal(); // 등록 모달 닫기
+    
+            // 노트 등록 후 상태를 바로 갱신하여 UI에 반영
+            dispatch(callBaristNotesAPI());  // 새로 등록된 노트를 즉시 반영하기 위한 API 호출
+        } catch (error) {
+            console.error("노트 등록 실패:", error);
+            alert('❌ 노트 등록에 실패했습니다.');
         }
     };
-
-    // 삭제 버튼 클릭 시 모달 띄우도록 변경
-    const handleDeleteNote = (noteCode) => {
-        openDeleteModal(noteCode);
-    };
     
-    /* -------------------------------------------------------------------------------- */
+    /* ----------------------------------등록모달--------------------------------------- */
+    /* ----------------------------------수정모달--------------------------------------- */
+
+    const [isEditConfirmModalOpen, setIsEditConfirmModalOpen] = useState(false);
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+    const [successLottieAnimation, setSuccessLottieAnimation] = useState("");
+
+    // 수정 모드로 들어가기 전에 확인 모달을 띄우는 함수
+    const openEditConfirmModal = () => {
+        setModalMessage("수정하시겠습니까?");  // 수정 확인 메시지 설정
+        setLottieAnimation("/animations/identify.json"); 
+        setIsEditConfirmModalOpen(true);  // 수정 확인 모달 열기
+    };
+
+    const closeEditConfirmModal = () => {
+        setIsEditConfirmModalOpen(false);  // 수정 확인 모달 닫기
+    };
+
+    const handleConfirmEdit = () => {
+        setIsEditMode(true);  // 수정 모드로 전환
+        closeEditConfirmModal();  // 모달 닫기
+    };
+
+    const handleCancelEdit = () => {
+        // 원래 note의 제목과 내용을 설정하여 수정된 내용을 취소
+        setNoteTitle(selectedNote.noteTitle);
+        setNoteDetail(selectedNote.noteDetail);
+        setIsEditMode(false); // 읽기 전용 모드로 설정
+    };
+
+    const closeSuccessModal = () => {
+        setIsSuccessModalOpen(false);
+    };
+
+    /* ----------------------------------수정모달--------------------------------------- */
 
 
     console.log("🔍 Redux에서 가져온 user 객체:", user);
@@ -144,38 +210,6 @@ function BaristaNoteLayout() {
     const handleDetailChange = (e) => setNoteDetail(e.target.value);
     const handleFileChange = (e) => setAttachment(e.target.files[0]);
 
-    const handleSaveNote = async () => {
-        if (!noteTitle.trim()) {
-            alert('⚠️ 제목을 입력해주세요!');
-            return;
-        }
-    
-        if (!noteDetail.trim()) {
-            alert('⚠️ 내용을 입력해주세요!');
-            return;
-        }
-    
-        console.log("📢 최종 userId:", userId);
-        if (!userId) {
-            alert("❌ userId가 없습니다. 로그인 후 다시 시도해주세요.");
-            return;
-        }
-    
-        const noteData = {
-            noteTitle,
-            noteDetail,
-            noteDate: new Date().toISOString(), // ✅ 현재시간 추가
-            userId
-        };
-    
-        console.log("📢 보낼 JSON 데이터:", noteData);
-    
-        await dispatch(callNoteRegistAPI(noteData)); // ✅ JSON 형식으로 전송
-        dispatch(callBaristNotesAPI());
-    
-        closeModal();
-    };
-
     const handleSearch = () => {
         if (search.trim()) {
             dispatch(callSearchNoteAPI({ search }));
@@ -193,40 +227,56 @@ function BaristaNoteLayout() {
     //     }
     // };
 
-    const handleUpdateNote = async () => {
-        if (!noteTitle.trim() || !noteDetail.trim()) {
-            alert('⚠️ 제목과 내용을 입력해주세요!');
-            return;
-        }
-    
-        // 세션에서 가져온 user.id와 selectedNote.userId를 비교
-        const sessionUserId = user?.userId;  // `user`는 Redux store에서 가져온 사용자 정보
-    
-        if (selectedNote.userId !== sessionUserId) {
-            alert("❌ 자신이 작성한 글만 수정할 수 있습니다.");
-            return;
-        }
-    
-        // 수정 시에만 `noteDate`를 현재 시간으로 업데이트
-        const updatedNote = {
-            noteCode: selectedNote.noteCode,
-            noteTitle,
-            noteDetail,
-            noteDate: new Date().toISOString(), // 수정 시 현재 시간으로 업데이트
-            userId: sessionUserId
-        };
-    
-        await dispatch(callNoteUpdateAPI(updatedNote)); // 수정 API 호출
-        dispatch(callBaristNotesAPI());
-        closeDetailModal();
-    };    
+    /* ----------------------------------삭제모달---------------------------------------------- */
 
-    const handleCancelEdit = () => {
-        // 원래 note의 제목과 내용을 설정하여 수정된 내용을 취소
-        setNoteTitle(selectedNote.noteTitle);
-        setNoteDetail(selectedNote.noteDetail);
-        setIsEditMode(false); // 읽기 전용 모드로 설정
+    // 삭제 모달 관련 상태 추가
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [noteToDelete, setNoteToDelete] = useState(null);
+    const [lottieAnimation, setLottieAnimation] = useState("");
+    const [modalMessage, setModalMessage] = useState(""); 
+    
+
+    // 삭제 모달 열기 함수
+    const openDeleteModal = (noteCode) => {
+        setNoteToDelete(noteCode);
+        setLottieAnimation("/animations/identify.json"); // 경고 애니메이션 설정
+        setModalMessage("정말로 이 바리스타 노트를 삭제하시겠습니까?");
+        setIsDeleteModalOpen(true);
     };
+
+    // 삭제 모달 닫기 함수
+    const closeDeleteModal = () => {
+        setIsDeleteModalOpen(false);
+        setNoteToDelete(null);
+    };
+
+    const confirmHandler = async () => {
+        if (noteToDelete) {
+            await dispatch(callNoteDeleteAPI({ noteCode: noteToDelete }));
+            dispatch(callBaristNotesAPI()); // 노트 삭제 후 목록 갱신
+        
+            // ✅ 삭제 완료 메시지 설정
+            setLottieAnimation("/animations/success-check.json"); 
+            setModalMessage("바리스타 노트가 삭제되었습니다.");
+        
+            setTimeout(() => {
+                closeDeleteModal(); // 삭제 모달 닫기
+                closeDetailModal(); // 상세 모달 닫기
+            }, 2000);
+    
+            // 삭제 즉시 상세보기 모달도 닫기
+            closeDetailModal();
+        }
+    };
+    
+
+
+    // 삭제 버튼 클릭 시 모달 띄우도록 변경
+    const handleDeleteNote = (noteCode) => {
+        openDeleteModal(noteCode);
+    };
+    
+    /* -------------------------------------------------------------------------------- */
 
     return (
         <>
@@ -257,7 +307,7 @@ function BaristaNoteLayout() {
                             <div className={style.infoItem}>{note.noteCode}</div>
                             <div className={style.infoItem}>{note.noteTitle}</div>
                             <div className={style.infoItem}>{note.empName}</div>
-                            <div className={style.infoItem}>{note.noteDate}</div>
+                            <div className={style.infoItem}>{new Date(note.noteDate).toISOString().split('T')[0]}</div>
                             <div className={style.infoItem}>{note.viewCount}</div>
                         </div>
                     ))
@@ -341,7 +391,7 @@ function BaristaNoteLayout() {
                         <hr />
                         <div className={style.modalDetails}>
                             <p>작성자: {selectedNote.empName}</p>
-                            <p>작성일: {selectedNote.noteDate}</p>
+                            <p>작성일: {new Date(selectedNote.noteDate).toISOString().split('T')[0]}</p>
                             <p>조회수: {selectedNote.viewCount}</p>
                         </div>
 
@@ -376,7 +426,7 @@ function BaristaNoteLayout() {
                         {/* 수정 버튼은 파일 첨부 여부와 상관없이, isEditMode에만 의존 */}
                         {selectedNote.userId === userId && !isEditMode && (
                             <div className={style.modalButtons}>
-                                <button className={style.saveButton} onClick={() => setIsEditMode(true)}>수정</button>
+                                <button className={style.saveButton} onClick={openEditConfirmModal}>수정</button>
                                 {/* 삭제 버튼 추가 */}
                                 <button 
                                     className={style.deleteButton} 
@@ -398,31 +448,42 @@ function BaristaNoteLayout() {
                 </div>
             )}
 
-            {/* 삭제 확인 모달 */}
-            {isDeleteModalOpen && (
+           {/* 삭제 확인 모달 */}
+           {isDeleteModalOpen && (
                 <SModal
                     isOpen={isDeleteModalOpen}
-                    onClose={() => setIsDeleteModalOpen(false)}  // 모달 닫기
-                    buttons={[
-                        {
-                            text: "삭제",
-                            onClick: () => confirmHandler(),  // 삭제 확정 시 호출
-                            className: modalStyle.deleteButtonS,
-                        },
-                        {
-                            text: "취소",
-                            onClick: () => setIsDeleteModalOpen(false),  // 취소 시 모달 닫기
-                            className: modalStyle.cancelButtonS,
-                        },
-                    ]}
+                    onClose={() => {
+                        setIsDeleteModalOpen(false);
+                    }}
+                    buttons={
+                        modalMessage === "바리스타 노트가 삭제되었습니다."
+                            ? [
+                                {
+                                    text: "확인",
+                                    onClick: () => setIsDeleteModalOpen(false),
+                                    className: modalStyle.confirmButtonS,
+                                },
+                            ]
+                            : [
+                                {
+                                    text: "삭제",
+                                    onClick: confirmHandler, 
+                                    className: modalStyle.deleteButtonS,
+                                },
+                                {
+                                    text: "취소",
+                                    onClick: closeDeleteModal,
+                                    className: modalStyle.cancelButtonS,
+                                },
+                            ]
+                    }
                 >
                     <div style={{ textAlign: "center" }}>
-                        {/* Lottie 애니메이션: Player 컴포넌트 사용 */}
                         <Player
                             autoplay
-                            loop={false} // 애니메이션 반복 X
-                            keepLastFrame={true} // 애니메이션 끝난 후 마지막 프레임 유지
-                            src={lottieAnimation} // 동적으로 변경됨
+                            loop={false}
+                            keepLastFrame={true}
+                            src={lottieAnimation} 
                             style={{ height: "100px", width: "100px", margin: "0 auto" }}
                         />
                         <span style={{ marginTop: "15px", whiteSpace: "pre-line" }}>
@@ -431,7 +492,96 @@ function BaristaNoteLayout() {
                     </div>
                 </SModal>
             )}
-
+            {/* ✅ 등록 성공 모달 */}
+            {isSuccessModalOpen && (
+                    <SModal
+                        isOpen={isSuccessModalOpen}
+                        onClose={() => {
+                            setIsSuccessModalOpen(false);
+                        }}
+                        buttons={[
+                            {
+                                text: "확인",
+                                onClick: () => {
+                                    setIsSuccessModalOpen(false);
+                                },
+                                className: modalStyle.confirmButtonS,
+                            },
+                        ]}
+                    >
+                        <div style={{ textAlign: "center" }}>
+                            <Player
+                                autoplay
+                                loop={false}
+                                keepLastFrame={true}
+                                src={lottieAnimation}
+                                style={{ height: "100px", width: "100px", margin: "0 auto" }}
+                            />
+                            <span style={{ marginTop: "15px", whiteSpace: "pre-line" }}>
+                                {modalMessage}
+                            </span>
+                        </div>
+                    </SModal>
+            )}
+            {/* 수정 확인 모달 */}
+            {isEditConfirmModalOpen && (
+                    <SModal
+                        isOpen={isEditConfirmModalOpen}
+                        onClose={closeEditConfirmModal}  // 모달 닫기
+                        buttons={[
+                            {
+                                text: "수정",
+                                onClick: handleConfirmEdit,  // 수정 확정 시 호출
+                                className: modalStyle.confirmButtonS,
+                            },
+                            {
+                                text: "취소",
+                                onClick: closeEditConfirmModal,  // 취소 시 모달 닫기
+                                className: modalStyle.cancelButtonS,
+                            },
+                        ]}
+                    >
+                        <div style={{ textAlign: "center" }}>
+                            {/* Lottie 애니메이션: Player 컴포넌트 사용 */}
+                            <Player
+                                autoplay
+                                loop={false} // 애니메이션 반복 X
+                                keepLastFrame={true} // 애니메이션 끝난 후 마지막 프레임 유지
+                                src={lottieAnimation} // 동적으로 변경됨
+                                style={{ height: "100px", width: "100px", margin: "0 auto" }}
+                            />
+                            <span style={{ marginTop: "15px", whiteSpace: "pre-line" }}>
+                                {modalMessage}
+                            </span>
+                        </div>
+                    </SModal>
+                )}
+                {isUpdateModalOpen && (
+                <SModal
+                    isOpen={isUpdateModalOpen}
+                    onClose={() => setIsUpdateModalOpen(false)}
+                    buttons={[
+                        {
+                            text: "확인",
+                            onClick: () => setIsUpdateModalOpen(false),
+                            className: modalStyle.confirmButtonS,
+                        },
+                    ]}
+                >
+                    <div style={{ textAlign: "center" }}>
+                        <Player
+                            autoplay
+                            loop={false}
+                            keepLastFrame={true}
+                            src={successLottieAnimation}
+                            style={{ height: "100px", width: "100px", margin: "0 auto" }}
+                        />
+                        <span style={{ marginTop: "15px", whiteSpace: "pre-line" }}>
+                            {isUpdateModalOpen}
+                        </span>
+                    </div>
+                </SModal>
+            )}
         </>
     );
 }

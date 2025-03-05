@@ -26,30 +26,43 @@ function NoticeRegistLayout() {
     const [lottieAnimation, setLottieAnimation] = useState("");
     const [modalMessage, setModalMessage] = useState("");
 
+    const handleRegistClick = async () => {
+        if (!noticeTitle || !noticeContent) {
+            setLottieAnimation("/animations/identify.json"); // 애니메이션 설정
+            setModalMessage("제목과 내용을 입력해주세요."); // 모달 메시지 설정
+            setIsSuccessModalOpen(true); // 모달 열기
+            return; // 등록을 막음 (현재 페이지 유지)
+        }
+    
+        const noticeDate = new Date().toISOString(); // 현재 날짜와 시간
+    
+        const result = await dispatch(callNoticeRegistAPI({
+            noticeTitle,
+            noticeContent,
+            noticeDate,
+            userId,
+            attachment,
+        }));
+    
+        setLottieAnimation("/animations/success-check.json");
+        setModalMessage("공지사항을 정상 등록하였습니다.");
+        setIsSuccessModalOpen(true);
+    
+        // ✅ 등록이 성공한 경우에만 목록 페이지로 이동
+        setTimeout(() => {
+            setIsSuccessModalOpen(false);
+            navigate("/fran/notice", { replace: true });
+        },1000); // 모달을 잠시 보여주고 이동
+    };
+    
+
+    /* ---------------------------------등록모달--------------------------------- */
+
     useEffect(() => {
         const today = new Date();
         const formattedDate = today.toISOString().split('T')[0]; // YYYY-MM-DD 형식
         setCreationDate(formattedDate);
     }, []);
-
-    const handleRegistClick = async () => {
-        const noticeDate = new Date().toISOString(); // 현재 날짜와 시간
-    
-            const result = await dispatch(callNoticeRegistAPI({
-                noticeTitle,
-                noticeContent,
-                noticeDate,  // 서버에 전달할 날짜 (시간 포함)
-                userId,
-                attachment,
-            }));
-    
-
-            setLottieAnimation("/animations/success-check.json");
-            setModalMessage("공지사항을 정상 등록하였습니다.");
-            setIsSuccessModalOpen(true);
-    };
-
-    /* ---------------------------------등록모달--------------------------------- */
     
     
 
@@ -104,20 +117,20 @@ function NoticeRegistLayout() {
                         </Link>
                     </div>
                 </div>
-                 {/* ✅ 등록 성공 모달 */}
+                {/* ✅ 등록 성공 모달 */}
                 {isSuccessModalOpen && (
                     <SModal
                         isOpen={isSuccessModalOpen}
                         onClose={() => {
                             setIsSuccessModalOpen(false);
-                            navigate("/fran/notice", { replace: true }); // ✅ 모달 닫은 후 목록 이동
+                            //navigate("/fran/notice", { replace: true }); // ✅ 모달 닫은 후 목록 이동
                         }}
                         buttons={[
                             {
                                 text: "확인",
                                 onClick: () => {
                                     setIsSuccessModalOpen(false);
-                                    navigate("/fran/notice", { replace: true });
+                                   //navigate("/fran/notice", { replace: true });
                                 },
                                 className: modalStyle.confirmButtonS,
                             },

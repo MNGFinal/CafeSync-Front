@@ -1,0 +1,263 @@
+/* 🔹 전체 레이아웃 */
+.defSection {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* 🔹 왼쪽 테이블 (거래처 목록) */
+.addSection {
+  border: 1px solid #ddd;
+  width: 750px;
+  height: 740px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* ✅ 내용과 페이지네이션을 분리 */
+}
+
+/* 🔹 검색 바 */
+.searchBox {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  height: 35px;
+}
+
+.tableContainer {
+  flex-grow: 1; /* ✅ 테이블이 남은 공간을 차지하도록 설정 */
+  overflow-y: auto; /* ✅ 테이블 내용이 많을 경우 스크롤 적용 */
+}
+
+/* 🔹 버튼 스타일 */
+.blueBtn {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.redBtn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 7px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-left: 10px;
+}
+
+.greenBtn {
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+  padding: 7px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+/* 🔹 테이블 스타일 */
+.vendorTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 18px;
+}
+
+.vendorTable th,
+.vendorTable td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: center;
+}
+
+.clickableRow {
+  cursor: pointer;
+}
+
+.clickableRow:hover {
+  background-color: #f2f2f2;
+}
+
+/* 🔹 거래처 로고 스타일 */
+.vendorLogo {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+/* 🔹 오른쪽 상세 정보 */
+.listSection {
+  border: 1px solid #ddd;
+  width: 1100px;
+  height: 740px;
+  padding: 30px;
+  background: #fff;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 🔹 상세 정보 표 스타일 */
+.vendorDetailTable {
+  width: 100%;
+  max-width: 700px;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  font-size: 18px;
+}
+
+/* 🔹 표 내부 스타일 */
+.vendorDetailTable th,
+.vendorDetailTable td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+  font-size: 18px;
+}
+
+.vendorDetailTable th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+/* 🔹 상세 이미지 */
+.vendorDetailImage {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  margin: 20px auto;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+/* 🔹 버튼 컨테이너 */
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+/* 🔹 페이징 스타일 */
+.paginationContainer {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding: 10px 0;
+  gap: 10px;
+  margin-top: auto; /* ✅ 항상 하단에 고정 */
+}
+
+.paginationContainer a {
+  padding: 6px 12px;
+  border-radius: 5px;
+  color: #5c1946;
+  background-color: white;
+  border: 1px solid #5c1946;
+  cursor: pointer;
+}
+
+.activePage a {
+  background-color: #5c1946 !important;
+  color: white !important;
+}
+
+.uploadFile {
+  border: 1px dashed #ccc;
+  background-color: #fafafa;
+  cursor: pointer;
+  width: 100%;
+  height: 46px;
+  padding: 10px;
+}
+
+.uploadFile:hover {
+  background-color: #f0f0f0;
+}
+
+/* 🔹 인풋 공통 스타일 */
+.inputField {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+  height: 32px;
+}
+
+/* 🔹 인풋 포커스 효과 */
+.inputField:focus {
+  border-color: #5c1946; /* 원하는 색상 */
+  outline: none;
+  box-shadow: 0 0 5px rgba(92, 25, 70, 0.3);
+}
+
+/* 🔹 플레이스홀더 스타일 */
+.inputField::placeholder {
+  color: #aaa;
+  font-size: 14px;
+}
+
+/* 🔹 셀렉트 박스(업체 구분) 스타일 */
+select.inputField {
+  appearance: none; /* 크롬 등 브라우저 기본 화살표 없애기 */
+  background-position: right 10px center; /* 화살표 위치 */
+  background-repeat: no-repeat;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg viewBox='0 0 140 140' width='10' height='10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 20,50 L 70,100 L 120,50' stroke='%23888' stroke-width='15' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  padding-right: 35px; /* 화살표와 텍스트 간격 확보 */
+}
+
+/* 🔹 미리보기 컨테이너 (중앙 정렬) */
+.previewContainer {
+  text-align: center;
+  margin: 10px 0;
+}
+
+/* 🔹 미리보기 이미지 */
+.previewImage {
+  /* 예: 최대 너비 200px, 최대 높이 200px */
+  max-width: 200px;
+  max-height: 200px;
+
+  /* 이미지가 범위를 넘어가면 잘라냄 (cover) 또는 흰 여백이 생기게(contain) */
+  object-fit: cover;
+
+  /* 테두리 & 모서리 둥글게 */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+
+  /* 공간 띄우기 */
+  margin-top: 10px;
+}
+
+.noData {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 740px;
+  flex-direction: column;
+  font-weight: bold;
+}

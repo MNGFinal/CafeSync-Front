@@ -5,7 +5,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyAmWiJYknzLM3RUPTx4WTW6XPaTN6mfIXM",
   authDomain: "cafe-sync.firebaseapp.com",
   projectId: "cafe-sync",
-  storageBucket: "cafe-sync.appspot.com", // ✅ 올바른 버킷 주소
+  storageBucket: "cafe-sync.firebasestorage.app", // ✅ 여기가 중요
   messagingSenderId: "792625136221",
   appId: "1:792625136221:web:fe21f3868b34c0239f83b4",
   measurementId: "G-KZJXYYBJXB",
