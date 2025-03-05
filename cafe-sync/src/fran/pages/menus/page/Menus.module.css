@@ -127,13 +127,9 @@
   /* 버튼 배경색 변경 */
 }
 
-
 .categorySearchSet {
   display: flex;
 }
-
-
-
 
 /* 검색창 위에 선 추가 */
 .divider {
@@ -144,7 +140,6 @@
   /* 1px 회색 선 */
   margin-top: 15px;
 }
-
 
 .menuItem img {
   width: 120px;
@@ -157,20 +152,33 @@
   /* 둥근 모서리 (선택 사항) */
 }
 
-
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@페이지 네이션@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+/* ✅ 페이지네이션 고정 스타일 */
 
-/* ✅ 페이지네이션 스타일 */
+.contentContainer {
+  min-height: 600px; /* 최소 높이 설정해서 리스트가 적어도 공간 확보 */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* 리스트와 페이지네이션 사이 간격 유지 */
+}
+.paginationWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: auto; /* 컨텐츠 아래에 자동 정렬 */
+  padding: 20px 0;
+}
+
+/* ✅ 페이지네이션 버튼 스타일 */
 .pagination {
   display: flex;
   justify-content: center;
   list-style: none;
-  padding: 20px 0;
-  gap: 15px;
-  margin-top: 10px;
-  /* 버튼 간격 */
+  gap: 10px;
+  padding: 10px 0;
 }
 
+/* ✅ 페이지네이션 버튼 스타일 */
 .pagination li {
   display: flex;
   align-items: center;

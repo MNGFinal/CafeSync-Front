@@ -44,7 +44,6 @@ function Sidebar() {
         {showSubMenu && (
           <div className="submenu">
             <Link to="/hq/menus">메뉴 목록</Link>
-            <Link to="/hq/menus/regist">신규 메뉴 등록</Link>
             <Link to="/hq/discontinue-menus">단종 메뉴 목록</Link>
           </div>
         )}
