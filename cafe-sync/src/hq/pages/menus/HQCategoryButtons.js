@@ -14,15 +14,20 @@ function HQCategoryButtons({
     { id: "goods", name: "상품" },
   ];
 
-  // 검색어 입력 핸들러
+  // ✅ 검색어 입력 핸들러
   const handleInputChange = (e) => {
     setSearchQuery(e.target.value);
   };
 
-  // Enter 키 입력 시 검색 실행
+  // ✅ 검색 실행 시 첫 페이지부터 다시 불러오기
+  const handleSearch = () => {
+    fetchMenus(); // 🔥 HQMenus의 `fetchMenus()` 실행
+  };
+
+  // ✅ Enter 키 입력 시 검색 실행
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      fetchMenus();
+      handleSearch();
     }
   };
 
@@ -54,7 +59,7 @@ function HQCategoryButtons({
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
           />
-          <button className={styles.searchButton} onClick={fetchMenus}>
+          <button className={styles.searchButton} onClick={handleSearch}>
             검색
           </button>
         </div>
