@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import style from "../styles/Complain.module.css"
-import Modal from "../../../../components/Modal"
-import SModal from "../../../../components/SModal"
-import modalStyle from "../../../../components/ModalButton.module.css"
-
+import Detail from "./ComplainDetail"
 
 const ComplainList = ({franCode, refresh}) => {
   const today = new Date();
@@ -19,6 +16,7 @@ const ComplainList = ({franCode, refresh}) => {
   const [lastDate, setLastDate] = useState(getLastDayOfMonth);
   const [complainList, setComplainList] = useState([]);
   const [seletedComplain, setSelectedComplain] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isBModalOpen, setIsBModalOpen] = useState(false);
 
   const clickDetailHandler = (complain) => {
@@ -106,10 +104,11 @@ const ComplainList = ({franCode, refresh}) => {
             </tbody>
           </table>
           {isBModalOpen && (
-            <Modal onClose={() => setIsBModalOpen(false)}>
-              {/* 여기 이따가 상세 조회로 넘어가도록 만들기 */}
-              <h1>일단 뜨긴 뜨니?</h1>
-            </Modal>
+            <Detail 
+              isModalOpen={isBModalOpen}  // ✅ isBModalOpen을 직접 전달
+              setIsModalOpen={setIsBModalOpen}  // ✅ 모달 닫기 기능 추가
+              complain={seletedComplain}  // ✅ complainList 전체가 아니라 선택된 complain만 전달
+            />
           )}
         </div>
       </div>
