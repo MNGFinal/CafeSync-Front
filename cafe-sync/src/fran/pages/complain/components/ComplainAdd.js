@@ -22,11 +22,46 @@ const ComplainAdd = ({franCode, onComplainUpdate}) => {
     { label: "기타", value: 3 },
   ]
 
+  // 전화번호 포멧 설정
+  const formatPhoneNumber = (number) => {
+    if (number.startsWith("02")) {
+      if (number.length <= 2) return number;
+      if (number.length <= 6) return `${number.slice(0, 2)}-${number.slice(2)}`;
+      if (number.length <= 9) return `${number.slice(0, 2)}-${number.slice(2, 5)}-${number.slice(5, 9)}`;
+      return `${number.slice(0, 2)}-${number.slice(2, 6)}-${number.slice(6, 10)}`;
+    } else {
+      if (number.length <= 3) return number;
+      if (number.length <= 7) return `${number.slice(0, 3)}-${number.slice(3)}`;
+      if (number.length <= 10) return `${number.slice(0, 3)}-${number.slice(3, 6)}-${number.slice(6, 10)}`;
+      return `${number.slice(0, 3)}-${number.slice(3, 7)}-${number.slice(7, 11)}`;
+    }
+  }
+
   const complainChangeHandler = (e) => {
     const { name, value } = e.target;
-    setComplain((prev) => ({
-      ...prev, [name]: value,
-    }));
+
+    // 날짜 비교하여 유효성 검사
+    if (name === "complainDate") {
+      const seletedDate = new Date(value);
+      const currentDate = new Date();
+      if (seletedDate > currentDate) {
+        setAddError("미래 날짜는 선택할 수 없습니다.");
+        return;
+      } else {
+        setAddError("");
+      }
+    }
+
+    if (name === "customerPhone") {
+      const onlyNumbers = value.replace(/\D/g, "");
+      setComplain((prev) => ({
+        ...prev, [name]: formatPhoneNumber(onlyNumbers),
+      }));
+    } else {
+      setComplain((prev) => ({
+        ...prev, [name]: value,
+      }));
+    }
   }
 
   const resetComplainHandler = () => {
@@ -37,12 +72,19 @@ const ComplainAdd = ({franCode, onComplainUpdate}) => {
 
   const confirmHandler = async () => {
     console.log('confirmHandler 실행됨');
-    if (!complain.complainDate || !complain.complainDivision || !complain.empCode || !complain.customerPhone || !complain.complainDetail || addError) {
+    if (!complain.complainDate || !complain.complainDivision || !complain.empCode || !complain.customerPhone || !complain.complainDetail) {
       setLottieAnimation("/animations/warning.json");
       setModalMessage("모든 항목을 입력해주세요.");
       setIsSModalOpen(true);
       return;
     };
+
+    if (addError) {
+      setLottieAnimation("/animations/warning.json");
+      setModalMessage("미래 날짜는 선택하실 수 없습니다.");
+      setIsSModalOpen(true);
+      return;
+    }
     
     console.log('confirmHandler에 저장된 complain: ', complain);
 
@@ -94,6 +136,7 @@ const ComplainAdd = ({franCode, onComplainUpdate}) => {
                 value={complain.complainDate}
                 onChange={complainChangeHandler}
               />
+              {addError && <p style={{ display: "inline-block", color: "red", marginLeft: "10px", fontSize: "12px" }}>{addError}</p>}
             </td>
           </tr>
           <tr>
@@ -135,7 +178,15 @@ const ComplainAdd = ({franCode, onComplainUpdate}) => {
           </tr>
           <tr>
             <th>컴플레인 제출자 연락처</th>
-            <td><input type="text" name="customerPhone" value={complain.customerPhone} onChange={complainChangeHandler}/></td>
+            <td>
+              <input 
+                type="text" 
+                name="customerPhone" 
+                value={complain.customerPhone} 
+                onChange={complainChangeHandler}
+                placeholder="010-0000-0000"
+              />
+            </td>
           </tr>
           <tr>
             <th>컴플레인 내용</th>
@@ -169,8 +220,8 @@ const ComplainAdd = ({franCode, onComplainUpdate}) => {
             src={lottieAnimation}
             style={{ height: "100px", width: "100px", margin: "0 auto" }}
           />
-          <span style={{marginTop: "15px", whiteSpace: "pre-line"}}>{modalMessage}</span>
           <br />
+          <span style={{marginTop: "15px", whiteSpace: "pre-line"}}>{modalMessage}</span>
         </div>
       </SModal>
     </>
