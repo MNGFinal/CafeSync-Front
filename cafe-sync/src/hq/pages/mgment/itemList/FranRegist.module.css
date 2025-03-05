@@ -1,69 +1,152 @@
 .container {
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 20px;
-    background: white;
-    border-radius: 8px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  border-radius: 8px;
 }
 
 .title {
-    text-align: center;
-    font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 35px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 25px;
 }
 
+/* 폼 전체 레이아웃 */
 .form {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* 각 항목 간 간격 */
 }
 
+/* 각 필드(라벨+입력)의 레이아웃 */
 .formGroup {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 15px;
+  display: grid;
+  grid-template-columns: 120px 1fr; /* 라벨과 입력 영역 비율 */
+  align-items: center;
+  gap: 10px;
 }
 
 .formGroup label {
-    font-size: 16px;
-    font-weight: bold;
+  font-size: 16px;
+  font-weight: bold;
 }
 
+/* 공통 input, textarea 스타일 */
 .formGroup input,
 .formGroup textarea {
-    width: 70%;
-    padding: 1px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    height: 30px;
+  width: 100%;
+  height: 42px;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
 }
 
 .formGroup textarea {
-    height: 100px;
+  height: 90px;
+  resize: none;
 }
 
+/* 주소 입력 필드와 버튼 정렬 */
+.inputContainer {
+  display: flex;
+  gap: 10px;
+}
+
+/* 주소 찾기 버튼 */
+.addressButton {
+  padding: 8px 12px;
+  border: 1px solid #590d34;
+  border-radius: 5px;
+  background-color: #590d34;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+  width: 60px;
+}
+
+.addressButton:hover {
+  background-color: #7d144e;
+}
+
+/* 점장 조회 버튼 */
+.searchButton {
+  padding: 8px 12px;
+  border: 1px solid #0062cc;
+  border-radius: 5px;
+  background-color: #0062cc;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+  width: 60px;
+}
+
+.searchButton:hover {
+  background-color: #004a99;
+}
+
+/* 이미지 업로드 필드 */
+.imageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fileInput {
+  padding: 0;
+}
+
+.previewContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.previewImage {
+  width: 200px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+/* 버튼 정렬 */
 .buttonGroup {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: -7px;
+}
+
+.submitButton,
+.cancelButton {
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
 }
 
 .submitButton {
-    background: #590d34;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  background-color: #590d34;
+  color: #fff;
+  border: none;
+}
+
+.submitButton:hover {
+  background-color: #7d144e;
 }
 
 .cancelButton {
-    background: #fff;
-    color: #590d34;
-    padding: 10px 20px;
-    border: 1px solid #590d34;
-    border-radius: 5px;
-    cursor: pointer;
+  background-color: #fff;
+  color: #590d34;
+  border: 1px solid #590d34;
+}
+
+.cancelButton:hover {
+  background-color: #f8e1eb;
 }
