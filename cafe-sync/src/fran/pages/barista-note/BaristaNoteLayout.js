@@ -132,7 +132,7 @@ function BaristaNoteLayout() {
     // 추가된 상태 변수
     const [pageCount, setPageCount] = useState(0); // 전체 페이지 수
     const [currentPage, setCurrentPage] = useState(0); // 현재 페이지
-    const notesPerPage = 15; // 한 페이지에 표시할 노트 개수
+    const notesPerPage = 10; // 한 페이지에 표시할 노트 개수
 
     useEffect(() => {
         dispatch(callBaristNotesAPI());
@@ -303,7 +303,7 @@ function BaristaNoteLayout() {
                 <div className={style.NoticeData}>
                 {notesToDisplay.length > 0 ? (
                     notesToDisplay.map((note) => (
-                        <div key={note.noteCode} className={style.infoRow} onClick={() => openDetailModal(note)}>
+                        <div key={note.noteCode} className={style.infoRow} onClick={() => openDetailModal(note)}  style={{ cursor: 'pointer' }} >
                             <div className={style.infoItem}>{note.noteCode}</div>
                             <div className={style.infoItem}>{note.noteTitle}</div>
                             <div className={style.infoItem}>{note.empName}</div>

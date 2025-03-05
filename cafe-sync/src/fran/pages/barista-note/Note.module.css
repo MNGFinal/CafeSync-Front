@@ -1,14 +1,134 @@
 /* src/fran/pages/barista-note/Note.module.css*/
 /* 상단 박스 컨테이너 스타일 */
+/* 상단 박스 (upperBox) 스타일 */
 .upperBox {
   display: flex;
   justify-content: space-between;
   align-items: center;
   border: 1px solid #ccc;
-  padding: 10px 10px;
-  margin: 20px; /* 상단 박스 외부 여백 */
+  border-radius: 8px;
+  padding: 15px;
+  margin: 20px;
   height: 80px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out; /* 전체적인 부드러운 변화 */
 }
+
+/* 상단 박스에 마우스를 올리면 배경색이 변화 */
+.upperBox:hover {
+  background-color: #f0f0f0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* 버튼 스타일 */
+.searchButton, .registButton, .rightPlaceholder {
+  background-color: #4CAF50; /* 녹색 버튼 */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s; /* 버튼 색상과 크기 애니메이션 */
+}
+
+.searchButton:hover, .registButton:hover {
+  background-color: #45a049; /* 마우스 오버시 색상 변경 */
+  transform: scale(1.05); /* 마우스를 올리면 살짝 커짐 */
+}
+
+.rightPlaceholder {
+  background-color: #e0e0e0; /* 회색 버튼 */
+  pointer-events: none; /* 클릭 불가 */
+}
+
+/* 하단 박스 (lowerBox) 스타일 */
+.lowerBox {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: flex-start;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin: 20px;
+  padding: 15px;
+  height: 655px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+/* 하단 박스에 마우스를 올리면 색상과 그림자 효과가 부드럽게 변함 */
+.lowerBox:hover {
+  background-color: #f1f1f1;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* 정보 항목 (infoRow) */
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: bold;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 10px 0;
+  transition: all 0.2s ease;
+}
+
+/* 각 항목에 마우스를 올리면 배경 색상 변경 */
+.infoRow:hover {
+  background-color: #f2f2f2;
+}
+
+/* 각 항목 스타일 (infoItem) */
+.infoItem {
+  padding: 5px 10px;
+  text-align: center;
+  width: 18%;
+  color: #555;
+  transition: color 0.2s ease; /* 텍스트 색상 애니메이션 */
+}
+
+/* 각 항목에 마우스를 올리면 텍스트 색상이 변함 */
+.infoItem:hover {
+  color: #2e8b57;
+}
+
+/* 데이터 없음 스타일 */
+.noData {
+  text-align: center;
+  font-size: 16px;
+  color: #999;
+  margin-top: 20px;
+  opacity: 0;
+  animation: fadeIn 1s forwards; /* 데이터 없음 표시 애니메이션 */
+}
+
+/* 데이터 없음 애니메이션 */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* NoticeData 영역에 hover 효과 추가 */
+.NoticeData .infoRow {
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* 마우스를 올리면 배경색과 크기가 변하는 효과 */
+.NoticeData .infoRow:hover {
+  background-color: #f7f7f7; /* 더 연한 색상 */
+  transform: scale(1.02); /* 살짝 커짐 */
+}
+
+
+/*----------------------------모달창--------------------------------*/
+/*----------------------------버튼----------------------------------*/
 
 /* 입력(게시글검색) 스타일 */
 .inputBox {
@@ -21,12 +141,16 @@
   height: 35px;
 }
 
-/* 오른쪽 영역 (검색 버튼, 등록 버튼) */
-.upperBox > div {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  width: 30%;
+.rightPlaceholder {
+  padding: 8px 16px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-right: 15px;
+  visibility: hidden; /* 요소는 보이지 않지만 공간을 유지 */
 }
 
 /* 검색 버튼 스타일 */
@@ -67,74 +191,7 @@
   transform: scale(1.1); /* hover 시 크기 살짝 커지기 */
 }
 
-.rightPlaceholder {
-  padding: 8px 16px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-right: 15px;
-  visibility: hidden; /* 요소는 보이지 않지만 공간을 유지 */
-}
-
-/*------------------------------------------------------------*/
-
-/* 하단 박스 컨테이너 스타일 */
-.lowerBox {
-  /* --페이지네이션고정을 위한 추가적인 코드-- */
-
-  display: flex;
-  flex-direction: column;
-  height: 100%; /* 화면을 꽉 채운 높이로 설정 */
-  justify-content: flex-start; /* 내용 상단 정렬 */
-
-  /* --페이지네이션 고정을 위한 추가적인 코드-- */
-  background-color: #f1f1f1; /* 회색 배경 */
-  border: 1px solid #ccc; /* 경계선 */
-  margin: 20px; /* 상단 박스와 동일한 외부 여백 */
-  padding: 10px; /* 상단 박스와 동일한 내부 여백 */
-  height: 655px;
-}
-
-/* 번호, 제목, 작성자, 작성일, 조회수 스타일 */
-.infoRow {
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
-  font-weight: bold;
-  border: none;
-  padding-bottom: 5px; /* 경계선과 텍스트 간의 여백 */
-}
-
-/* 각 항목에 경계를 추가 */
-.infoItem {
-  padding: 5px 10px;
-  border-right: 1px solid #ccc; /* 오른쪽 경계선 추가 */
-  text-align: center;
-  width: 18%; /* 항목 너비를 고정하여 균등하게 배치 */
-}
-
-/* 마지막 항목은 오른쪽 경계선 제거 */
-.infoItem:last-child {
-  border-right: none;
-}
-
-/* 바리스타 노트 데이터 스타일 */
-.baristaNoteData {
-  font-size: 16px;
-  color: #333;
-  margin-top: 10px;
-}
-
-.NoticeData {
-  font-size: 16px;
-  color: #333;
-  margin-top: 10px;
-}
-
-/*----------------------------모달창--------------------------------*/
+/*----------------------------버튼----------------------------------*/
 
 /* 모달창 오버레이 */
 .modalOverlay {
@@ -317,9 +374,10 @@ hr {
   display: flex;
   justify-content: center;
   list-style: none;
-  padding: 20px 0;
+  /* padding: 20px 0; */
   gap: 10px; /* 버튼 간격 조정 */
-  margin-top: 10px;
+  margin-top: 15px;
+  margin-bottom : 5px
 }
 
 /* 페이지네이션 버튼 스타일 */
