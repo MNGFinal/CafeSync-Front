@@ -1,63 +1,133 @@
-.stats-container {
-    padding: 20px;
-    background: #f8f9fa;
-  }
-  
-  .page-header {
-    background: #5a1a5c;
-    color: white;
-    padding: 15px;
-    font-size: 18px;
-    font-weight: bold;
-    border-radius: 5px;
-  }
-  
-  .sales-summary {
-    display: flex;
-    justify-content: space-around;
-    padding: 20px;
-  }
-  
-  .sales-card {
-    background: white;
-    border: 1px solid #ddd;
-    padding: 20px;
-    text-align: center;
-    width: 220px;
-    border-radius: 10px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .sales-card h2 {
-    font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-  
-  .sales-card p {
-    margin: 5px 0;
-    color: #666;
-    font-size: 14px;
-  }
-  
-  .sales-card span {
-    font-size: 14px;
-    color: gray;
-  }
-  
-  .sales-card .today {
-    color: #0099ff;
-  }
-  
-  .sales-card .week {
-    color: #ff4444;
-  }
-  
-  .sales-card .month {
-    color: #007bff;
-  }
-  
-  .sales-card .year {
-    color: #6a0dad;
-  }
-  
+/* 📌 statsContainer: 전체 컨테이너 */
+.statsContainer {
+  padding: 20px;
+}
+
+/* 📌 pageHeader: 제목 스타일 */
+.pageHeader {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  margin-left: 20px;
+  margin-top: 20px;
+}
+
+/* 📌 salesSummary: 카드들을 가로 정렬 */
+.salesSummary {
+  display: flex;
+  justify-content: space-between;
+  /* 카드 간격 조정 */
+  gap: 15px;
+  /* 카드 사이 여백 */
+  background: #f5f5f5;
+  /* 배경색 */
+  padding: 15px;
+  border-radius: 10px;
+}
+
+/* 📌 salesCard: 개별 카드 스타일 */
+.salesCard {
+  flex: 1;
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  /* 그림자 효과 */
+  text-align: center;
+  font-size: 14px;
+}
+
+/* 📌 금액 텍스트 스타일 */
+.today {
+  color: #009688;
+  /* 청록색 */
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.week {
+  color: #e53935;
+  /* 빨강 */
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.month {
+  color: #1e88e5;
+  /* 파랑 */
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.year {
+  color: #8e24aa;
+  /* 보라 */
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.salesChange {
+  margin-left: 20px;
+  margin-top: 20px;
+}
+
+
+/* 📌 dateFilter: 날짜 필터 스타일 */
+.dateFilter {
+  display: flex;
+  align-items: center;
+  /* ✅ 세로 정렬 */
+  gap: 10px;
+  /* ✅ 요소 간 간격 */
+  background: white;
+  /* ✅ 배경색 */
+  padding: 10px 15px;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+  /* ✅ 테두리 */
+  margin: 8px auto;
+  /* ✅ 중앙 정렬 */
+}
+
+/* 📌 날짜 입력 필드 스타일 */
+.dateFilter input[type="date"] {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  outline: none;
+  text-align: center;
+}
+
+/* 📌 "기간" 라벨 스타일 */
+.dateFilter label {
+  font-weight: bold;
+  /* ✅ 파란색 배경 */
+  padding: 6px 12px;
+  border-radius: 5px;
+}
+
+/* 📌 조회 버튼 스타일 */
+.dateFilter button {
+  background: #3b82f6;
+  /* ✅ 회색 배경 */
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.dateFilter button:hover {
+  background: #226bdf;
+  /* ✅ 마우스 올렸을 때 색 변경 */
+}
+
+.dateFilter button:active {
+  background: #1754b5;
+  /* ✅ 클릭 시 더 어두운 회색 */
+  transform: scale(0.98);
+  /* ✅ 버튼이 살짝 작아짐 (눌리는 효과) */
+}
