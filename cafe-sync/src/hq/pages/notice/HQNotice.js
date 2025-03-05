@@ -1,3 +1,5 @@
+import NoticeLayout from "../../../fran/pages/notice/NoticeLayout";
+
 function HQNotice() {
   return (
     <>

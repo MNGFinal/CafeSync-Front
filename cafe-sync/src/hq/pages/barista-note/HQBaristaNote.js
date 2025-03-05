@@ -1,3 +1,6 @@
+import BaristaNoteLayout from "../../../fran/pages/barista-note/BaristaNoteLayout";
+
+
 function HQBaristaNote() {
   return (
     <>

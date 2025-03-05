@@ -37,7 +37,7 @@ function NoticeDetailLayout() {
         // 삭제 모달 열기 함수
         const openDeleteModal = (noteCode) => {
             setNoteToDelete(noteCode);
-            setLottieAnimation("/animations/warning.json"); // 경고 애니메이션 설정
+            setLottieAnimation("/animations/identify.json"); // 경고 애니메이션 설정
             setModalMessage("정말로 이 공지사항을 삭제하시겠습니까?");
             setIsDeleteModalOpen(true);
         };
@@ -53,8 +53,19 @@ function NoticeDetailLayout() {
             if (noteToDelete) {
                 await dispatch(callNoticeDeleteAPI({ noticeCode: noteToDelete }));
                 dispatch(callNoticesAPI()); // 공지 목록 갱신
-                closeDeleteModal(); // 모달 닫기
-                navigate("/fran/notice"); // 공지 목록 페이지로 이동
+                
+                // ✅ 삭제 완료 메시지 설정
+                setLottieAnimation("/animations/success-check.json"); 
+                setModalMessage("공지사항이 삭제되었습니다.");
+                
+                // ✅ 성공 모달 다시 띄우기
+                setIsDeleteModalOpen(true);
+        
+                // ✅ 확인 버튼 클릭 시 목록으로 이동
+                setTimeout(() => {
+                    closeDeleteModal(); 
+                    navigate("/fran/notice");
+                }, 2000); // 2초 후 이동
             }
         };
     
@@ -63,13 +74,48 @@ function NoticeDetailLayout() {
             openDeleteModal(noteCode);
         };
         
-    /* -------------------------------------------------------------------------------- */
-    /* ----------------------------------등록모달--------------------------------------- */
+    /* ----------------------------------수정모달--------------------------------------- */
+
+
+    const [isEditConfirmModalOpen, setIsEditConfirmModalOpen] = useState(false);  // 수정 확인 모달 상태
+
+    const openEditConfirmModal = () => {
+        // 제목과 내용이 비어 있는지 확인
+        if (!editNotice.noticeTitle || !editNotice.noticeContent) {
+            setModalMessage("제목과 내용을 모두 입력해주세요.");
+            setLottieAnimation("/animations/identify.json");
+            setIsEditConfirmModalOpen(true); // 수정 불가능 모달 열기
+        } else {
+            setModalMessage("수정하시겠습니까?");
+            setLottieAnimation("/animations/identify.json");
+            setIsEditConfirmModalOpen(true); // 수정 가능 모달 열기
+        }
+    };
+
+    const closeEditConfirmModal = () => {
+        setIsEditConfirmModalOpen(false);  // 수정 확인 모달 닫기
+    };
+
+    const handleConfirmEdit = () => {
+        setIsEditMode(true);  // 수정 모드로 전환
+        closeEditConfirmModal();  // 모달 닫기
+    };
+
+    /* ----------------------------------수정모달--------------------------------------- */
+    
     const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
     const [successLottieAnimation, setSuccessLottieAnimation] = useState("");
     const [successModalMessage, setSuccessModalMessage] = useState("");
 
     const handleSaveClick = async () => {
+        // 제목과 내용이 비어 있는지 확인
+        if (!editNotice.noticeTitle || !editNotice.noticeContent) {
+            setModalMessage("제목과 내용을 모두 입력해주세요.");
+            setLottieAnimation("/animations/identify.json");
+            setIsEditConfirmModalOpen(true);
+            return; // 수정 막기
+        }
+    
         if (editNotice.noticeCode === 0) {
             console.log("❌ 잘못된 공지사항 코드입니다.");
             return;
@@ -77,14 +123,16 @@ function NoticeDetailLayout() {
     
         const now = new Date();
         const koreaTime = new Date(now.getTime() + 9 * 60 * 60 * 1000);
-        const formattedDate = koreaTime.toISOString().split(".")[0];
+        const formattedDate = koreaTime.toISOString(); // ISO 형식 (yyyy-MM-ddTHH:mm:ss)
+    
+        // 화면에는 날짜만 보이도록 설정
+        const displayDate = formattedDate.split('T')[0]; // yyyy-MM-dd 형식으로 추출
+        setCreationDate(displayDate);
     
         const updatedNotice = {
             ...editNotice,
-            noticeDate: formattedDate,
+            noticeDate: formattedDate, // 서버로 보낼 때는 ISO 형식 그대로 사용
         };
-    
-        setCreationDate(formattedDate);
     
         try {
             await dispatch(callNoticeUpdateAPI(updatedNotice));
@@ -108,10 +156,19 @@ function NoticeDetailLayout() {
         navigate("/fran/notice"); // ✅ 성공 모달 닫힌 후 목록 페이지로 이동
     };
 
-
-
-
     /* -------------------------------------------------------------------------------- */
+
+    useEffect(() => {
+        if (notice && notice.noticeDate && !isViewCountIncreased) {
+            const formattedDate = new Date(notice.noticeDate);
+            const displayDate = formattedDate.toISOString().split('T')[0]; // 날짜만 추출
+            setCreationDate(displayDate);  // 화면에 날짜만 보이게 설정
+            setIsViewCountIncreased(true);
+            setEditNotice({ ...notice });
+        }
+    }, [notice, isViewCountIncreased]);
+
+
 
     const isOwner = sessionUser && sessionUser.userId === notice?.userId;
 
@@ -121,13 +178,13 @@ function NoticeDetailLayout() {
     }, [dispatch, noticeCode]);
     
 
-    useEffect(() => {
-        if (notice && notice.noticeDate && !isViewCountIncreased) {
-            setCreationDate(notice.noticeDate);  // 기존 작성일자 그대로 사용
-            setIsViewCountIncreased(true);
-            setEditNotice({ ...notice });
-        }
-    }, [notice, isViewCountIncreased]);
+    // useEffect(() => {
+    //     if (notice && notice.noticeDate && !isViewCountIncreased) {
+    //         setCreationDate(notice.noticeDate);  // 기존 작성일자 그대로 사용
+    //         setIsViewCountIncreased(true);
+    //         setEditNotice({ ...notice });
+    //     }
+    // }, [notice, isViewCountIncreased]);
 
     if (!notice) {
         return <div>로딩 중...</div>; // ✅ 데이터 로딩 중이면 기존 데이터 노출 방지
@@ -246,7 +303,7 @@ function NoticeDetailLayout() {
                             </>
                         ) : (
                             <>
-                                <button className={style.registButton} onClick={handleEditClick}>수정</button>
+                                <button className={style.registButton} onClick={openEditConfirmModal}>수정</button>
                                 <button className={style.returnToList} onClick={handleDeleteClick}>삭제</button>
                             </>
                         )
@@ -258,26 +315,41 @@ function NoticeDetailLayout() {
         {isDeleteModalOpen && (
             <SModal
                 isOpen={isDeleteModalOpen}
-                onClose={closeDeleteModal} // 모달 닫기
-                buttons={[
-                    {
-                        text: "삭제",
-                        onClick: () => confirmHandler(),  // 삭제 확정 시 호출
-                        className: modalStyle.deleteButtonS,
-                    },
-                    {
-                        text: "취소",
-                        onClick: closeDeleteModal,  // 취소 시 모달 닫기
-                        className: modalStyle.cancelButtonS,
-                    },
-                ]}
+                onClose={() => {
+                    if (modalMessage === "공지사항이 삭제되었습니다.") {
+                        navigate("/fran/notice"); // ✅ 삭제 완료 후 이동
+                    }
+                    closeDeleteModal();
+                }}
+                buttons={
+                    modalMessage === "공지사항이 삭제되었습니다."
+                        ? [
+                            {
+                                text: "확인",
+                                onClick: () => navigate("/fran/notice"), 
+                                className: modalStyle.confirmButtonS,
+                            },
+                        ]
+                        : [
+                            {
+                                text: "삭제",
+                                onClick: confirmHandler, 
+                                className: modalStyle.deleteButtonS,
+                            },
+                            {
+                                text: "취소",
+                                onClick: closeDeleteModal,
+                                className: modalStyle.cancelButtonS,
+                            },
+                        ]
+                }
             >
                 <div style={{ textAlign: "center" }}>
                     <Player
                         autoplay
-                        loop={false} // 애니메이션 반복 X
-                        keepLastFrame={true} // 애니메이션 끝난 후 마지막 프레임 유지
-                        src={lottieAnimation} // 동적으로 변경됨
+                        loop={false}
+                        keepLastFrame={true}
+                        src={lottieAnimation} 
                         style={{ height: "100px", width: "100px", margin: "0 auto" }}
                     />
                     <span style={{ marginTop: "15px", whiteSpace: "pre-line" }}>
@@ -308,6 +380,43 @@ function NoticeDetailLayout() {
                     />
                     <span style={{ marginTop: "15px", whiteSpace: "pre-line" }}>
                         {successModalMessage}
+                    </span>
+                </div>
+            </SModal>
+        )}
+        {isEditConfirmModalOpen && (
+            <SModal
+                isOpen={isEditConfirmModalOpen}
+                onClose={closeEditConfirmModal}  // 모달 닫기
+                buttons={[
+                    modalMessage === "제목과 내용을 모두 입력해주세요."
+                        ? {
+                            text: "확인", // 제목과 내용이 누락된 경우 "확인" 버튼만 표시
+                            onClick: closeEditConfirmModal,
+                            className: modalStyle.confirmButtonS,
+                        }
+                        : {
+                            text: "수정", // 제목과 내용이 있으면 수정 버튼 표시
+                            onClick: handleConfirmEdit,  // 수정 확정 시 호출
+                            className: modalStyle.confirmButtonS,
+                        },
+                    modalMessage !== "제목과 내용을 모두 입력해주세요." && { // 제목과 내용이 모두 입력된 경우에만 "취소" 버튼 추가
+                        text: "취소",
+                        onClick: closeEditConfirmModal,  // 취소 시 모달 닫기
+                        className: modalStyle.cancelButtonS,
+                    },
+                ].filter(Boolean)} 
+            >
+                <div style={{ textAlign: "center" }}>
+                    <Player
+                        autoplay
+                        loop={false} // 애니메이션 반복 X
+                        keepLastFrame={true} // 애니메이션 끝난 후 마지막 프레임 유지
+                        src={lottieAnimation} // 동적으로 변경됨
+                        style={{ height: "100px", width: "100px", margin: "0 auto" }}
+                    />
+                    <span style={{ marginTop: "15px", whiteSpace: "pre-line" }}>
+                        {modalMessage}
                     </span>
                 </div>
             </SModal>
