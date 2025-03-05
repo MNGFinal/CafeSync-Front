@@ -5,7 +5,7 @@ import SModal from "../../../../components/SModal"
 import modalStyle from "../../../../components/ModalButton.module.css"
 
 
-const ComplainList = ({franCode}) => {
+const ComplainList = ({franCode, refresh}) => {
   const today = new Date();
   const getFirstDayOfMonth = () => {
     const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -40,7 +40,6 @@ const ComplainList = ({franCode}) => {
           },
         }
       );
-      console.log('혹시 찍히나?', responseComplain);
 
       if (!responseComplain.ok) {
         throw new Error("컴플레인 응답 실패");
@@ -57,7 +56,7 @@ const ComplainList = ({franCode}) => {
 
   useEffect(() => {
     fetchComplains();
-  }, [franCode]);
+  }, [refresh]);
   
   return(
     <>
