@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+import ReactPaginate from "react-paginate";
 import style from "../styles/Complain.module.css"
 import Detail from "./ComplainDetail"
 
@@ -15,13 +16,21 @@ const ComplainList = ({franCode, refresh}) => {
   const [firstDate, setFirstDate] = useState(getFirstDayOfMonth);
   const [lastDate, setLastDate] = useState(getLastDayOfMonth);
   const [complainList, setComplainList] = useState([]);
-  const [seletedComplain, setSelectedComplain] = useState(null);
+  const [selectedComplain, setSelectedComplain] = useState(null);
   const [isBModalOpen, setIsBModalOpen] = useState(false);
 
+  // const [slicedList, setSlicedList] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 9;
+  
+  const slicedList = useMemo(() => {
+    return complainList.slice(currentPage * itemsPerPage, (currentPage +1) * itemsPerPage);
+  }, [complainList, currentPage]);
+  
   const clickDetailHandler = (complainCode) => {
-    const seleted = complainList.find(item => item.complainCode === complainCode);
-    if (seleted) {
-      setSelectedComplain(seleted);
+    const selected = complainList.find(item => item.complainCode === complainCode);
+    if (selected) {
+      setSelectedComplain(selected);
       setIsBModalOpen(true);
     }
   };
@@ -48,11 +57,17 @@ const ComplainList = ({franCode, refresh}) => {
       const complainData = await responseComplain.json();
       console.log('complainData',complainData)
       setComplainList(complainData.data);
+      setCurrentPage(0);
     } catch (error) {
       console.log('조회 오류!', error);
       setComplainList([]);
     }
   };
+
+  const pageChangeHandler = ({ selected }) => {
+    console.log("페이지 변경됨:", selected);
+    setCurrentPage(selected);
+  }
 
   useEffect(() => {
     fetchComplains();
@@ -77,8 +92,8 @@ const ComplainList = ({franCode, refresh}) => {
           {/* <span>조회된 내용 들어갈 영역</span> */}
           <table className={style.listTable}>
             <tbody>
-            {complainList.length > 0 ? (
-              complainList.map(({complainCode, complainDate, complainDivision, complainDetail}, index) => (
+            {slicedList.length > 0 ? (
+              slicedList.map(({complainCode, complainDate, complainDivision, complainDetail}, index) => (
                   <tr 
                     key={index} 
                     // onClick={() => clickDetailHandler({ complainDate, complainDivision, complainDetail })} 
@@ -110,13 +125,26 @@ const ComplainList = ({franCode, refresh}) => {
             <Detail 
               isModalOpen={isBModalOpen}
               setIsModalOpen={setIsBModalOpen} 
-              complain={seletedComplain}
+              complain={selectedComplain}
             />
           )}
         </div>
       </div>
       <div className={style.pagingBox}>
-        <span>페이징 들어갈 영역(구현 전)</span>
+        <ReactPaginate
+          previousLabel={"이전"}
+          nextLabel={"다음"}
+          breakLabel={"..."}
+          pageCount={Math.ceil(complainList.length / itemsPerPage)}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={3}
+          onPageChange={pageChangeHandler}
+          containerClassName={style.pagination}
+          activeClassName={style.active}
+          previousClassName={style.previous}
+          nextClassName={style.next}
+          disabledClassName={style.disabled}
+        />
       </div>
     </>
   )
