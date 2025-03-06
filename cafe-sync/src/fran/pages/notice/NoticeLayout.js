@@ -22,7 +22,7 @@ function NoticeLayout() {
 
     const [pageCount, setPageCount] = useState(0); // 전체 페이지 수
     const [currentPage, setCurrentPage] = useState(0); // 현재 페이지
-    const noticesPerPage = 15; // 한 페이지에 표시할 노트 개수
+    const noticesPerPage = 10; // 한 페이지에 표시할 노트 개수
 
     useEffect(() => {
             const newPageCount = Math.ceil(noticeList.length / noticesPerPage);

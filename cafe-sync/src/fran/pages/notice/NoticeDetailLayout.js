@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams, Link } from "react-router-dom";
 import { callNoticesAPI, callNoticeDetailAPI, callNoticeUpdateAPI , callNoticeDeleteAPI } from "../../../apis/notice/noticeApi";
 import { useNavigate } from "react-router-dom";
-import style from "../../pages/barista-note/NoteRegist.module.css";
+import style from "../../pages/barista-note/NoteDetail.module.css";
 import {RESET_NOTICE_DETAIL} from '../../../modules/NoticeModule';
 import SModal from "../../../components/SModal";
 import modalStyle from "../../../components/ModalButton.module.css";

@@ -5,10 +5,132 @@
   justify-content: space-between;
   align-items: center;
   border: 1px solid #ccc;
-  padding: 10px 10px;
+  border-radius: 8px;
+  padding: 15px;
   margin: 20px;
-  /* 상단 박스 외부 여백 */
   height: 80px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+/* 상단 박스에 마우스를 올리면 배경색이 변화 */
+.upperBox:hover {
+  background-color: #f0f0f0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* 하단 박스 (lowerBox) 스타일 */
+.lowerBox {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: flex-start;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin: 20px;
+  padding: 15px;
+  height: 655px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+/* 하단 박스에 마우스를 올리면 색상과 그림자 효과가 부드럽게 변함 */
+.lowerBox:hover {
+  background-color: #f1f1f1;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* 정보 항목 (infoRow) */
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 10px 0;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #ddd;  
+}
+
+/* 마지막 항목의 경계선 제거 */
+.infoRow:last-child {
+  border-bottom: none; /* 마지막 항목에서 경계선 제거 */
+}
+
+/* 각 항목에 마우스를 올리면 배경 색상 변경 */
+.infoRow:hover {
+  background-color: #f2f2f2;
+}
+
+/* 각 항목 스타일 (infoItem) */
+.infoItem {
+  padding: 5px 10px;
+  text-align: center;
+  width: 18%;
+  color: #555;
+  transition: color 0.2s ease;
+}
+
+/* 각 항목에 마우스를 올리면 텍스트 색상이 변함 */
+.infoItem:hover {
+  color: #2e8b57;
+}
+
+/* 데이터 없음 스타일 */
+.noData {
+  text-align: center;
+  font-size: 16px;
+  color: #999;
+  margin-top: 20px;
+  opacity: 0;
+  animation: fadeIn 1s forwards;
+}
+
+/* 데이터 없음 애니메이션 */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* NoticeData 영역에 hover 효과 추가 */
+.NoticeData .infoRow {
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* 마우스를 올리면 배경색과 크기가 변하는 효과 */
+.NoticeData .infoRow:hover {
+  background-color: #f7f7f7;
+  transform: scale(1.02);
+}
+
+
+/*----------------------------버튼----------------------------------*/
+
+/* 버튼 스타일 */
+.searchButton, .registButton, .rightPlaceholder {
+  background-color: #4CAF50; /* 녹색 버튼 */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s; /* 버튼 색상과 크기 애니메이션 */
+}
+
+.searchButton:hover, .registButton:hover {
+  background-color: #45a049; /* 마우스 오버시 색상 변경 */
+  transform: scale(1.05); /* 마우스를 올리면 살짝 커짐 */
+}
+
+.rightPlaceholder {
+  background-color: #e0e0e0; /* 회색 버튼 */
+  pointer-events: none; /* 클릭 불가 */
 }
 
 /* 입력(게시글검색) 스타일 */
@@ -20,6 +142,19 @@
   font-size: 16px;
   margin-left: 30px;
   height: 35px;
+}
+
+
+.rightPlaceholder {
+  padding: 8px 16px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-right: 15px;
+  visibility: hidden; /* 요소는 보이지 않지만 공간을 유지 */
 }
 
 /* 오른쪽 영역 (검색 버튼, 등록 버튼) */
@@ -74,6 +209,29 @@
   /* hover 시 크기 살짝 커지기 */
 }
 
+
+/*----------------------------버튼----------------------------------*/
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 .rightPlaceholder {
   padding: 8px 16px;
   background-color: #28a745;
@@ -85,6 +243,7 @@
   margin-right: 15px;
   visibility: hidden;
   /* 요소는 보이지 않지만 공간을 유지 */
+}
 
 /*------------------------------------------------------------*/
 
@@ -125,7 +284,6 @@
 /* 각 항목에 경계를 추가 */
 .infoItem {
   padding: 5px 10px;
-  border-right: 1px solid #ccc;
   /* 오른쪽 경계선 추가 */
   text-align: center;
   width: 18%;
@@ -159,24 +317,24 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
+  animation: fadeIn 0.3s ease-out;
 }
 
-/* 모달 창 콘텐츠 */
 .modalContent {
   background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 40%;
+  padding: 30px;
+  border-radius: 12px;
+  width: 50%;
+  max-width: 600px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   position: relative;
-}
-
-.modalContentContainer {
-  display: flex;
-  justify-content: center;
+  overflow: hidden;
+  transform-origin: center;
+  animation: slideUp 0.3s ease-out;
 }
 
 .modalTitleInput {
@@ -189,18 +347,41 @@
   margin-top: 30px;
   height: 45px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 8px;
+  transition: border-color 0.3s, transform 0.2s ease-in-out;
+  font-weight: bolder;
+  margin-left : 45px;
 }
 
-/* 모달 하단 버튼들 */
+.modalTitleInput:hover {
+  border-color: #4caf50;
+  transform: scale(1.02);
+}
+
+.modalTitleInput:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+}
+
 .modalButtons {
   display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.saveButton,
+.deleteButton,
+.cancelButton {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s, transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
 .saveButton {
-  padding: 8px 16px;
   background-color: #4caf50;
   color: white;
   border: none;
@@ -211,14 +392,14 @@
   /* 애니메이션 추가 */
 }
 
-/* 저장 버튼 호버 효과 */
+
 .saveButton:hover {
   background-color: #45a049;
   transform: scale(1.1);
+  box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
 }
 
 .deleteButton {
-  padding: 8px 16px;
   background-color: rgb(154, 154, 255);
   color: white;
   border: none;
@@ -229,15 +410,13 @@
   /* 애니메이션 추가 */
 }
 
-/* 저장 버튼 호버 효과 */
 .deleteButton:hover {
   background-color: rgb(140, 140, 255);
   transform: scale(1.1);
+  box-shadow: 0 4px 10px rgba(140, 140, 255, 0.3);
 }
 
-/* 취소 버튼 스타일 (cancelButton) */
 .cancelButton {
-  padding: 8px 16px;
   background-color: #f44336;
   color: white;
   border: none;
@@ -248,30 +427,43 @@
   /* 애니메이션 추가 */
 }
 
-/* 취소 버튼 호버 효과 */
 .cancelButton:hover {
   background-color: #e53935;
   transform: scale(1.1);
+  box-shadow: 0 4px 10px rgba(244, 67, 54, 0.3);
 }
 
-/* 파일 첨부 영역 */
-.fileUpload {
-  margin-bottom: 10px;
-}
-
-/* 노트 내용 입력 영역 */
+.fileUpload,
 .noteContent {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
-/* 텍스트 입력창 스타일 */
 .noteContent textarea {
   width: 100%;
-  height: 550px;
+  height: 300px;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  margin-top: 10px;
+  transition: border-color 0.3s, box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.noteContent textarea:hover {
+  border-color: #4caf50;
+  transform: scale(1.02);
+}
+
+.noteContent textarea:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+}
+
+/* 닫기 버튼 애니메이션 */
+.closeButton {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 24px;
+  color: #aaa;
 }
 
 .modalButtons {
@@ -328,13 +520,17 @@ hr {
   color: #333;
   /* 버튼 색상 */
   cursor: pointer;
+  transition: color 0.3s, transform 0.3s ease-in-out;
 }
 
-/* 닫기 버튼 호버 효과 */
 .closeButton:hover {
+  color: #333;
+  /* transform: rotate(360deg); 360도 회전 */
+  transition: color 0.3s, transform 0.3s ease-in-out; /* 색상과 회전 애니메이션 속도 설정 */
   color: #f44336;
   /* hover 시 빨간색으로 변환 */
 }
+
 
 /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@페이지 네이션@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
 
@@ -352,6 +548,10 @@ hr {
   display: flex;
   justify-content: center;
   list-style: none;
+  /* padding: 20px 0; */
+  gap: 10px; /* 버튼 간격 조정 */
+  margin-top: 15px;
+  margin-bottom : 5px;
   padding: 20px 0;
   gap: 10px;
   /* 버튼 간격 조정 */

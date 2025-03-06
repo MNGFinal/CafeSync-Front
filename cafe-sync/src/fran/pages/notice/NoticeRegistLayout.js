@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch , useSelector } from "react-redux";
 import { callNoticeRegistAPI } from "../../../apis/notice/noticeApi";  // API 호출 함수
-import style from "../barista-note/NoteRegist.module.css";
+import style from "../notice/NoteRegist.module.css";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import SModal from "../../../components/SModal";
@@ -82,6 +82,7 @@ function NoticeRegistLayout() {
                             />
                         </div>
                         <div>
+                            <div className={style.dateLocation}>
                             <label className={style.labelCreationDate} htmlFor="creationDate">작성날짜 :&nbsp; </label>
                             <input
                                 className={style.creationDate}
@@ -89,6 +90,7 @@ function NoticeRegistLayout() {
                                 value={creationDate}
                                 readOnly
                             />
+                            </div>
                         </div>
                     </div>
                     <div className={style.row}>
