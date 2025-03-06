@@ -16,3 +16,12 @@
 hr {
     margin: 10px -3px;
 }
+
+.scheduleSection {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+:global(.fc-scrollgrid) {
+    overflow-y: auto !important;
+  }
