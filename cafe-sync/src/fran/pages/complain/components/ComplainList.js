@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import style from "../styles/Complain.module.css"
-import Modal from "../../../../components/Modal"
-import SModal from "../../../../components/SModal"
-import modalStyle from "../../../../components/ModalButton.module.css"
-
+import Detail from "./ComplainDetail"
 
 const ComplainList = ({franCode, refresh}) => {
   const today = new Date();
@@ -21,16 +18,19 @@ const ComplainList = ({franCode, refresh}) => {
   const [seletedComplain, setSelectedComplain] = useState(null);
   const [isBModalOpen, setIsBModalOpen] = useState(false);
 
-  const clickDetailHandler = (complain) => {
-    setSelectedComplain(complain);
-    setIsBModalOpen(true);
-  }
+  const clickDetailHandler = (complainCode) => {
+    const seleted = complainList.find(item => item.complainCode === complainCode);
+    if (seleted) {
+      setSelectedComplain(seleted);
+      setIsBModalOpen(true);
+    }
+  };
 
   const fetchComplains = async () => {
     if(!franCode) return;
 
     try {
-      console.log('컴플레인 조회 시작! :', franCode);
+      // console.log('컴플레인 조회 시작! :', franCode);
       let token = sessionStorage.getItem("accessToken");
       const responseComplain = await fetch(
         `http://localhost:8080/api/fran/complain/${franCode}?startDate=${firstDate}&endDate=${lastDate}`,
@@ -78,10 +78,11 @@ const ComplainList = ({franCode, refresh}) => {
           <table className={style.listTable}>
             <tbody>
             {complainList.length > 0 ? (
-              complainList.map(({complainDate, complainDivision, complainDetail}, index) => (
+              complainList.map(({complainCode, complainDate, complainDivision, complainDetail}, index) => (
                   <tr 
                     key={index} 
-                    onClick={() => clickDetailHandler({ complainDate, complainDivision, complainDetail })} 
+                    // onClick={() => clickDetailHandler({ complainDate, complainDivision, complainDetail })} 
+                    onClick={() => clickDetailHandler(complainCode)}
                     style={{ cursor: "pointer" }}
                   >
                     <td>
@@ -106,10 +107,11 @@ const ComplainList = ({franCode, refresh}) => {
             </tbody>
           </table>
           {isBModalOpen && (
-            <Modal onClose={() => setIsBModalOpen(false)}>
-              {/* 여기 이따가 상세 조회로 넘어가도록 만들기 */}
-              <h1>일단 뜨긴 뜨니?</h1>
-            </Modal>
+            <Detail 
+              isModalOpen={isBModalOpen}
+              setIsModalOpen={setIsBModalOpen} 
+              complain={seletedComplain}
+            />
           )}
         </div>
       </div>
