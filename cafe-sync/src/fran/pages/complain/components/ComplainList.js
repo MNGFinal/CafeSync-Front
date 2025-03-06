@@ -16,19 +16,21 @@ const ComplainList = ({franCode, refresh}) => {
   const [lastDate, setLastDate] = useState(getLastDayOfMonth);
   const [complainList, setComplainList] = useState([]);
   const [seletedComplain, setSelectedComplain] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isBModalOpen, setIsBModalOpen] = useState(false);
 
-  const clickDetailHandler = (complain) => {
-    setSelectedComplain(complain);
-    setIsBModalOpen(true);
-  }
+  const clickDetailHandler = (complainCode) => {
+    const seleted = complainList.find(item => item.complainCode === complainCode);
+    if (seleted) {
+      setSelectedComplain(seleted);
+      setIsBModalOpen(true);
+    }
+  };
 
   const fetchComplains = async () => {
     if(!franCode) return;
 
     try {
-      console.log('컴플레인 조회 시작! :', franCode);
+      // console.log('컴플레인 조회 시작! :', franCode);
       let token = sessionStorage.getItem("accessToken");
       const responseComplain = await fetch(
         `http://localhost:8080/api/fran/complain/${franCode}?startDate=${firstDate}&endDate=${lastDate}`,
@@ -76,10 +78,11 @@ const ComplainList = ({franCode, refresh}) => {
           <table className={style.listTable}>
             <tbody>
             {complainList.length > 0 ? (
-              complainList.map(({complainDate, complainDivision, complainDetail}, index) => (
+              complainList.map(({complainCode, complainDate, complainDivision, complainDetail}, index) => (
                   <tr 
                     key={index} 
-                    onClick={() => clickDetailHandler({ complainDate, complainDivision, complainDetail })} 
+                    // onClick={() => clickDetailHandler({ complainDate, complainDivision, complainDetail })} 
+                    onClick={() => clickDetailHandler(complainCode)}
                     style={{ cursor: "pointer" }}
                   >
                     <td>
@@ -105,9 +108,9 @@ const ComplainList = ({franCode, refresh}) => {
           </table>
           {isBModalOpen && (
             <Detail 
-              isModalOpen={isBModalOpen}  // ✅ isBModalOpen을 직접 전달
-              setIsModalOpen={setIsBModalOpen}  // ✅ 모달 닫기 기능 추가
-              complain={seletedComplain}  // ✅ complainList 전체가 아니라 선택된 complain만 전달
+              isModalOpen={isBModalOpen}
+              setIsModalOpen={setIsBModalOpen} 
+              complain={seletedComplain}
             />
           )}
         </div>

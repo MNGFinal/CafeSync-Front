@@ -5,6 +5,7 @@ import modalStyle from "../../../../components/ModalButton.module.css"
 
 const complainDetail = ({complain, isModalOpen, setIsModalOpen}) => {
 
+  // console.log('컴플레인 들어온 거', complain);
 
   return (
     <Modal
