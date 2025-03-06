@@ -12,7 +12,7 @@ function HQMenus() {
   const [currentPage, setCurrentPage] = useState(0); // 현재 페이지
   const itemsPerPage = 10; // 페이지당 10개 표시
 
-  // 메뉴 데이터 가져오기
+  // ✅ 메뉴 데이터 가져오기
   async function fetchMenus() {
     const categoryMap = {
       coffee: 1,
@@ -21,11 +21,12 @@ function HQMenus() {
       goods: 4,
     };
 
-    // 카테고리별로 메뉴 리스트 가져오기
+    // 카테고리별 코드 가져오기
     const categoryCode = categoryMap[category];
     if (!categoryCode) return;
 
     try {
+      // ✅ 검색어 추가
       const response = await fetch(
         `http://localhost:8080/api/fran/menus/${categoryCode}?query=${searchQuery}`
       );
@@ -38,12 +39,14 @@ function HQMenus() {
         (menu) => menu.disconStatus === false
       );
 
-      // 전체 데이터 저장
+      // ✅ 전체 데이터 저장
       setList(filteredList);
 
-      // 페이지네이션을 위해 현재 페이지에 해당하는 slicedList 설정
-      const offset = currentPage * itemsPerPage;
-      setSlicedList(filteredList.slice(offset, offset + itemsPerPage));
+      // ✅ 🔥 검색 실행 시 첫 페이지로 이동
+      setCurrentPage(0);
+
+      // ✅ 현재 페이지 데이터 업데이트
+      setSlicedList(filteredList.slice(0, itemsPerPage));
 
       console.log("현재 페이지:", currentPage);
     } catch (error) {

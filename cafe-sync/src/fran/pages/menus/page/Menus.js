@@ -12,8 +12,8 @@ function Menus() {
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
 
-  // 메뉴 데이터 가져오기
-  async function fetchMenus() {
+  // ✅ 메뉴 데이터 가져오기
+  async function fetchMenus(resetPage = false) {
     const categoryMap = {
       coffee: 1,
       drink: 2,
@@ -37,18 +37,16 @@ function Menus() {
         (menu) => menu.disconStatus === false
       );
 
-      // 전체 데이터 저장
+      // ✅ 전체 데이터 저장
       setList(filteredList);
 
-      // 페이지네이션을 위해 현재 페이지에 해당하는 slicedList 설정
-      setSlicedList(
-        filteredList.slice(
-          currentPage * itemsPerPage,
-          (currentPage + 1) * itemsPerPage
-        )
-      );
+      // ✅ 🔥 검색 실행 시 첫 페이지로 이동
+      if (resetPage) setCurrentPage(0);
 
-      console.log("커런트페이지 뭐나올까?", currentPage);
+      // ✅ 현재 페이지 데이터 업데이트
+      setSlicedList(filteredList.slice(0, itemsPerPage));
+
+      console.log("현재 페이지:", currentPage);
     } catch (error) {
       console.error("메뉴 데이터 로딩 실패:", error);
     }
@@ -57,7 +55,7 @@ function Menus() {
   // ✅ 카테고리 변경 시: currentPage 0으로 초기화 & 데이터 다시 불러오기
   useEffect(() => {
     setCurrentPage(0);
-    fetchMenus();
+    fetchMenus(true);
   }, [category]);
 
   // ✅ currentPage 또는 list가 바뀔 때 slicedList 업데이트
@@ -77,8 +75,9 @@ function Menus() {
         <h3>메뉴 관리</h3>
       </div>
 
+      {/* 카테고리 & 검색 버튼 */}
       <CategoryButtons
-        fetchMenus={fetchMenus}
+        fetchMenus={() => fetchMenus(true)} // 🔥 검색 시 첫 페이지로 이동
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         category={category}
