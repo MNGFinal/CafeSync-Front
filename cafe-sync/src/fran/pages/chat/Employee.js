@@ -14,6 +14,9 @@ function Employee({ onCreateRoom }) {
   const { user } = useSelector((state) => state.auth);
   const loggedInEmpCode = user?.employee?.empCode; // 로그인한 사용자의 empCode
 
+  console.log("✅ user 정보:", user);
+  console.log("✅ 로그인한 empCode:", loggedInEmpCode);
+
   // 왼쪽(직원 목록)
   const [availableEmployees, setAvailableEmployees] = useState([]);
   // 오른쪽(채팅방 참여자)
@@ -23,9 +26,17 @@ function Employee({ onCreateRoom }) {
     const fetchEmployees = async () => {
       try {
         const data = await getEmployeeList();
-        setEmployees(data.data); // 서버 응답 {status, message, data} 구조라면 data.data
+
+        console.log("🚀 직원 API 응답 데이터:", data);
+
+        if (!data || !data.data) {
+          console.error("❌ 직원 목록이 존재하지 않음!", data);
+          return;
+        }
+
+        setEmployees(data.data);
       } catch (error) {
-        console.error("직원 목록 불러오기 오류:", error);
+        console.error("❌ 직원 목록 불러오기 오류:", error);
       }
     };
     fetchEmployees();

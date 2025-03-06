@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { callNoticeRegistAPI } from "../../../apis/notice/noticeApi"; // API 호출 함수
-import style from "./NoticeRegistLayout.module.css";
+import style from "./HQNoticeRegistLayout.module.css";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import SModal from "../../../components/SModal";
@@ -9,7 +9,7 @@ import modalStyle from "../../../components/ModalButton.module.css";
 import { Player } from "@lottiefiles/react-lottie-player"; // ✅ Lottie Player 추가
 import { uploadFileToFirebase } from "../../../firebase/uploadFileToFirebase";
 
-function NoticeRegistLayout() {
+function HQNoticeRegistLayout() {
   const user = useSelector((state) => state.auth.user); // ✅ user 객체 가져오기
   const userId = user?.userId || null; // ✅ user 객체에서 userId 추출
   const [creationDate, setCreationDate] = useState("");
@@ -118,8 +118,15 @@ function NoticeRegistLayout() {
             <button className={style.registButton} onClick={handleRegistClick}>
               등록
             </button>
-            <Link to="/fran/notice">
-              <button className={style.returnToList}>목록</button>
+            <Link to="/hq/notice">
+              <button
+                className={style.returnToList}
+                onClick={() => {
+                  window.location.href = "/hq/notice";
+                }}
+              >
+                목록
+              </button>
             </Link>
           </div>
         </div>
@@ -129,14 +136,12 @@ function NoticeRegistLayout() {
             isOpen={isSuccessModalOpen}
             onClose={() => {
               setIsSuccessModalOpen(false);
-              //navigate("/fran/notice", { replace: true }); // ✅ 모달 닫은 후 목록 이동
             }}
             buttons={[
               {
                 text: "확인",
                 onClick: () => {
                   setIsSuccessModalOpen(false);
-                  navigate("/fran/notice", { replace: true });
                 },
                 className: modalStyle.confirmButtonS,
               },
@@ -170,4 +175,4 @@ function NoticeRegistLayout() {
   );
 }
 
-export default NoticeRegistLayout;
+export default HQNoticeRegistLayout;

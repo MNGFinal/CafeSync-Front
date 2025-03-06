@@ -56,6 +56,9 @@ import HQIncome from "./hq/pages/slip/HQIncome";
 import HQPlan from "./hq/pages/plan/HQPlan";
 import HQMgment from "./hq/pages/mgment/HQMgment";
 import HQNotice from "./hq/pages/notice/HQNotice";
+import HQNoticeLayout from "./hq/pages/notice/HQNoticeLayout";
+import HQNoticeDetailLayout from "./hq/pages/notice/HQNoticeDetailLayout";
+import HQNoticeRegist from "./hq/pages/notice/HQNoticeRegist";
 import HQChat from "./hq/pages/chat/HQChat";
 import HQBaristaNote from "./hq/pages/barista-note/HQBaristaNote";
 import HQStats from "./hq/pages/stats/HQStats";
@@ -159,6 +162,13 @@ function App() {
             <Route path="mgment" element={<HQMgment />} />
             <Route path="mgment/regist" element={<FranRegist />} />
             <Route path="notice" element={<HQNotice />} />
+            <Route path="notice" element={<HQNoticeLayout />} />
+            <Route
+              path="notice/:noticeCode"
+              element={<HQNoticeDetailLayout />}
+            />
+            <Route path="notice/notice-regist" element={<HQNoticeRegist />} />
+
             <Route path="chat" element={<HQChat />} />
             <Route path="barista-note" element={<HQBaristaNote />} />
             <Route path="stats" element={<HQStats />} />

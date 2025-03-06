@@ -1,4 +1,4 @@
-import NoticeLayout from "../../../fran/pages/notice/NoticeLayout";
+import HQNoticeLayout from "./HQNoticeLayout";
 
 function HQNotice() {
   return (
@@ -6,6 +6,7 @@ function HQNotice() {
       <div className="page-header">
         <h3>공지사항</h3>
       </div>
+      <HQNoticeLayout></HQNoticeLayout>
     </>
   );
 }
