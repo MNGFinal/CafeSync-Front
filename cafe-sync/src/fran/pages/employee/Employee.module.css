@@ -1,0 +1,149 @@
+/* 전체 컨테이너 */
+.container {
+  width: 100%;
+  margin: 0 auto; /* 가운데 정렬 */
+}
+
+/* 탭 영역 */
+.tabContainer {
+  display: flex;
+  gap: 16px;
+  position: absolute;
+  top: 15%;
+  left: 150px;
+}
+
+/* 탭 버튼 */
+.tabButton {
+  padding: 8px 20px;
+  border: 2px solid #7d144e;
+  border-radius: 10px;
+  background-color: #fff;
+  color: #7d144e;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.tabButton:hover {
+  background-color: #f8e1eb;
+}
+
+/* 탭 활성화 */
+.active {
+  background-color: #7d144e;
+  color: #fff;
+}
+
+/* 카드 컨테이너 (스크롤 추가) */
+.cardBox {
+  max-height: 730px;
+  overflow-y: scroll; /* 🔹 스크롤 기능 유지 */
+  overflow-x: hidden;
+  padding: 10px;
+  position: relative;
+  width: 99%;
+  margin-top: 55px;
+  margin-left: 20px;
+
+  /* ✅ 스크롤바 숨기기 */
+  scrollbar-width: none; /* 🔹 Firefox */
+  -ms-overflow-style: none; /* 🔹 IE & Edge */
+}
+
+.cardBox::-webkit-scrollbar {
+  display: none; /* 🔹 Chrome, Safari, Opera */
+}
+
+/* 카드 그리드 */
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 🔹 5열 고정 */
+  gap: 20px;
+  justify-content: center; /* 🔹 중앙 정렬 */
+  align-items: center;
+  padding-bottom: 20px; /* 🔹 스크롤 시 아래 여백 확보 */
+}
+
+/* 개별 카드 */
+.card {
+  width: 315px;
+  height: 340px;
+  background-color: #fff;
+  border: 2px solid #7d144e; /* 핑크/보라 테두리 */
+  border-radius: 12px;
+  text-align: center;
+  padding: 20px; /* 좀 더 여유 있게 */
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+/* 프로필 이미지 */
+.profileImage {
+  width: 150px; /* 이미지 크기 키움 */
+  height: 150px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  object-fit: cover;
+}
+
+/* 이름 */
+.name {
+  font-size: 21px;
+  font-weight: bold;
+  margin-top: 9px;
+}
+
+/* 직책 */
+.job {
+  font-size: 18px;
+  color: #555;
+  margin-top: 5px;
+}
+
+/* 전화번호 */
+.phone {
+  font-size: 16px;
+  color: #555;
+  margin-top: 5px;
+}
+
+.hireDate {
+  font-size: 14px;
+  color: #555;
+  margin-top: 30px;
+}
+
+/* 직원 없음 */
+.noData {
+  grid-column: 1 / -1; /* 그리드 전체 폭 차지 */
+  text-align: center;
+  color: #888;
+  font-size: 14px;
+  padding: 20px 0;
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between; /* 제목과 버튼을 양쪽 끝으로 정렬 */
+  align-items: center;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.newButton {
+  position: absolute;
+  right: 49px;
+  top: 15%; /* 위쪽 정렬 */
+  background-color: #7d144e;
+  color: #fff;
+  padding: 10px 13px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+}
