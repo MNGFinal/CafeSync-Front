@@ -631,12 +631,15 @@ hr {
   align-items: center;
   justify-content: center;
 
-  width: 35px; /* 버튼 크기 조정 */
-  height: 35px; /* 버튼 크기 조정 */
+  width: 35px;
+  /* 버튼 크기 조정 */
+  height: 35px;
+  /* 버튼 크기 조정 */
   border-radius: 5px;
   border: 1px solid #ddd;
   background-color: #fff;
-  font-size: 16px; /* 글자 크기 조정 */
+  font-size: 16px;
+  /* 글자 크기 조정 */
 
   font-weight: bold;
   color: #333;
@@ -661,8 +664,10 @@ hr {
 .pagination .previous,
 .pagination .next {
 
-  width: 60px; /* 버튼 크기 동일하게 조정 */
-  height: 35px; /* 버튼 크기 동일하게 조정 */
+  width: 60px;
+  /* 버튼 크기 동일하게 조정 */
+  height: 35px;
+  /* 버튼 크기 동일하게 조정 */
   background-color: #f5f5f5;
   color: #333;
   font-weight: bold;
@@ -673,7 +678,8 @@ hr {
   align-items: center;
   justify-content: center;
 
-  font-size: 16px; /* 글자 크기 조정 */
+  font-size: 16px;
+  /* 글자 크기 조정 */
 
 }
 
@@ -693,8 +699,10 @@ hr {
 .closeButtonContainer {
   display: flex;
 
-  justify-content: flex-end; /* 왼쪽 정렬 */
-  width: 100%; /* 전체 너비 사용 */
+  justify-content: flex-end;
+  /* 왼쪽 정렬 */
+  width: 100%;
+  /* 전체 너비 사용 */
 
 }
 
@@ -702,8 +710,8 @@ hr {
   cursor: pointer;
   font-weight: bold;
 
-  color: #333; /* x 버튼 색상 */
+  color: #333;
+  /* x 버튼 색상 */
   background: none;
   border: none;
 }
-

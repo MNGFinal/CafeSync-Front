@@ -90,11 +90,33 @@ function Sidebar() {
         <img src="/images/icons/note.png" alt="바리스타 노트" />
         <span>바리스타 노트</span>
       </Link>
-      <Link to="/fran/stats" className="menu-item">
+
+
+
+
+
+      {/* ✅ 가맹점 통계 */}
+      <div
+        className="menu-item has-submenu"
+        onMouseEnter={() => setShowSubMenu(true)}
+        onMouseLeave={() => setShowSubMenu(false)}
+      >
         <img src="/images/icons/graph.png" alt="통계" />
         <span>통계</span>
-      </Link>
-    </div>
+
+        {/* ✅ 가맹점 서브메뉴 */}
+        {showSubMenu && (
+          <div className="submenu">
+            <Link to="/fran/stats">매출 현황</Link>
+            <Link to="/fran/menu-stats">메뉴별 판매 현황</Link>
+          </div>
+        )}
+      </div>
+
+
+
+
+    </div >
   );
 }
 

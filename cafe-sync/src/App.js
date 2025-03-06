@@ -40,6 +40,7 @@ import Income from "./fran/pages/slip/Income";
 import Schedule from "./fran/pages/employee/Schedule";
 import DayOff from "./fran/pages/employee/DayOff";
 import CoffeeList from "./fran/pages/menus/itemList/CoffeeList";
+import MenuStats from "./fran/pages/stats/MenuStats";
 /* -------------------------------------------------------------------------- */
 
 /* ---------------------------------본사 컴포넌트----------------------------- */
@@ -122,6 +123,7 @@ function App() {
             <Route path="chat" element={<Chat />} />
             <Route path="barista-note" element={<BaristaNote />} />
             <Route path="stats" element={<Stats />} />
+            <Route path="/fran/menu-stats" element={<MenuStats />} />
           </Route>
         </Route>
 

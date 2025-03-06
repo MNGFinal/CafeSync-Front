@@ -65,7 +65,7 @@ function BarChart({ salesData }) {
     };
 
     return (
-        <div style={{ width: "100%", maxWidth: "1600px", height: "450px", margin: "0 auto" }}>
+        <div style={{ width: "100%", maxWidth: "1650px", height: "450px", margin: "0 auto" }}>
             <Bar data={data} options={options} />
         </div>
     );
