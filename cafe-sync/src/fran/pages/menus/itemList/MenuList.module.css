@@ -1,117 +1,130 @@
 .menuGrid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    /* 5개씩 고정 */
-    justify-items: center;
-    padding: 0 80px;
-    /* 좌우 여백 추가 */
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  /* 5개씩 고정 */
+  justify-items: center;
+  padding: 0 80px;
+  /* 좌우 여백 추가 */
 }
 
 .menuCard {
-    text-align: center;
-    padding: 20px;
-    border: none;
-    border-radius: 10px;
-    background: white;
-    transition: transform 0.2s ease-in-out;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  text-align: center;
+  padding: 20px;
+  border: none;
+  border-radius: 10px;
+  background: white;
+  transition: transform 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .menuCard:hover {
-    transform: scale(1.05);
+  transform: scale(1.05);
 }
 
 /* 이미지 크기 조정 */
 .imageContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: auto;
+  position: relative;
 }
 
 .menuImage {
-    width: 200px;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 10px;
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.soldOutOverlay {
+  position: absolute;
+  top: 50%; /* 수직 중앙 */
+  left: 50%; /* 수평 중앙 */
+  transform: translate(-50%, -50%) rotate(-15deg); /* 중앙으로 이동 후 살짝 기울이기 */
+  max-width: 80%; /* 부모 폭의 80%까지 표시 */
+  height: auto;
+  object-fit: contain;
+  pointer-events: none; /* 클릭 막기 */
+  z-index: 1; /* 배경 이미지 위로 오도록 */
+  opacity: 0.9; /* 투명도 조절 (원하는 대로) */
 }
 
 .menuName {
-    font-size: 18px;
-    font-weight: bold;
-    margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 10px;
 }
 
 .menuDetail,
 .menuNameEN {
-    font-size: 14px;
-    color: #666;
-    margin-top: 5px;
-    text-align: center;
-    line-height: 1.4;
+  font-size: 14px;
+  color: #666;
+  margin-top: 5px;
+  text-align: center;
+  line-height: 1.4;
 }
 
 .DetailLine {
-    border-bottom: 1px solid #ccc;
-    /* 두께 2px, 색상 연한 회색 */
-    width: 100%;
-    /* 가로 전체 */
-    margin: 10px 0;
-    /* 위아래 여백 */
+  border-bottom: 1px solid #ccc;
+  /* 두께 2px, 색상 연한 회색 */
+  width: 100%;
+  /* 가로 전체 */
+  margin: 10px 0;
+  /* 위아래 여백 */
 }
-
 
 /* 화면이 작아졌을 때 5개가 유지되도록 설정 */
 @media (max-width: 1200px) {
-    .menuGrid {
-        grid-template-columns: repeat(5, minmax(150px, 1fr));
-        /* 최소 크기 설정 */
-        gap: 30px;
-        /* 간격 줄이기 */
-    }
+  .menuGrid {
+    grid-template-columns: repeat(5, minmax(150px, 1fr));
+    /* 최소 크기 설정 */
+    gap: 30px;
+    /* 간격 줄이기 */
+  }
 }
 
 @media (max-width: 900px) {
-    .menuGrid {
-        grid-template-columns: repeat(3, 1fr);
-        /* 화면이 작아지면 3개씩 */
-    }
+  .menuGrid {
+    grid-template-columns: repeat(3, 1fr);
+    /* 화면이 작아지면 3개씩 */
+  }
 }
 
 @media (max-width: 600px) {
-    .menuGrid {
-        grid-template-columns: repeat(2, 1fr);
-        /* 모바일에서는 2개씩 */
-    }
+  .menuGrid {
+    grid-template-columns: repeat(2, 1fr);
+    /* 모바일에서는 2개씩 */
+  }
 }
 
 .menuCard {
-    position: relative;
-    /* 부모 요소에 상대적 위치 추가 */
+  position: relative;
+  /* 부모 요소에 상대적 위치 추가 */
 }
 
 .soldOutImage {
-    position: absolute;
-    /* 절대 위치 지정 */
-    top: 0;
-    left: 0;
-    width: 100%;
-    /* 메뉴 카드에 맞게 크기 조정 */
-    height: 100%;
-    /* 메뉴 카드에 맞게 크기 조정 */
-    object-fit: contain;
-    /* 이미지 비율 유지 */
-    z-index: 2;
-    /* 다른 요소 위에 표시 */
+  position: absolute;
+  /* 절대 위치 지정 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* 메뉴 카드에 맞게 크기 조정 */
+  height: 100%;
+  /* 메뉴 카드에 맞게 크기 조정 */
+  object-fit: contain;
+  /* 이미지 비율 유지 */
+  z-index: 2;
+  /* 다른 요소 위에 표시 */
 }
 
 .noResult {
-    display: flex;
+  display: flex;
 
-    height: 30pc;
-    font-size: 1.5rem;
-    font-weight: bold;
+  height: 30pc;
+  font-size: 1.5rem;
+  font-weight: bold;
 }

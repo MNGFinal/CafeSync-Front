@@ -6,22 +6,30 @@ import styles from "./itemList/FranList.module.css";
 import FranRegist from "./itemList/FranRegist"; // ✅ 가맹점 등록 컴포넌트 추가
 import SModal from "../../../components/SModal"; // ✅ 이동 후 경로 수정
 import { fetchSearchFrans } from "../../../apis/mgment/mgmentApi"; // ✅ API 경로 맞게 확인
-
+import ReactPaginate from "react-paginate";
 
 function HQMgment() {
-
   const [franList, setFranList] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);  // ✅ 상세 모달 상태 추가
+  const [isModalOpen, setIsModalOpen] = useState(false); // ✅ 상세 모달 상태 추가
   const [isRegistModalOpen, setIsRegistModalOpen] = useState(false); // ✅ 등록 모달 상태 추가
   const [selectedFran, setSelectedFran] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // ✅ 폐점 확인 모달 상태 추가
   const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태
+  const [slicedFranList, setSlicedFranList] = useState([]); // ✅ 현재 페이지 데이터
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 6; // ✅ 한 페이지에 표시할 개수
+
+  // ✅ 페이징 데이터 업데이트
+  useEffect(() => {
+    const offset = currentPage * itemsPerPage;
+    setSlicedFranList(franList.slice(offset, offset + itemsPerPage));
+  }, [currentPage, franList]);
 
   // 가맹점 목록 불러오기
   useEffect(() => {
-
     async function getFrans() {
-      const data = await fetchFrans();  // 백엔드 API로부터 가맹점 리스트를 받아오는 함수
+      const data = await fetchFrans(); // 백엔드 API로부터 가맹점 리스트를 받아오는 함수
       setFranList(data);
     }
     getFrans();
@@ -63,7 +71,6 @@ function HQMgment() {
     }, 300);
   };
 
-
   // ✅ 삭제 확인 모달 열기
   const openDeleteModal = () => {
     setIsDeleteModalOpen(true);
@@ -76,7 +83,9 @@ function HQMgment() {
 
   // ✅ 삭제 후 리스트에서 제거하는 함수 추가
   const handleDeleteSuccess = (franCode) => {
-    setFranList((prevList) => prevList.filter(fran => fran.franCode !== franCode));
+    setFranList((prevList) =>
+      prevList.filter((fran) => fran.franCode !== franCode)
+    );
     closeModal();
   };
 
@@ -95,18 +104,25 @@ function HQMgment() {
   };
 
   // 검색 함수 (최적화)
+  // 검색 함수 (최적화)
   const searchHandler = async () => {
     if (!searchTerm.trim()) {
       // ✅ 검색어가 없을 경우 전체 리스트 불러오기
       const allFrans = await fetchFrans();
       setFranList(allFrans);
+      setCurrentPage(0); // 🔥 검색어 지우면 첫 페이지로 이동
+      setSlicedFranList(allFrans.slice(0, itemsPerPage)); // 🔥 첫 페이지 데이터 반영
       return;
     }
 
     try {
       const data = await fetchSearchFrans(searchTerm); // ✅ API 호출
-      setFranList(data); // ✅ 기존 목록을 검색 결과로 교체
-      console.log("검색 결과:", data);
+      if (data.length === 0) {
+        alert("검색 결과가 없습니다.");
+      }
+      setFranList(data); // ✅ 검색 결과로 전체 리스트 변경
+      setCurrentPage(0); // 🔥 검색 후 첫 페이지로 이동
+      setSlicedFranList(data.slice(0, itemsPerPage)); // 🔥 검색 결과 즉시 반영
     } catch (error) {
       console.error("검색 중 오류 발생:", error);
       alert("검색 중 오류가 발생했습니다.");
@@ -120,9 +136,6 @@ function HQMgment() {
     }
   };
 
-
-
-
   return (
     <>
       <div className="page-header">
@@ -130,15 +143,12 @@ function HQMgment() {
       </div>
       <div>
         {/********************************* 등록창 *********************************/}
-        <button
-          className={styles.registButton}
-          onClick={openRegistModal}
-        >등록</button>
-
+        <button className={styles.registButton} onClick={openRegistModal}>
+          등록
+        </button>
 
         <div className={styles.dividerContainer}>
           <hr className={styles.divider} />
-
         </div>
         {/*************************************************************************/}
 
@@ -153,38 +163,58 @@ function HQMgment() {
             onKeyDown={handleKeyDown} // ✅ Enter 키 검색 추가
             className={styles.searchInput}
           />
-          <button
-            className={styles.searchButton}
-            onClick={searchHandler}
-          >
+          <button className={styles.searchButton} onClick={searchHandler}>
             검색
           </button>
         </div>
         {/*************************************************************************/}
 
-        {/****************************** 가맹점 리스트 ******************************/}
+        {/********** 가맹점 리스트 **********/}
         <div className={styles.gridContainer}>
-          {franList.length > 0 ? (
-            franList.map((fran) => (
+          {slicedFranList.length > 0 ? (
+            slicedFranList.map((fran) => (
               <div
                 key={fran.franCode}
                 className={styles.storeCard}
-                onClick={() => openModal(fran)}
+                onClick={() => openModal(fran)} // ✅ 여기에 `openModal`이 있어야 함
               >
-                <img className={styles.imagePlaceholder} src={fran.franImage} alt="가맹점 이미지"></img>
+                <img
+                  className={styles.imagePlaceholder}
+                  src={fran.franImage}
+                  alt="가맹점 이미지"
+                ></img>
                 <h3>{fran.franName}</h3>
                 <p>{fran.franAddr}</p>
-                <br />
-                <p className={styles.managerName}>점장 : {fran.empName || "미등록"}</p>
+                <p className={styles.managerName}>
+                  점장 : {fran.empName || "미등록"}
+                </p>
               </div>
             ))
           ) : (
             <p>등록된 가맹점이 없습니다.</p>
           )}
         </div>
-        {/*************************************************************************/}
       </div>
-
+      {/********** 페이징 처리 **********/}
+      <div className={styles.paginationWrapper}>
+        {franList.length > itemsPerPage && (
+          <ReactPaginate
+            previousLabel={"이전"}
+            nextLabel={"다음"}
+            breakLabel={"..."}
+            pageCount={Math.ceil(franList.length / itemsPerPage)}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={3}
+            onPageChange={({ selected }) => setCurrentPage(selected)}
+            containerClassName={styles.pagination}
+            activeClassName={styles.activePage}
+            previousClassName={styles.previous}
+            nextClassName={styles.next}
+            disabledClassName={styles.disabled}
+            forcePage={currentPage}
+          />
+        )}
+      </div>
 
       {/******************************* 상세 모달창 *******************************/}
       <Modal
@@ -194,12 +224,12 @@ function HQMgment() {
           {
             text: "수정",
             onClick: openModifyModal, // ✅ 수정 버튼 클릭 시 수정 모달 열기
-            className: modalStyle.modifyButtonB // 모달 버튼 스타일 적용 (선택 사항)
+            className: modalStyle.modifyButtonB, // 모달 버튼 스타일 적용 (선택 사항)
           },
           {
             text: "폐점",
             onClick: openDeleteModal, // ✅ 폐점 버튼 클릭 시 삭제 확인 모달 열기
-            className: modalStyle.deleteButtonB
+            className: modalStyle.deleteButtonB,
           },
         ]}
       >
@@ -207,7 +237,9 @@ function HQMgment() {
           <div className={styles.modalContainer}>
             {/* 상단 헤더 영역 */}
             <div className={styles.modalHeader}>
-              <h2 className={styles.modalTitle}>{selectedFran.franName} 가맹점 조회</h2>
+              <h2 className={styles.modalTitle}>
+                {selectedFran.franName} 가맹점 조회
+              </h2>
             </div>
 
             <hr className={styles.line} />
@@ -215,7 +247,10 @@ function HQMgment() {
             {/* 점포 이미지 및 이름, 주소 */}
             <div className={styles.storeTopInfo}>
               <img
-                src={selectedFran.franImage || "https://example.com/default-image.jpg"}
+                src={
+                  selectedFran.franImage ||
+                  "https://example.com/default-image.jpg"
+                }
                 alt={selectedFran.franName}
                 className={styles.storeImage}
               />
@@ -259,9 +294,10 @@ function HQMgment() {
           ]}
         >
           <div>
-            <p className={styles.deleteFran}>{selectedFran?.franName} 가맹점을 정말 폐점하시겠습니까?</p>
+            <p className={styles.deleteFran}>
+              {selectedFran?.franName} 가맹점을 정말 폐점하시겠습니까?
+            </p>
           </div>
-
         </SModal>
       </Modal>
 
@@ -271,7 +307,8 @@ function HQMgment() {
       <Modal isOpen={isRegistModalOpen} onClose={closeRegistModal}>
         <FranRegist
           onClose={closeRegistModal} // 🔥 취소 버튼용 → 수정 모달만 닫음
-          onConfirm={() => {  // 🔥 확인 버튼용 → 수정 & 상세 모달 둘 다 닫음
+          onConfirm={() => {
+            // 🔥 확인 버튼용 → 수정 & 상세 모달 둘 다 닫음
             closeRegistModal();
             closeModal();
           }}
@@ -282,8 +319,6 @@ function HQMgment() {
       </Modal>
 
       {/*************************************************************************/}
-
-
     </>
   );
 }

@@ -1,7 +1,12 @@
 import styles from "../../../fran/pages/menus/page/Menus.module.css";
 
-function HQCategoryButtons({ fetchMenus, searchQuery, setSearchQuery, category, setCategory }) {
-
+function HQCategoryButtons({
+  fetchMenus,
+  searchQuery,
+  setSearchQuery,
+  category,
+  setCategory,
+}) {
   const categories = [
     { id: "coffee", name: "커피" },
     { id: "drink", name: "음료" },
@@ -9,37 +14,41 @@ function HQCategoryButtons({ fetchMenus, searchQuery, setSearchQuery, category, 
     { id: "goods", name: "상품" },
   ];
 
-  // 검색어 입력 필드 변경 핸들러
+  // ✅ 검색어 입력 핸들러
   const handleInputChange = (e) => {
-    console.log(e.target.value)
     setSearchQuery(e.target.value);
+  };
+
+  // ✅ 검색 실행 시 첫 페이지부터 다시 불러오기
+  const handleSearch = () => {
+    fetchMenus(); // 🔥 HQMenus의 `fetchMenus()` 실행
   };
 
   // ✅ Enter 키 입력 시 검색 실행
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      fetchMenus(); // ✅ 검색 실행
+      handleSearch();
     }
   };
 
   return (
     <div className={styles.categoryContainer}>
       <div className={styles.categorySearchSet}>
-        {/* 카테고리 버튼 */}
+        {/* 카테고리 버튼들 */}
         <div className={styles.buttonContainer}>
           {categories.map((cat) => (
             <button
               key={cat.id}
-              className={`${styles.categoryButton} ${category === cat.id ? styles.active : ""}`}
+              className={`${styles.categoryButton} ${
+                category === cat.id ? styles.active : ""
+              }`}
               onClick={() => setCategory(cat.id)}
             >
               {cat.name}
             </button>
           ))}
-
-
-
         </div>
+
         {/* 검색창 */}
         <div className={styles.searchContainer}>
           <input
@@ -50,19 +59,12 @@ function HQCategoryButtons({ fetchMenus, searchQuery, setSearchQuery, category, 
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
           />
-          <button
-            className={styles.searchButton}
-            onClick={fetchMenus}
-
-          >
+          <button className={styles.searchButton} onClick={handleSearch}>
             검색
           </button>
         </div>
-
       </div>
       <hr className={styles.divider} />
-
-
     </div>
   );
 }

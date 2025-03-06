@@ -101,7 +101,7 @@ function Stats() {
   }, [franCode]);
 
   return (
-    <div className={styles.statsContainer}>
+    <div>
       <div className="page-header">
         <h3>통계</h3>
       </div>

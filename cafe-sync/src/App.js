@@ -1,10 +1,6 @@
 // src/App.js
 
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./home/pages/protected-route/ProtectedRoute";
 
 /* ---------------------------------레이아웃------------------------------------ */
@@ -33,7 +29,7 @@ import Employee from "./fran/pages/employee/Employee";
 import Chat from "./fran/pages/chat/Chat";
 import Notice from "./fran/pages/notice/Notice";
 import NoticeRegist from "./fran/pages/notice/NoticeRegist";
-import NoticeLayout from "./fran/pages/notice/NoticeLayout"
+import NoticeLayout from "./fran/pages/notice/NoticeLayout";
 import NoticeDetailLayout from "./fran/pages/notice/NoticeDetailLayout";
 import BaristaNote from "./fran/pages/barista-note/BaristaNote";
 import Stats from "./fran/pages/stats/Stats";
@@ -44,6 +40,7 @@ import Income from "./fran/pages/slip/Income";
 import Schedule from "./fran/pages/employee/Schedule";
 import DayOff from "./fran/pages/employee/DayOff";
 import CoffeeList from "./fran/pages/menus/itemList/CoffeeList";
+import MenuStats from "./fran/pages/stats/MenuStats";
 /* -------------------------------------------------------------------------- */
 
 /* ---------------------------------본사 컴포넌트----------------------------- */
@@ -68,6 +65,7 @@ import FranRegist from "./hq/pages/mgment/itemList/FranRegist";
 /* -------------------------------------------------------------------------- */
 
 import RegisterTest from "./test/RegisterTest";
+import HQDiscontinueList from "./hq/pages/menus/HQDiscontinueList";
 
 function App() {
   return (
@@ -117,11 +115,15 @@ function App() {
             <Route path="dayoff" element={<DayOff />} />
             <Route path="notice" element={<Notice />} />
             <Route path="/fran/notice" element={<NoticeLayout />} />
-            <Route path="/fran/notice/:noticeCode" element={<NoticeDetailLayout />} />
+            <Route
+              path="/fran/notice/:noticeCode"
+              element={<NoticeDetailLayout />}
+            />
             <Route path="notice/notice-regist" element={<NoticeRegist />} />
             <Route path="chat" element={<Chat />} />
             <Route path="barista-note" element={<BaristaNote />} />
             <Route path="stats" element={<Stats />} />
+            <Route path="/fran/menu-stats" element={<MenuStats />} />
           </Route>
         </Route>
 
@@ -139,12 +141,17 @@ function App() {
             <Route path="fran-inventory" element={<HQFranInventory />} />
             <Route path="vendor" element={<HQVendor />} />
             <Route path="orders" element={<HQOrders />} />
+
+            {/* 기존 menus 관련 라우트 */}
             <Route path="menus" element={<HQMenus />}>
-              <Route index element={<HQMenuList />} /> {/* ✅ 기본으로 표시될 컴포넌트 */}
+              <Route index element={<HQMenuList />} />
+              <Route path="regist" element={<HQRegist />} />
             </Route>
 
-            <Route path="menus/regist" element={<HQRegist />} />
-            <Route path="discontinue-menus" element={<HQDiscontinue />} />
+            <Route path="discontinue-menus" element={<HQDiscontinue />}>
+              <Route index element={<HQDiscontinueList />} />
+            </Route>
+
             <Route path="slip" element={<HQSlip />} />
             <Route path="duty" element={<HQDuty />} />
             <Route path="income" element={<HQIncome />} />
