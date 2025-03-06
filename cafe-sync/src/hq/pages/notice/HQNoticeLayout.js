@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import style from "./NoticeLayout.module.css";
-import { Link, useNavigate } from "react-router-dom";
+import style from "./HQNoticeLayout.module.css";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import {
   callNoticesAPI,
@@ -11,11 +11,12 @@ import {
 } from "../../../apis/notice/noticeApi";
 import { RESET_NOTICE_DETAIL } from "../../../modules/NoticeModule";
 
-function NoticeLayout() {
+function HQNoticeLayout() {
   const franCode = useSelector(
     (state) => state.auth?.user?.franchise?.franCode ?? null
   );
   const dispatch = useDispatch();
+  const location = useLocation();
   const navigate = useNavigate();
   const notices = useSelector((state) => state.noticeReducer.data);
   const user = JSON.parse(sessionStorage.getItem("user"));
@@ -78,14 +79,16 @@ function NoticeLayout() {
     }
   };
 
-  /** 공지 클릭 시 상세페이지 이동 */
   const handleNoticeClick = (noticeCode) => {
     dispatch({ type: RESET_NOTICE_DETAIL });
     dispatch(callIncreaseViewCountAPI(noticeCode));
 
     setTimeout(() => {
       dispatch(callNoticeDetailAPI({ noticeCode }));
-      navigate(`/fran/notice/${noticeCode}`);
+
+      // Number(franCode)를 사용하여 숫자형으로 비교
+      const basePath = Number(franCode) === 10000 ? "/hq" : "/fran";
+      navigate(`${basePath}/notice/${noticeCode}`, { replace: true });
     }, 0);
   };
 
@@ -171,4 +174,4 @@ function NoticeLayout() {
   );
 }
 
-export default NoticeLayout;
+export default HQNoticeLayout;

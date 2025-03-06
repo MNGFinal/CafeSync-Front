@@ -1,0 +1,179 @@
+/* NoticeDetailLayout.module.css */
+
+/* ====================== 공통 스타일 ====================== */
+.wrapperBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.noteDetailContainer {
+  border-radius: 12px;
+  padding: 40px;
+  width: 100%;
+  max-width: 1780px;
+  position: relative;
+}
+
+/* ====================== 닫기 버튼 ====================== */
+.closeButtonContainer {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.closeButton {
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* ====================== 행 및 인라인 필드 ====================== */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+/* 변경: 인라인 필드를 세로 정렬하여 라벨이 위에 오도록 함 */
+.inlineField {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-right: 20px;
+  margin-bottom: 10px;
+}
+
+/* ====================== 라벨 스타일 ====================== */
+/* 라벨은 이제 인풋 위에 위치하므로 마진 하단 추가 */
+.labelTitle,
+.labelCreationDate,
+.labelWriter,
+.labelViews,
+.labelAttachment,
+.labelContent {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 4px;
+  /* min-width 제거해도 좋고, 필요시 조정 */
+}
+
+/* ====================== 입력 및 표시 필드 ====================== */
+.title,
+.creationDate,
+.writer,
+.views {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 18px;
+}
+
+.title {
+  width: 500px;
+}
+
+.creationDate {
+  width: 200px;
+  height: 40px;
+}
+
+/* ====================== 파일 다운로드 버튼 ====================== */
+.downloadButton {
+  padding: 3px 20px;
+  border: 1px solid #aaa;
+  border-radius: 6px;
+  background-color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.downloadButton:hover {
+  border-color: #4caf50;
+}
+
+/* ====================== 첨부 파일 없음 텍스트 ====================== */
+.noAttachment {
+  font-size: 16px;
+  color: #999;
+}
+
+/* ====================== 내용 텍스트 에어리어 ====================== */
+.Content {
+  width: 100%;
+  height: 288px;
+  padding: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  resize: none;
+}
+
+/* ====================== 버튼 컨테이너 및 버튼 스타일 ====================== */
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.registButton,
+.returnToList {
+  padding: 14px 30px;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  min-width: 140px;
+}
+
+.registButton {
+  background-color: #4caf50;
+  color: white;
+}
+
+.registButton:hover {
+  background-color: #45a049;
+  transform: scale(1.07);
+  box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+}
+
+.returnToList {
+  background-color: #f44336;
+  color: white;
+}
+
+.returnToList:hover {
+  background-color: #e53935;
+  transform: scale(1.07);
+  box-shadow: 0 4px 10px rgba(244, 67, 54, 0.3);
+}
+
+/* ====================== 반응형 스타일 ====================== */
+@media (max-width: 1400px) {
+  .noteDetailContainer {
+    width: 98%;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .noteDetailContainer {
+    width: 100%;
+    padding: 25px;
+  }
+
+  .buttonContainer {
+    flex-direction: column;
+  }
+
+  .registButton,
+  .returnToList {
+    width: 100%;
+    text-align: center;
+  }
+}
