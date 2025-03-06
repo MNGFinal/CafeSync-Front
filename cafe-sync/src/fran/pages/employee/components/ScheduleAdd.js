@@ -166,7 +166,7 @@ const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode, onScheduleUpdate, 
     }
 
     const scheduleData = prepareScheduleData();
-    console.log("보낼 스케줄 정보: ", scheduleData);
+    // console.log("보낼 스케줄 정보: ", scheduleData);
 
     try {
       let token = sessionStorage.getItem("accessToken");
@@ -179,7 +179,7 @@ const ScheduleAdd = ({ isModalOpen, setIsModalOpen, franCode, onScheduleUpdate, 
         body: JSON.stringify(scheduleData)
       });
       const savedSchedules = await resopnse.json();
-      console.log('세이브 된 스케줄 자료', savedSchedules);
+      // console.log('세이브 된 스케줄 자료', savedSchedules);
       if (!resopnse.ok) {
         throw new Error("스케줄 저장 실패ㅠ");
       }
