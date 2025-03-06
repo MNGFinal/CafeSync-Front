@@ -84,7 +84,14 @@ const ComplainList = ({franCode, refresh}) => {
                     onClick={() => clickDetailHandler({ complainDate, complainDivision, complainDetail })} 
                     style={{ cursor: "pointer" }}
                   >
-                    <td>{new Date(complainDate).toLocaleString()}</td>
+                    <td>
+                      {(() => {
+                        const dateTime = new Date(complainDate).toLocaleString({
+                          year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false
+                        });
+                        return dateTime.split(":").slice(0, 2).join(":")
+                      })()}
+                    </td>
                     <td>{complainDivision === 1 ? "서비스" : complainDivision === 2 ? "위생" : "기타"}</td>
                     <td>{complainDetail}</td>
                   </tr>
