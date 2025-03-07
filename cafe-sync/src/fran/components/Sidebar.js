@@ -74,7 +74,6 @@ function Sidebar() {
           <div className="submenu">
             <Link to="/fran/employee">직원 목록</Link>
             <Link to="/fran/schedule">스케줄 조회</Link>
-            <Link to="/fran/dayoff">휴가 신청</Link>
           </div>
         )}
       </div>

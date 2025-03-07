@@ -7,7 +7,7 @@ import {
   callNoticeUpdateAPI,
   callNoticeDeleteAPI,
 } from "../../../apis/notice/noticeApi";
-import style from "./NoticeDetailLayout.module.css";
+import style from "./HQNoticeDetailLayout.module.css";
 import { RESET_NOTICE_DETAIL } from "../../../modules/NoticeModule";
 import SModal from "../../../components/SModal";
 import modalStyle from "../../../components/ModalButton.module.css";
@@ -19,7 +19,7 @@ function extractFileName(fileUrl) {
   return urlWithoutParams.substring(urlWithoutParams.lastIndexOf("/") + 1);
 }
 
-function NoticeDetailLayout() {
+function HQNoticeDetailLayout() {
   const { noticeCode } = useParams();
   const dispatch = useDispatch();
   const notice = useSelector((state) => state.noticeReducer.selectedNotice);
@@ -85,7 +85,7 @@ function NoticeDetailLayout() {
       setIsDeleteModalOpen(true);
       setTimeout(() => {
         closeDeleteModal();
-        navigate("/fran/notice");
+        navigate("/hq/notice");
       }, 2000);
     }
   };
@@ -153,12 +153,12 @@ function NoticeDetailLayout() {
 
   const closeSuccessModal = () => {
     setIsSuccessModalOpen(false);
-    navigate("/fran/notice");
+    navigate("/hq/notice");
   };
 
   // 기타 핸들러
   const handleCloseClick = () => {
-    navigate("/fran/notice");
+    navigate("/hq/notice");
   };
 
   const handleCancelClick = () => {
@@ -343,7 +343,7 @@ function NoticeDetailLayout() {
           isOpen={isDeleteModalOpen}
           onClose={() => {
             if (commonModalMessage === "공지사항이 삭제되었습니다.") {
-              navigate("/fran/notice");
+              navigate("/hq/notice");
             }
             closeDeleteModal();
           }}
@@ -352,7 +352,7 @@ function NoticeDetailLayout() {
               ? [
                   {
                     text: "확인",
-                    onClick: () => navigate("/fran/notice"),
+                    onClick: () => navigate("/hq/notice"),
                     className: modalStyle.confirmButtonS,
                   },
                 ]
@@ -453,4 +453,4 @@ function NoticeDetailLayout() {
   );
 }
 
-export default NoticeDetailLayout;
+export default HQNoticeDetailLayout;

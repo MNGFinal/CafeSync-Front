@@ -25,3 +25,47 @@ hr {
 :global(.fc-scrollgrid) {
     overflow-y: auto !important;
   }
+
+/* --------------------------공지사항MAIN------------------------------------- */
+.noticeSection {
+    width: 100%;
+    padding: 10px;
+  }
+  
+  .noticeList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .noticeItem {
+    padding: 10px;
+    background-color: #f4f4f4;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .noticeItem a {
+    text-decoration: none;
+    color: #333;
+  }
+  
+  .noticeTitle {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .noticeDate {
+    font-size: 14px;
+    color: #888;
+    margin-top: 5px;
+    height:30px;
+  }
+  
+  .noData {
+    text-align: center;
+    color: #888;
+  }
+
+  /* ---------------------------공지사항MAIN----------------------------------- */

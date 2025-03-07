@@ -1,5 +1,3 @@
-// src/fran/pages/BaristaNote.js
-
 import BaristaNoteLayout from '../barista-note/BaristaNoteLayout';
 
 function BaristaNote() {
