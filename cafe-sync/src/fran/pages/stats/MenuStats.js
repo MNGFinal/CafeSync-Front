@@ -121,13 +121,15 @@ function MenuStats() {
                     <p>📌 데이터를 불러오는 중...</p>
                 ) : menuSales.length > 0 ? (
                     <>
-                        <div className={styles.chart}>
-                            <h4>Top 10 판매순위</h4>
-                            <Bar data={createChartData(top10, "rgba(255, 99, 132, 0.8)")} options={chartOptions} />
-                        </div>
-                        <div className={styles.chart}>
-                            <h4>Bottom 10 판매순위</h4>
-                            <Bar data={createChartData(bottom10, "rgba(54, 162, 235, 0.8)")} options={chartOptions} />
+                        <div className={styles.chartsContainer}>
+                            <div className={styles.chart}>
+                                <h4>Top 10 판매순위</h4>
+                                <Bar data={createChartData(top10, "rgba(255, 99, 132, 0.8)")} options={chartOptions} />
+                            </div>
+                            <div className={styles.chart}>
+                                <h4>Bottom 10 판매순위</h4>
+                                <Bar data={createChartData(bottom10, "rgba(54, 162, 235, 0.8)")} options={chartOptions} />
+                            </div>
                         </div>
                     </>
                 ) : (
