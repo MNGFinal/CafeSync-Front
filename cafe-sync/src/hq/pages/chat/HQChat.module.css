@@ -1,0 +1,27 @@
+.container {
+    display: flex;
+    width: 1780px;
+    height: 795px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    gap: 10px;
+  }
+  
+  .empBox {
+    border: 1px solid #ccc;
+    width: 500px;
+    height: 775px;
+  }
+  
+  .roomBox {
+    border: 1px solid #ccc;
+    width: 500px;
+    height: 775px;
+  }
+  
+  .chatBox {
+    border: 1px solid #ccc;
+    width: 780px;
+    height: 775px;
+  }
+  
