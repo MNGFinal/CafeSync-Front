@@ -1,7 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { useSelector } from "react-redux";
 import SalesBarGraph from "./SalesBarGraph";
-import styles from "./DailySalesChart.module.css";
 
 function DailySalesChart() {
   const franCode = useSelector(
@@ -81,7 +80,7 @@ function DailySalesChart() {
   }, [franCode, dateRange]); // ✅ dateRange가 바뀌지 않으면 재호출 안 됨
 
   return (
-    <div className={styles.chartContainer}>
+    <div>
       {loading ? (
         <p>데이터 로딩 중...</p>
       ) : dailySales.length > 0 ? (
