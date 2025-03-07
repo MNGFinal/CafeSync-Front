@@ -1,0 +1,363 @@
+/* 🔹 전체 레이아웃 */
+.defSection {
+    display: flex;
+    gap: 40px;
+    padding: 30px;
+  }
+  
+  /* 🔹 왼쪽 테이블 (리스트 영역) */
+  .addSection {
+    border: 1px solid #ddd;
+    width: 750px;
+    height: 740px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: #fff;
+    overflow: hidden; /* 내부 스크롤 */
+  }
+  
+  .listSection {
+    border: 1px solid #ddd;
+    width: 1000px;
+    height: 740px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    background: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #fafafa;
+  }
+  
+  /* ===============================
+      검색 박스 스타일
+    =============================== */
+  .searchBox {
+    display: flex;
+    margin-top: 15px;
+    margin-left: 13px;
+    gap: 10px;
+  }
+  
+  .searchBtn {
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    border-radius: 6px;
+    transition: background 0.3s ease-in-out;
+    height: 30px;
+    width: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .searchBtn:hover {
+    background-color: #003f8a;
+  }
+  
+  .resetBtn {
+    display: flex;
+    width: 30px;
+    height: 30px;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-color: #28a745;
+    border-radius: 50%;
+    border: none;
+    transition: background-color 0.3s ease-in-out, transform 0.2s;
+    color: white;
+    font-size: 16px;
+  }
+  
+  .resetBtn:hover {
+    background-color: #218838;
+    transform: scale(1.1);
+  }
+  
+  .deleteBtn {
+    background-color: #f84545;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    border-radius: 6px;
+    transition: background 0.3s ease-in-out;
+    height: 30px;
+    width: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    left: 275px;
+  }
+  
+  .deleteBtn:hover {
+    background-color: red;
+  }
+  
+  /* ===============================
+      테이블 스타일
+    =============================== */
+  .tableContainer {
+    overflow: hidden;
+    background: white;
+    margin-top: 5px;
+  }
+  
+  /* ✅ 테이블이 전체 너비를 차지하도록 수정 */
+  .incomeTable {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    font-size: 14px;
+  }
+  
+  .incomeTable thead {
+    background-color: #f4f4f4;
+    font-weight: bold;
+  }
+  
+  .incomeTable th {
+    padding: 12px;
+    border: 1px solid #ddd;
+  }
+  
+  .incomeTable td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    text-align: center; /* ✅ 모든 텍스트 중앙 정렬 */
+    width: auto; /* ✅ 너비 자동 조정 */
+  }
+  
+  /* 홀수 행 배경색 */
+  .incomeTable tbody tr:nth-child(odd) {
+    background-color: #fafafa;
+  }
+  
+  /* 마우스 오버 효과 */
+  .incomeTable tbody tr:hover {
+    background-color: #f0f0f0;
+    transition: 0.2s;
+  }
+  
+  /* ===============================
+      페이징
+    =============================== */
+  .paginationContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    padding: 10px 0;
+    margin-top: auto;
+    margin-bottom: 10px;
+    background-color: white;
+  }
+  
+  .paginationContainer li {
+    margin: 0 5px;
+  }
+  
+  .paginationContainer a {
+    padding: 4px 11px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    color: #5c1946;
+    background-color: white;
+    border: 1px solid #5c1946;
+    transition: 0.3s;
+    cursor: pointer;
+  }
+  
+  .paginationContainer a:hover {
+    background-color: #5c1946;
+    color: white;
+  }
+  
+  .paginationContainer .activePage a {
+    background-color: #5c1946 !important;
+    color: white !important;
+  }
+  
+  .paginationContainer .disabled a {
+    color: #ccc;
+    border: 1px solid #ccc;
+    cursor: not-allowed;
+  }
+  
+  /* ===============================
+      오른쪽 상세보기 스타일
+    =============================== */
+  /* 🔹 상세 정보 컨테이너 */
+  .reportDetail {
+    width: 100%;
+    background: #fafafa;
+    padding: 5px;
+    border-radius: 8px;
+    text-align: left;
+    margin-top: 3%;
+    background-color: #fafafa;
+  }
+  
+  /* 🔹 제목 행 */
+  .reportTitleRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .reportTitleRow h1 {
+    font-size: 22px;
+    margin: 0;
+    color: #333;
+  }
+  
+  .reportDate {
+    font-size: 14px;
+    color: #777;
+  }
+  
+  /* 🔹 설명 텍스트 */
+  .reportDesc {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 20px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+  
+  /* 🔹 가맹점 정보 */
+  .reportInfo {
+    font-size: 15px;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 5px;
+  }
+  
+  .reportAddress {
+    font-size: 14px;
+    color: #444;
+    margin-bottom: 20px;
+  }
+  
+  /* 🔹 손익 테이블 */
+  .reportTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  .reportTable td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+  }
+  
+  /* 🔹 소득 & 경비 구분 행 */
+  .reportTable tr:first-child td {
+    font-weight: bold;
+    background: #f4f4f4;
+  }
+  
+  /* 🔹 소득 & 경비 상세 항목 */
+  .subItem {
+    color: #0056b3;
+    font-weight: bold;
+  }
+  
+  /* 🔹 금액 표시 */
+  .reportTable td:nth-child(2) {
+    text-align: right;
+    font-weight: bold;
+  }
+  
+  /* 🔹 비고 영역 */
+  .reportRemarks {
+    font-size: 14px;
+    color: #555;
+    margin-top: 10px;
+    line-height: 1.5;
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+  }
+  
+  /* ===============================
+      행 선택 스타일
+    =============================== */
+  .selectedRow {
+    background-color: #e3efff !important;
+  }
+  
+  /* 데이터 없을 때 */
+  .noData {
+    background-color: #ddd;
+    width: 100%;
+    height: 740px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-weight: bold;
+    color: grey;
+  }
+  
+  /* 🔹 PDF 버튼을 오른쪽 상단으로 이동 */
+  .pdfBtn {
+    background-color: #f84545;
+    color: white;
+    height: 30px;
+    width: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute; /* ✅ 절대 위치 지정 */
+    top: 20px; /* 상단에서 20px 떨어짐 */
+    right: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+    border: none;
+  }
+  
+  .pdfBtn:hover {
+    background-color: red;
+  }
+  
+  .dataDetail {
+    margin-bottom: 10px;
+  }
+  
+  /* 🔹 총 비용 아래 항목을 빨간색으로 */
+  .debitItem {
+    color: red;
+    font-weight: bold;
+  }
+  
+  /* 🔹 총 수익, 총 비용, 순이익, 이익률 스타일 */
+  .totalRow {
+    font-weight: bold; /* 글씨 굵게 */
+    background-color: #f4f4f4; /* 연한 배경색 */
+    border-top: 2px solid #ddd; /* 위쪽 테두리 추가 */
+    border-bottom: 2px solid #ddd; /* 위쪽 테두리 추가 */
+  }
+  
+  .totalRow td {
+    padding: 10px;
+    font-size: 16px;
+  }
+  
+  .totalRow td:nth-child(2) {
+    text-align: right; /* 숫자 오른쪽 정렬 */
+  }
+  
