@@ -1,6 +1,6 @@
 .cal {
-    padding: 30px;
-    min-height: 800px;
+  padding: 30px;
+  min-height: 800px;
 }
 
 /* 일요일 빨간색 */
@@ -15,46 +15,48 @@
 
 /* 월별 뷰에서 날짜 행 높이 설정 */
 :global(.fc-dayGridMonth-view .fc-daygrid-day-frame) {
-    height: 108px !important;
-} 
+  height: 108px !important;
+}
 
-:global(.fc-dayGridMonth-view .fc-daygrid-event-harness) { width: 100px; }
+:global(.fc-dayGridMonth-view .fc-daygrid-event-harness) {
+  width: 100px;
+}
 
-:global(.fc-dayGridMonth-view .fc-daygrid-day-events) { 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 2px;
-    padding-top: 20px;
+:global(.fc-dayGridMonth-view .fc-daygrid-day-events) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  padding-top: 20px;
 }
 
 :global(.fc-dayGridMonth-view .fc-daygrid-day-events:empty) {
-    display: none !important;
+  display: none !important;
 }
 
 :global(.fc-dayGridMonth-view .fc-daygrid-event-harness:empty) {
-    display: none !important;
+  display: none !important;
 }
 
-:global(.fc-dayGridWeek-view .fc-daygrid-dot-event) { 
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 3px;
+:global(.fc-dayGridWeek-view .fc-daygrid-dot-event) {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 3px;
 }
 
 /* 주별 뷰에서 날짜 행 높이 설정 */
 :global(.fc-dayGridWeek-view .fc-daygrid-day-frame) {
-    height: 653px;
+  height: 653px;
 }
 
 :global(.mainPageScheduleSection .fc-dayGridWeek-view .fc-daygrid-day-frame) {
-    height: 290px !important;
+  height: 322px !important;
 }
 
 :global(.mainPageScheduleSection) {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 :global(.fc-scroller) {
@@ -62,91 +64,103 @@
 
 /* 날짜 숫자 위치 왼쪽 정렬 */
 :global(.fc-daygrid-day-top) {
-    flex-direction: row !important;
+  flex-direction: row !important;
 }
 
 /* 일정표 툴 바 */
 :global(.fc-toolbar.fc-header-toolbar) {
-    margin: 0;
-    font-size: 14px;
-    color: #2D2D2D;
+  margin: 0;
+  font-size: 14px;
+  color: #2d2d2d;
 }
 
 /* 툴바의 버튼 */
 :global(.fc-toolbar-chunk .fc-button) {
-    background-color: white;
-    color: #9D9D9D;
-    border: 2px solid #9D9D9D;
-    font-size: 14px;
-    padding: 3px 8px;
-    font-weight: bolder;
+  background-color: white;
+  color: #9d9d9d;
+  border: 2px solid #9d9d9d;
+  font-size: 14px;
+  padding: 3px 8px;
+  font-weight: bolder;
 }
 
 /* 툴바 선택중 버튼 스타일 */
-:global(.fc-button-primary:not(:disabled).fc-button-active), 
+:global(.fc-button-primary:not(:disabled).fc-button-active),
 :global(.fc-button-primary:not(:disabled):active) {
-    background-color: #9D9D9D !important;
-    border-color: #9D9D9D !important;
+  background-color: #9d9d9d !important;
+  border-color: #9d9d9d !important;
 }
 
 /* 툴바 사용 불가 버튼 스타일 */
 :global(.fc-toolbar-chunk .fc-button:disabled) {
-    color: #f7f7f7;
-    background-color: #2D2D2D;
-    border: 2px solid #2D2D2D;
+  color: #f7f7f7;
+  background-color: #2d2d2d;
+  border: 2px solid #2d2d2d;
 }
 
 /* 툴바 사용 불가 버튼 hover 시 스타일 주지 않기 */
 :global(.fc-toolbar-chunk .fc-button:disabled:hover) {
-    background-color: #9D9D9D;
+  background-color: #9d9d9d;
 }
 
 /* 툴바 버튼 포커스 시 그림자 제거 */
 :global(.fc-toolbar-chunk .fc-button:focus) {
-    box-shadow: none;
+  box-shadow: none;
 }
 
 /* 툴바 버튼 hover 시 */
 :global(.fc-toolbar-chunk .fc-button:hover) {
-    background-color: #9D9D9D;
-    border: 2px solid #9D9D9D;
+  background-color: #9d9d9d;
+  border: 2px solid #9d9d9d;
 }
 
 /* 날짜변경 화살표 아이콘 */
 :global(.fc-button-primary span) {
-    font-weight: 500;
-    font-size: 28px;
+  font-weight: 500;
+  font-size: 28px;
 }
 
 /* 날짜 Cell 프레임 */
 :global(.fc-daygrid-day-frame) {
-    padding: 2px;
+  padding: 2px;
 }
 
 /* 일정 구분별 색 설정 */
 :global(.fc-h-event) {
-    border: 1px solid white;
+  border: 1px solid white;
 }
 :global(.fc-event-main) {
-    color: black !important;
+  color: black !important;
 }
-:global(.division-1) { background-color: #BDC0F1 !important; padding: 2px 0; } /* 오픈 */ 
-:global(.division-2) { background-color: #bde5f1 !important; padding: 2px 0; } /* 미들 */
-:global(.division-3) { background-color: #F1BDBD !important; padding: 2px 0; } /* 마감 */
-:global(.division-4) { background-color: #C9F1BD !important; padding: 2px 0; } /* 휴가 */
-:global(.fc-dayGridMonth-view .custom-event-month) { 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 20px;
-    padding: 0 3px;
-    margin-bottom: 2px;
-    color: black; 
-    width: 100%;
-    height: 100%;
+:global(.division-1) {
+  background-color: #bdc0f1 !important;
+  padding: 2px 0;
+} /* 오픈 */
+:global(.division-2) {
+  background-color: #bde5f1 !important;
+  padding: 2px 0;
+} /* 미들 */
+:global(.division-3) {
+  background-color: #f1bdbd !important;
+  padding: 2px 0;
+} /* 마감 */
+:global(.division-4) {
+  background-color: #c9f1bd !important;
+  padding: 2px 0;
+} /* 휴가 */
+:global(.fc-dayGridMonth-view .custom-event-month) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  padding: 0 3px;
+  margin-bottom: 2px;
+  color: black;
+  width: 100%;
+  height: 100%;
 }
 
 .eventFont {
-    font-weight: 500;
-    padding: 5px;
+  font-weight: 500;
+  padding: 5px;
 }
