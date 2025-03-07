@@ -1,61 +1,64 @@
-import React, { useEffect } from 'react';
-import { Link, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from 'react-redux';
-import { callNoticesAPI } from '../../../apis/notice/noticeApi';
-import { RESET_NOTICE_DETAIL } from '../../../modules/NoticeModule'
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { callNoticesAPI } from "../../../apis/notice/noticeApi";
+import { RESET_NOTICE_DETAIL } from "../../../modules/NoticeModule";
 import ScheduleCalendar from "./components/ScheduleCalendar";
+import NoticeList from "./components/NoticeList";
+import InventoryShortageList from "./components/InventoryShortageList"; // 🔹 만든 컴포넌트
 import style from "./Main.module.css";
-import "../employee/styles/FullCalendar.module.css";
+import DailySalesChart from "./components/DailySalesChart";
 
 function Main() {
-  const notices = useSelector(state => state.noticeReducer.data);
   const dispatch = useDispatch();
-  const noticeList = notices.slice(0, 4);
+  const [allData, setAllData] = useState([]);
 
   useEffect(() => {
-      dispatch({ type: RESET_NOTICE_DETAIL });  // 데이터 초기화 액션 추가
+    dispatch({ type: RESET_NOTICE_DETAIL });
+
+    dispatch(callNoticesAPI()).then((data) => {
+      console.log("📌 공지사항 데이터:", data);
+      if (Array.isArray(data) && data.length > 0) {
+        setAllData(data);
+      } else {
+        console.warn("⚠️ 공지사항 데이터가 없습니다.");
+      }
+    });
   }, [dispatch]);
-
-  useEffect(()=>{
-    dispatch(callNoticesAPI())
-  },[dispatch])
-
-  if (!notices) return <div>Loading...</div>;
 
   return (
     <>
       <div className={`noticeSection ${style.sec}`}>
-        <Link to="/fran/notice">공지사항</Link>
-        <hr/>
-        <div className={style.noticeList}>
-          {noticeList.length > 0 ? (
-            noticeList.map((notice) => (
-              <div key={notice.noticeCode} className={style.noticeItem}>
-                <Link to={`/fran/notice/${notice.noticeCode}`}>
-                  <div className={style.noticeTitle}>{notice.noticeTitle}</div>
-                  <div className={style.noticeDate}>
-                    {new Date(notice.noticeDate).toISOString().split('T')[0]}
-                  </div>
-                </Link>
-              </div>
-            ))
-          ) : (
-            <div className={style.noData}>데이터 없음</div>
-          )}
-        </div>
+        <Link to="/fran/notice" className={style.title}>
+          공지사항
+        </Link>
+        <hr />
+        <NoticeList allData={allData} />
       </div>
+
       <div className={`${style.scheduleSection} ${style.sec}`}>
-        <Link to="/fran/schedule">금주 근무자 스케줄</Link>
-        <hr/>
-        <ScheduleCalendar/>
+        <Link to="/fran/schedule" className={style.title}>
+          금주 근무자 스케줄
+        </Link>
+        <hr />
+        <ScheduleCalendar />
       </div>
+
       <div className={`inventorySection ${style.sec}`}>
-        <Link to="/fran/inventory">재고 부족 품목 확인</Link>
-        <hr/>
+        <Link to="/fran/inventory" className={style.title}>
+          재고 부족 품목 확인
+        </Link>
+        <hr />
+        {/* 🔹 여기서 재고 부족 품목 표시 */}
+        <InventoryShortageList />
       </div>
+
       <div className={`statsSection ${style.sec}`}>
-        <Link to="/fran/stats">날짜별 매출 현황 그래프</Link>
-        <hr/>
+        <Link to="/fran/stats" className={style.title}>
+          날짜별 매출 현황 그래프
+        </Link>
+        <hr />
+        <DailySalesChart />
       </div>
     </>
   );
