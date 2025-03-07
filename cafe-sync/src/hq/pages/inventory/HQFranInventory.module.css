@@ -1,0 +1,128 @@
+/* ✅ 컨테이너 기본 정렬 */
+.container {
+  display: flex;
+  justify-content: space-between; /* 좌우 정렬 */
+  align-items: center;
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+}
+
+/* ✅ 왼쪽 그룹 (가맹점 선택 & 검색 버튼) */
+.searchInput {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* 요소 간 간격 */
+}
+
+.searchInput input {
+  width: 250px;
+  height: 35px;
+  border: 1px solid #ccc;
+  padding: 5px;
+  outline: none;
+}
+
+.searchInput button {
+  height: 35px;
+  padding: 0 15px;
+  background-color: #640c52;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 5px;
+}
+
+.searchInput button:hover {
+  background-color: #520a42;
+}
+
+/* ✅ 오른쪽 필터 입력 */
+.filterInput {
+  display: flex;
+  justify-content: flex-end; /* 오른쪽 정렬 */
+  align-items: center;
+}
+
+.filterInput input {
+  width: 250px;
+  height: 35px;
+  border: 1px solid #ccc;
+  padding: 5px;
+  outline: none;
+}
+
+/* ✅ 테이블 컨테이너 */
+.tableContainer {
+  margin-top: 20px;
+  max-height: 711px; /* ✅ 세로 스크롤 최대 높이 */
+  overflow-y: auto; /* ✅ 세로 스크롤 추가 */
+  overflow-x: auto; /* ✅ 가로 스크롤 추가 */
+  border: 1px solid #ddd;
+  background-color: white;
+  position: relative;
+}
+
+/* ✅ 테이블 스타일 */
+.inventoryTable {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* ✅ 테이블 크기 고정 */
+}
+
+/* ✅ 테이블 헤더 고정 */
+.inventoryTable thead {
+  position: sticky;
+  top: 0;
+  background-color: #f4f4f4;
+  z-index: 1;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* ✅ 테이블 셀 정렬 */
+.inventoryTable th,
+.inventoryTable td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap; /* ✅ 텍스트 줄바꿈 방지 */
+}
+
+/* ✅ 제품 사진 */
+.productImage {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+}
+
+/* ✅ 데이터 없음 메시지 */
+.noData {
+  text-align: center;
+  font-weight: bold;
+  color: gray;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+}
+
+/* ✅ 조회할 점포 선택 화면 */
+.content {
+  width: 1777px;
+  height: 665px; /* ✅ 컨테이너 높이 조정 */
+  background-color: lightgray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: grey;
+  flex-direction: column;
+}
+
+.content img {
+  width: 100px;
+  height: auto;
+  margin-bottom: 10px;
+}
