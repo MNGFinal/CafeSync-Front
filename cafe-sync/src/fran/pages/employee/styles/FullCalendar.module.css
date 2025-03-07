@@ -41,13 +41,23 @@
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: px;
     margin-bottom: 3px;
 }
 
 /* 주별 뷰에서 날짜 행 높이 설정 */
 :global(.fc-dayGridWeek-view .fc-daygrid-day-frame) {
-    height: 653px !important;
+    height: 653px;
+}
+
+:global(.mainPageScheduleSection .fc-dayGridWeek-view .fc-daygrid-day-frame) {
+    height: 290px !important;
+}
+
+:global(.mainPageScheduleSection) {
+    margin-top: 20px;
+}
+
+:global(.fc-scroller) {
 }
 
 /* 날짜 숫자 위치 왼쪽 정렬 */
@@ -120,10 +130,10 @@
 :global(.fc-event-main) {
     color: black !important;
 }
-:global(.division-1) { background-color: #BDC0F1; } /* 오픈 */ 
-:global(.division-2) { background-color: #bde5f1; } /* 미들 */
-:global(.division-3) { background-color: #F1BDBD; } /* 마감 */
-:global(.division-4) { background-color: #C9F1BD; } /* 휴가 */
+:global(.division-1) { background-color: #BDC0F1 !important; padding: 2px 0; } /* 오픈 */ 
+:global(.division-2) { background-color: #bde5f1 !important; padding: 2px 0; } /* 미들 */
+:global(.division-3) { background-color: #F1BDBD !important; padding: 2px 0; } /* 마감 */
+:global(.division-4) { background-color: #C9F1BD !important; padding: 2px 0; } /* 휴가 */
 :global(.fc-dayGridMonth-view .custom-event-month) { 
     display: flex;
     align-items: center;
@@ -134,4 +144,9 @@
     color: black; 
     width: 100%;
     height: 100%;
+}
+
+.eventFont {
+    font-weight: 500;
+    padding: 5px;
 }

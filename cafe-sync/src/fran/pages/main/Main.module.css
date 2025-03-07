@@ -17,8 +17,16 @@ hr {
     margin: 10px -3px;
 }
 
-/* --------------------------공지사항MAIN------------------------------------- */
+.scheduleSection {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
 
+:global(.fc-scrollgrid) {
+    overflow-y: auto !important;
+  }
+
+/* --------------------------공지사항MAIN------------------------------------- */
 .noticeSection {
     width: 100%;
     padding: 10px;

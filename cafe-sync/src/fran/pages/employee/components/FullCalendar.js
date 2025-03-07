@@ -64,7 +64,7 @@ const MyCalendar = () => {
 
       const data = await response.json();
       // console.log("✅ 기본 조회된 스케줄:", data);
-      const sortOrder = { 1: 1, 2: 2, 3: 3, 4: 4 };
+      // const sortOrder = { 1: 1, 2: 2, 3: 3, 4: 4 };
 
       const formattedEvents = data.data.map((schedule) => ({
         id: schedule.scheduleCode,
@@ -165,22 +165,6 @@ const MyCalendar = () => {
             },
           },
         }}
-        eventClassNames={(arg) => {
-          const division = arg.event.extendedProps.scheduleDivision;
-          switch (division) {
-            case 1:
-              return ["open-event"];
-            case 2:
-              return ["middle-event"];
-            case 3:
-              return ["close-event"];
-            case 4:
-              return ["vacation-event"];
-            default:
-              return [];
-          }
-        }}
-        dayCellContent={(arg) => `${arg.date.getDate()}`}
       />
       {/* 스케줄 등록 모달 */}
       <ScheduleAdd 
