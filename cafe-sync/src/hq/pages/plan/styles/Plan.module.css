@@ -1,0 +1,87 @@
+.cal {
+    padding: 30px;
+    max-height: 600px;
+}
+
+:global(.fc-dayGridMonth-view .fc-daygrid-day-frame) {
+    height: 105px !important;
+}
+
+:global(.fc-dayGridMonth-view .fc-daygrid-event-harness) { width: 100px; }
+
+:global(.fc-dayGridMonth-view .fc-daygrid-day-events) { 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+    padding-top: 20px;
+}
+
+:global(.fc-dayGridMonth-view .fc-daygrid-day-events:empty) {
+    display: none !important;
+}
+
+:global(.fc-dayGridMonth-view .fc-daygrid-event-harness:empty) {
+    display: none !important;
+}
+
+:global(.fc-daygrid-day-top) {
+    flex-direction: row !important;
+}
+
+:global(.fc-toolbar.fc-header-toolbar) {
+    margin: 0;
+    font-size: 14px;
+    color: #2D2D2D;
+}
+
+/* 툴바의 버튼 */
+:global(.fc-toolbar-chunk .fc-button) {
+    background-color: white;
+    color: #9D9D9D;
+    border: 2px solid #9D9D9D;
+    font-size: 14px;
+    padding: 3px 8px;
+    font-weight: bolder;
+}
+
+/* 툴바 선택중 버튼 스타일 */
+:global(.fc-button-primary:not(:disabled).fc-button-active), 
+:global(.fc-button-primary:not(:disabled):active) {
+    background-color: #9D9D9D !important;
+    border-color: #9D9D9D !important;
+}
+
+/* 툴바 사용 불가 버튼 스타일 */
+:global(.fc-toolbar-chunk .fc-button:disabled) {
+    color: #f7f7f7;
+    background-color: #2D2D2D;
+    border: 2px solid #2D2D2D;
+}
+
+/* 툴바 사용 불가 버튼 hover 시 스타일 주지 않기 */
+:global(.fc-toolbar-chunk .fc-button:disabled:hover) {
+    background-color: #9D9D9D;
+}
+
+/* 툴바 버튼 포커스 시 그림자 제거 */
+:global(.fc-toolbar-chunk .fc-button:focus) {
+    box-shadow: none;
+}
+
+/* 툴바 버튼 hover 시 */
+:global(.fc-toolbar-chunk .fc-button:hover) {
+    background-color: #9D9D9D;
+    border: 2px solid #9D9D9D;
+}
+
+/* 날짜변경 화살표 아이콘 */
+:global(.fc-button-primary span) {
+    font-weight: 500;
+    font-size: 28px;
+}
+
+/* 날짜 Cell 프레임 */
+:global(.fc-daygrid-day-frame) {
+    padding: 2px;
+}

@@ -27,20 +27,20 @@ function Main() {
       <div className={`noticeSection ${style.sec}`}>
         <Link to="/fran/notice">공지사항</Link>
         <hr/>
-        <div className={st.noticeList}>
+        <div className={style.noticeList}>
           {noticeList.length > 0 ? (
             noticeList.map((notice) => (
-              <div key={notice.noticeCode} className={st.noticeItem}>
+              <div key={notice.noticeCode} className={style.noticeItem}>
                 <Link to={`/fran/notice/${notice.noticeCode}`}>
-                  <div className={st.noticeTitle}>{notice.noticeTitle}</div>
-                  <div className={st.noticeDate}>
+                  <div className={style.noticeTitle}>{notice.noticeTitle}</div>
+                  <div className={style.noticeDate}>
                     {new Date(notice.noticeDate).toISOString().split('T')[0]}
                   </div>
                 </Link>
               </div>
             ))
           ) : (
-            <div className={st.noData}>데이터 없음</div>
+            <div className={style.noData}>데이터 없음</div>
           )}
         </div>
       </div>
