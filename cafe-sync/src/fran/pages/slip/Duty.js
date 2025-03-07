@@ -51,6 +51,8 @@ function Duty() {
 
   const [selectedInvoices, setSelectedInvoices] = useState([]); // 선택된 세금계산서 목록
 
+  const safeInvoiceData = Array.isArray(invoiceData) ? invoiceData : [];
+
   const handleSelectAll = (e) => {
     if (e.target.checked) {
       setSelectedInvoices(invoiceData.map((invoice) => invoice.taxId)); // 모든 taxId 추가
@@ -115,17 +117,16 @@ function Duty() {
 
     getFranTaxList(franCode, startDate, endDate)
       .then((data) => {
-        if (data.data.length === 0) {
-          setModalMessage(
-            `${startDate} ~ ${endDate} 에 해당하는 데이터가 없습니다.`
-          );
+        // data?.data가 배열이면 그대로 사용, 아니라면 빈 배열로 설정
+        const receivedData = Array.isArray(data?.data) ? data.data : [];
+        setInvoiceData(receivedData);
+        if (receivedData.length === 0) {
+          setModalMessage(`해당하는 날짜에 대한 데이터가 없습니다.`);
           setIsModalOpen(true);
-        } else {
-          setInvoiceData(data.data);
-          setCurrentPage(0);
         }
       })
       .catch((error) => {
+        setInvoiceData([]); // 에러 발생 시 빈 배열 설정
         setModalMessage("해당 날짜에 대한 데이터가 없습니다.");
         setIsModalOpen(true);
       });
@@ -145,27 +146,10 @@ function Duty() {
           const receivedData = Array.isArray(data.data) ? data.data : [];
 
           setInvoiceData(receivedData);
-
-          if (receivedData.length === 0) {
-            setModalMessage("조회된 세금 계산서 데이터가 없습니다.");
-            setIsModalOpen(true);
-
-            // 3초 후 이전 페이지로 이동
-            setTimeout(() => {
-              navigate(-1); // 👈 이전 페이지로 이동
-            }, 3000);
-          }
         })
         .catch((error) => {
           console.error("세금 계산서 데이터를 가져오는 중 오류:", error);
           setInvoiceData([]); // 에러 발생 시 빈 배열 설정
-          setModalMessage("데이터를 불러오는 중 오류가 발생했습니다.");
-          setIsModalOpen(true);
-
-          // 3초 후 이전 페이지로 이동
-          setTimeout(() => {
-            navigate(-1);
-          }, 3000);
         });
     }
   }, [franCode, navigate]);
@@ -246,21 +230,21 @@ function Duty() {
                     type="checkbox"
                     onChange={handleSelectAll}
                     checked={
-                      selectedInvoices.length === invoiceData.length &&
-                      invoiceData.length > 0
+                      selectedInvoices.length === safeInvoiceData.length &&
+                      safeInvoiceData.length > 0
                     }
                   />
                 </th>
                 <th>세금 계산서 번호</th>
                 <th>발행 일자</th>
                 <th>공급자</th>
-                <th>공급받는자자</th>
+                <th>공급받는자</th>
                 <th>합계</th>
               </tr>
             </thead>
             <tbody>
               {currentPageData.length > 0 &&
-                currentPageData.map((invoice) => (
+                safeInvoiceData.map((invoice) => (
                   <tr
                     key={invoice.taxId}
                     onClick={() => handleRowClick(invoice)}
@@ -293,7 +277,10 @@ function Duty() {
             previousLabel={"이전"}
             nextLabel={"다음"}
             breakLabel={"..."}
-            pageCount={Math.ceil(invoiceData.length / itemsPerPage)} // ✅ 전체 데이터 개수 기준으로 페이지 수 계산
+            pageCount={Math.ceil(
+              (Array.isArray(invoiceData) ? invoiceData.length : 0) /
+                itemsPerPage
+            )}
             forcePage={currentPage}
             onPageChange={handlePageChange}
             containerClassName={styles.paginationContainer}
