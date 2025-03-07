@@ -141,6 +141,7 @@ function HQNoticeRegistLayout() {
               {
                 text: "확인",
                 onClick: () => {
+                  navigate("/hq/notice");
                   setIsSuccessModalOpen(false);
                 },
                 className: modalStyle.confirmButtonS,
