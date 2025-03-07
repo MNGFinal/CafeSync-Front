@@ -1,4 +1,4 @@
-.cal {
+.promotionSection {
     padding: 30px;
     max-height: 600px;
 }
@@ -7,7 +7,11 @@
     height: 105px !important;
 }
 
-:global(.fc-dayGridMonth-view .fc-daygrid-event-harness) { width: 100px; }
+.promotionSection .fc-dayGridMonth-view .fc-daygrid-event-harness { 
+    width: auto !important; 
+    max-width: unset !important;
+    min-width: unset !important;
+}
 
 :global(.fc-dayGridMonth-view .fc-daygrid-day-events) { 
     display: flex;

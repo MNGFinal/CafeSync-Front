@@ -18,7 +18,7 @@
     height: 108px !important;
 } 
 
-:global(.fc-dayGridMonth-view .fc-daygrid-event-harness) { width: 100px; }
+/* :global(.fc-dayGridMonth-view .fc-daygrid-event-harness) { width: 100px; } */
 
 :global(.fc-dayGridMonth-view .fc-daygrid-day-events) { 
     display: flex;
