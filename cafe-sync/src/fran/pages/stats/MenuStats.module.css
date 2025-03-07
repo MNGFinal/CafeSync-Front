@@ -81,9 +81,49 @@
 }
 
 .chart {
-  flex: 1 1;
-  padding: 20px;
-  background: white;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  height: 661px;
+
+    flex: 1;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    height: 500px;
+    /* ✅ 높이를 충분히 줘서 차트가 잘 보이게 */
 }
+
+
+/* -------------------메뉴 통계--------------------- */
+
+.chartsContainer {
+    display: flex;
+    justify-content: center;
+    /* 중앙 정렬 */
+    align-items: center;
+    gap: 20px;
+    /* 차트 사이 간격 */
+}
+
+.chart {
+    width: 850px;
+    /* ✅ 차트의 가로 너비 줄이기 (기존보다 좁게) */
+    height: 600px;
+    /* ✅ 차트의 세로 높이 늘리기 */
+    padding: 30px;
+    /* 내부 여백 */
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 1200px) {
+    .chartsContainer {
+        flex-direction: column;
+        /* ✅ 화면이 작아질 경우 차트 세로 정렬 */
+    }
+
+    .chart {
+        width: 90%;
+        /* ✅ 모바일 화면에서 차트 너비 조정 */
+    }
+}
+
