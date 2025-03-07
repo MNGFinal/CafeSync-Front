@@ -1,91 +1,89 @@
 /* 📌 pageHeader: 제목 스타일 */
 .pageHeader {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    margin-left: 20px;
-    margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  margin-left: 20px;
+  margin-top: 20px;
 }
 
 /* 📌 dateFilter: 날짜 필터 스타일 */
 .dateFilter {
-    display: flex;
-    align-items: center;
-    /* ✅ 세로 정렬 */
-    gap: 10px;
-    /* ✅ 요소 간 간격 */
-    background: white;
-    /* ✅ 배경색 */
-    padding: 10px 15px;
-    border-radius: 6px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    border: 1px solid #ddd;
-    /* ✅ 테두리 */
-    margin: 8px auto;
-    /* ✅ 중앙 정렬 */
+  display: flex;
+  align-items: center;
+  /* ✅ 세로 정렬 */
+  gap: 10px;
+  /* ✅ 요소 간 간격 */
+  background: white;
+  /* ✅ 배경색 */
+  padding: 10px 15px;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+  /* ✅ 테두리 */
+  margin: 8px auto;
+  /* ✅ 중앙 정렬 */
 
-    /* ✅ 양쪽 끝 띄우기 */
-    width: calc(100% - 60px);
-    /* 부모 너비보다 60px 작게 */
-    margin: 0 auto;
-    /* 가운데 정렬 */
+  /* ✅ 양쪽 끝 띄우기 */
+  width: calc(100% - 60px);
+  /* 부모 너비보다 60px 작게 */
+  margin: 0 auto;
+  /* 가운데 정렬 */
 }
 
 /* 📌 날짜 입력 필드 스타일 */
 .dateFilter input[type="date"] {
-    padding: 6px 12px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-    outline: none;
-    text-align: center;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  outline: none;
+  text-align: center;
 }
 
 /* 📌 "기간" 라벨 스타일 */
 .dateFilter label {
-    font-weight: bold;
-    /* ✅ 파란색 배경 */
-    padding: 6px 12px;
-    border-radius: 5px;
+  font-weight: bold;
+  /* ✅ 파란색 배경 */
+  padding: 6px 12px;
+  border-radius: 5px;
 }
 
 /* 📌 조회 버튼 스타일 */
 .dateFilter button {
-    background: #3b82f6;
-    /* ✅ 회색 배경 */
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
+  background: #3b82f6;
+  /* ✅ 회색 배경 */
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
 }
 
 .dateFilter button:hover {
-    background: #226bdf;
-    /* ✅ 마우스 올렸을 때 색 변경 */
+  background: #226bdf;
+  /* ✅ 마우스 올렸을 때 색 변경 */
 }
 
 .dateFilter button:active {
-    background: #1754b5;
-    /* ✅ 클릭 시 더 어두운 회색 */
-    transform: scale(0.98);
-    /* ✅ 버튼이 살짝 작아짐 (눌리는 효과) */
+  background: #1754b5;
+  /* ✅ 클릭 시 더 어두운 회색 */
+  transform: scale(0.98);
+  /* ✅ 버튼이 살짝 작아짐 (눌리는 효과) */
 }
 
 .chartsContainer {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-    gap: 20px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  gap: 20px;
 }
 
 .chart {
-    flex: 1;
-    padding: 20px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    height: 500px;
-    /* ✅ 높이를 충분히 줘서 차트가 잘 보이게 */
+  flex: 1 1;
+  padding: 20px;
+  background: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  height: 661px;
 }
