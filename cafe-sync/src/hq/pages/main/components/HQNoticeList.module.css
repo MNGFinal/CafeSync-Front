@@ -1,0 +1,88 @@
+.noticeContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 850px;
+  margin: 0 auto;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.noticeHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* 👉 각 컬럼을 동일한 간격으로 정렬 */
+  padding: 14px 46px;
+  background-color: #590d34;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  border-bottom: 2px solid #ddd;
+}
+
+/* 🔵 리스트 영역 */
+.noticeList {
+  display: flex;
+  flex-direction: column;
+  padding: 0px 18px;
+  max-height: 400px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #590d34 #f0f0f0;
+}
+
+/* 🔵 리스트 스타일 */
+.noticeItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* 👉 헤더와 동일하게 */
+  padding: 14px 18px;
+  border-bottom: 1px solid #ddd;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+  font-weight: normal;
+}
+
+/* 🔵 마우스 올렸을 때 효과 */
+.noticeItem:hover {
+  background-color: #e3e6ff;
+  transform: scale(1.02);
+}
+/* 🔵 링크 스타일 */
+.noticeLink {
+  text-decoration: none;
+  display: flex;
+  width: 100%;
+}
+
+/* 🔵 컬럼 스타일 (비율 통일) */
+.dateColumn {
+  text-align: center;
+  font-size: 16px;
+}
+
+.titleColumn {
+  flex: 3; /* 👉 제목 칸을 더 넓게 */
+  text-align: center; /* 👉 제목만 왼쪽 정렬 */
+  padding-left: 14px;
+  font-size: 16px;
+}
+
+.authorColumn {
+  text-align: center;
+  font-size: 16px;
+}
+/* 🔵 데이터 없을 때 */
+.noData {
+  text-align: center;
+  padding: 20px;
+  color: #999;
+  font-size: 15px;
+}
+
+.loadingText {
+  text-align: center;
+  padding: 12px;
+  font-size: 14px;
+  color: #555;
+}
