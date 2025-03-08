@@ -11,6 +11,9 @@ const preloadedState = {
     user: sessionStorage.getItem("user")
       ? JSON.parse(sessionStorage.getItem("user"))
       : null,
+    expireTime: sessionStorage.getItem("expireTime")
+      ? parseInt(sessionStorage.getItem("expireTime"), 10)
+      : 0, // 🔥 expireTime 추가
   },
 };
 
@@ -18,8 +21,8 @@ const store = configureStore({
   reducer: {
     auth: authReducer,
     chat: chatReducer,
-    noteReducer: noteReducer,
-    noticeReducer: noticeReducer,
+    noteReducer: noteReducer, // ✅ 변수명 통일
+    noticeReducer: noticeReducer, // ✅ 변수명 통일
   },
   preloadedState,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
