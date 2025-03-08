@@ -30,7 +30,7 @@ function HQOrders() {
   const [isWarningModalOpen, setIsWarningModalOpen] = useState(false);
   const [warningMessage, setWarningMessage] = useState("");
 
-  const itemsPerPage = 14;
+  const itemsPerPage = 13;
   const franCode = useSelector(
     (state) => state.auth?.user?.franchise?.franCode ?? null
   );
