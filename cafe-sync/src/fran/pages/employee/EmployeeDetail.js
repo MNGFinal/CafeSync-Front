@@ -27,6 +27,15 @@ function EmployeeDetail({ employee, formatDate, fetchEmployees, onClose }) {
   // "수정" 모드 관리: 신규 등록이면 처음부터 true(수정 가능 상태)
   const [isEditing, setIsEditing] = useState(isCreateMode);
 
+  const formatForInput = (date) => {
+    if (!date) return "";
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   // 수정용 상태: employee로부터 초기화 (신규 등록이면 빈 값)
   const [editedEmployee, setEditedEmployee] = useState(() => {
     if (isCreateMode) {
@@ -53,6 +62,7 @@ function EmployeeDetail({ employee, formatDate, fetchEmployees, onClose }) {
       // 수정 모드
       return {
         ...employee,
+        hireDate: formatForInput(employee.hireDate), // ISO 형식으로 변환
         // 만약 jobCode가 없으면 22(바리스타)로 기본값
         jobCode: employee?.jobCode ?? 22,
         job: {
@@ -289,7 +299,11 @@ function EmployeeDetail({ employee, formatDate, fetchEmployees, onClose }) {
                   <input
                     type="date"
                     name="hireDate"
-                    value={editedEmployee.hireDate || ""}
+                    value={
+                      editedEmployee.hireDate
+                        ? formatForInput(editedEmployee.hireDate)
+                        : ""
+                    }
                     onChange={handleInputChange}
                     className={styles.inputField}
                   />
