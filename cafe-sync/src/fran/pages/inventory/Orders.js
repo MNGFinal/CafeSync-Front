@@ -27,7 +27,7 @@ function Orders() {
   const [isWarningModalOpen, setIsWarningModalOpen] = useState(false);
   const [warningMessage, setWarningMessage] = useState("");
 
-  const itemsPerPage = 15;
+  const itemsPerPage = 14;
   const franCode = useSelector(
     (state) => state.auth?.user?.franchise?.franCode ?? null
   );
