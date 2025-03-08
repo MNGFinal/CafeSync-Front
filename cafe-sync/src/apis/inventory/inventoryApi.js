@@ -421,3 +421,72 @@ export async function deleteFranOrders(deleteData) {
     };
   }
 }
+
+// 본사(모든 가맹점 발주 내역 조회) API
+export async function findHQOrderList() {
+  try {
+    const token = sessionStorage.getItem("accessToken");
+    // 본사용 API 엔드포인트 (서버에서 해당 URL에 맞춰 구현되어 있어야 함)
+    const apiUrl = `http://localhost:8080/api/hq/order`;
+    const response = await fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log("✅ 본사 발주 내역 조회 완료:", data);
+    // ResponseDTO 구조에 따라 실제 데이터 추출 (예: data.data)
+    return data.data;
+  } catch (error) {
+    console.error("❌ 본사 발주 내역 조회 오류:", error);
+    return [];
+  }
+}
+
+// ✅ 본사 발주 승인/반려 API
+export async function updateOrderStatus(orderCode, status) {
+  console.log("프론트에서 넘어온 값 확인", orderCode, status);
+
+  if (!orderCode || (status !== 1 && status !== 2)) {
+    console.error("❌ 올바른 발주 코드 또는 상태값이 없습니다!");
+    return {
+      success: false,
+      message: "올바른 발주 코드 또는 상태값을 입력해주세요.",
+    };
+  }
+
+  try {
+    const token = sessionStorage.getItem("accessToken");
+    const apiUrl = `http://localhost:8080/api/hq/orders/${orderCode}/${status}`;
+
+    const response = await fetch(apiUrl, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status }), // ✅ 상태값(1: 승인, 2: 반려) 전달
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP 오류! 상태 코드: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(
+      `✅ 발주 상태 업데이트 성공 (${status === 1 ? "승인" : "반려"})`
+    );
+    return result;
+  } catch (error) {
+    console.error("❌ 발주 상태 업데이트 중 오류 발생:", error);
+    return {
+      success: false,
+      message: "발주 상태 업데이트 중 오류가 발생했습니다. 다시 시도해주세요.",
+    };
+  }
+}

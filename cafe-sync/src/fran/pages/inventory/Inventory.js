@@ -76,11 +76,18 @@ function Inventory() {
     const diffTime = expiry - today;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    return diffDays === 0
-      ? "D-day"
-      : diffDays > 0
-      ? `D-${diffDays}`
-      : `D+${Math.abs(diffDays)}`;
+    // ✅ 날짜 포맷 변경 (YYYY-MM-DD)
+    const formattedDate = expirationDate.split("T")[0];
+
+    // ✅ D-Day 문자열 생성
+    const dDay =
+      diffDays === 0
+        ? "D-day"
+        : diffDays > 0
+        ? `D-${diffDays}`
+        : `D+${Math.abs(diffDays)}`;
+
+    return `${dDay} (${formattedDate})`; // 🔥 D-Day + 날짜 반환
   };
 
   // ✅ 재고 부족 필터링 (보유수량 ≤ 권장수량의 1/3)
@@ -97,11 +104,25 @@ function Inventory() {
   };
 
   const isExpiringSoon = (dDay) => {
-    if (!dDay) return false; // 예외 처리
+    if (!dDay) return false;
 
-    const dDayNumber = parseInt(dDay.replace(/D[-+]/, ""), 10);
+    // D-day (당일 만료)도 임박으로 처리
+    if (dDay.startsWith("D-day")) return true;
 
-    return dDay.includes("D+") || (dDay.includes("D-") && dDayNumber <= 7);
+    const dDayMatch = dDay.match(/D([-+])(\d+)/);
+    if (!dDayMatch) return false;
+
+    const sign = dDayMatch[1]; // '+' 또는 '-'
+    const days = parseInt(dDayMatch[2], 10);
+
+    if (sign === "-") {
+      // 아직 만료되지 않은 경우: 7일 이내
+      return days <= 7;
+    } else if (sign === "+") {
+      // 이미 만료된 경우: 1일 이내
+      return days <= 1;
+    }
+    return false;
   };
 
   // ✅ 유통기한 임박 필터링 (D-7 이하)
@@ -111,11 +132,26 @@ function Inventory() {
     } else {
       const filtered = inventory.filter((item) => {
         const dDayText = getDday(item.inventory.expirationDate);
-        return isExpiringSoon(dDayText); // 🔥 여기서 방금 만든 함수 활용!
+        console.log(`🔍 ${item.inventory.invenName} - D-Day: ${dDayText}`); // 디버깅 로그
+        return isExpiringSoon(dDayText);
       });
       setFilteredInventory(filtered);
     }
     setShowExpiringSoon(!showExpiringSoon);
+  };
+
+  const isExpiringSoonByDate = (expirationDate) => {
+    if (!expirationDate) return false;
+    const now = new Date();
+    const expiry = new Date(expirationDate);
+    const diffDays = (expiry - now) / (1000 * 60 * 60 * 24); // 남은 일수 (소수점 포함)
+
+    if (diffDays < 0) {
+      // 이미 만료된 경우: 만료 후 1일 이내면 임박으로 처리
+      return diffDays >= -1;
+    }
+    // 아직 만료되지 않은 경우: 남은 일수가 7일 이내면 임박으로 처리
+    return diffDays <= 7;
   };
 
   // ✅ 수량 변경 핸들러 (보유수량, 발주수량, 권장수량)
@@ -387,10 +423,12 @@ function Inventory() {
                     <td>{item.inventory.invenName}</td>
                     <td
                       className={
-                        isExpiringSoon(dDay) ? styles.expiringSoon : ""
+                        isExpiringSoonByDate(item.inventory.expirationDate)
+                          ? styles.expiringSoon
+                          : ""
                       }
                     >
-                      {dDay}
+                      {getDday(item.inventory.expirationDate)}
                     </td>
 
                     {/* ✅ 인풋 필드 유지 */}
