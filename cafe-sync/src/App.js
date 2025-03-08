@@ -69,6 +69,7 @@ import FranRegist from "./hq/pages/mgment/itemList/FranRegist";
 
 import RegisterTest from "./test/RegisterTest";
 import HQDiscontinueList from "./hq/pages/menus/HQDiscontinueList";
+import NotFoundPage from "./home/components/NotFoundPage";
 
 function App() {
   return (
@@ -177,6 +178,8 @@ function App() {
 
         {/* ✅ 테스트 페이지 라우트 추가 */}
         <Route path="/register" element={<RegisterTest />} />
+
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
   );
