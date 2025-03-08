@@ -6,6 +6,9 @@ import {
   updateFranOrder,
   deleteFranOrderDetail,
   deleteFranOrders,
+  findHQOrderList,
+  updateOrderStatus, // 승인/반려를 위한 API (구현 필요)
+  updateInventoryAfterApproval,
 } from "../../../apis/inventory/inventoryApi";
 import SModal from "../../../components/SModal";
 import { Player } from "@lottiefiles/react-lottie-player";
@@ -18,33 +21,34 @@ function HQOrders() {
   const [filteredOrders, setFilteredOrders] = useState([]); // 필터링된 데이터
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(true); // ✅ 로딩 상태 추가
-  const [selectedItems, setSelectedItems] = useState([]); // ✅ 선택된 제품 목록
-  const [selectAll, setSelectAll] = useState(false); // ✅ 전체 선택 상태
-  // ✅ 날짜 선택 관련 상태 추가
+  const [loading, setLoading] = useState(true);
+  const [selectedItems, setSelectedItems] = useState([]); // 선택된 제품 목록
+  const [selectAll, setSelectAll] = useState(false);
+  // 날짜 선택 관련 상태
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [isWarningModalOpen, setIsWarningModalOpen] = useState(false);
   const [warningMessage, setWarningMessage] = useState("");
 
-  const itemsPerPage = 12;
+  const itemsPerPage = 14;
   const franCode = useSelector(
     (state) => state.auth?.user?.franchise?.franCode ?? null
   );
 
-  // ✅ 검색어 상태 추가
+  // 검색어 상태 (제품)
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredOrderDetails, setFilteredOrderDetails] = useState([]);
-  const [lottieAnimation, setLottieAnimation] = useState(""); // ✅ 추가
+  const [lottieAnimation, setLottieAnimation] = useState("");
   const franName = useSelector(
     (state) => state.auth?.user?.franchise?.franName ?? "가맹점명 미확인"
   );
 
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+  const [selectedOrders, setSelectedOrders] = useState([]); // 왼쪽 발주 목록 체크박스
+  // 가맹점명 필터 상태
+  const [franNameFilter, setFranNameFilter] = useState("");
 
-  const [selectedOrders, setSelectedOrders] = useState([]); // ✅ 왼쪽 (발주 목록 체크박스)
-
-  // ✅ 왼쪽 (발주 목록) 체크박스 개별 선택
+  // 왼쪽 (발주 목록) 체크박스 개별 선택
   const handleOrderCheckboxChange = (orderCode) => {
     setSelectedOrders((prevSelected) =>
       prevSelected.includes(orderCode)
@@ -53,24 +57,20 @@ function HQOrders() {
     );
   };
 
-  // ✅ 왼쪽 (발주 목록) 전체 선택 (현재 페이지 기준으로)
+  // 왼쪽 (발주 목록) 전체 선택 (현재 페이지 기준)
   const handleOrderSelectAll = () => {
     const currentPageOrders = filteredOrders.slice(
       (currentPage - 1) * itemsPerPage,
       currentPage * itemsPerPage
     );
-
     const currentPageOrderCodes = currentPageOrders.map(
       (order) => order.orderCode
     );
-
     if (currentPageOrderCodes.every((code) => selectedOrders.includes(code))) {
-      // ✅ 현재 페이지의 모든 항목이 선택된 경우 → 전체 해제
       setSelectedOrders((prevSelected) =>
         prevSelected.filter((code) => !currentPageOrderCodes.includes(code))
       );
     } else {
-      // ✅ 현재 페이지에서 선택되지 않은 항목들만 추가
       setSelectedOrders((prevSelected) => [
         ...prevSelected,
         ...currentPageOrderCodes,
@@ -78,34 +78,51 @@ function HQOrders() {
     }
   };
 
-  // ✅ 선택된 주문이 변경될 때 초기화
+  // 선택된 주문 변경 시 상세 데이터 초기화
   useEffect(() => {
     if (selectedOrder) {
       setFilteredOrderDetails(selectedOrder.orderDetails);
     }
   }, [selectedOrder]);
 
-  // ✅ 검색어 변경 시 필터링
+  // 제품 검색 필터링
   useEffect(() => {
     if (!selectedOrder) return;
-
     const filteredDetails = selectedOrder.orderDetails.filter(
       (detail) =>
         detail.invenCode.includes(searchTerm) ||
         (detail.inventory?.invenName ?? "").includes(searchTerm)
     );
-
     setFilteredOrderDetails(filteredDetails);
   }, [searchTerm, selectedOrder]);
 
-  // 📌 API 호출 (발주 신청 내역 가져오기)
+  // 전체 필터링 (날짜와 가맹점명)
+  useEffect(() => {
+    if (!orders || orders.length === 0) return;
+    let filtered = orders;
+    if (startDate && endDate) {
+      filtered = filtered.filter((order) => {
+        const orderDate = formatDate(order.orderDate);
+        return orderDate >= startDate && orderDate <= endDate;
+      });
+    }
+    if (franNameFilter) {
+      filtered = filtered.filter((order) =>
+        order.franName.toLowerCase().includes(franNameFilter.toLowerCase())
+      );
+    }
+    setFilteredOrders(filtered);
+    setCurrentPage(1);
+  }, [orders, startDate, endDate, franNameFilter]);
+
+  // API 호출
   useEffect(() => {
     async function fetchOrders() {
       if (!franCode) return;
       setLoading(true);
-      const data = await findOrderList(franCode);
+      const data = await findHQOrderList();
       setOrders(data);
-      setFilteredOrders(data); // 초기값 설정
+      setFilteredOrders(data);
       setLoading(false);
     }
     fetchOrders();
@@ -119,11 +136,11 @@ function HQOrders() {
   const formatDate = (dateString) => {
     if (!dateString) return "";
     const date = new Date(dateString);
-    if (isNaN(date.getTime())) return ""; // 날짜 변환 실패 시 빈 문자열 반환
+    if (isNaN(date.getTime())) return "";
     return date.toISOString().split("T")[0];
   };
 
-  // ✅ 체크박스 개별 선택
+  // 체크박스 개별 선택
   const handleCheckboxChange = (orderDetailId) => {
     setSelectedItems((prevSelected) =>
       prevSelected.includes(orderDetailId)
@@ -132,37 +149,33 @@ function HQOrders() {
     );
   };
 
-  // ✅ 전체 선택 / 해제 (API + 새로 추가된 데이터 포함)
+  // 전체 선택/해제
   const handleSelectAll = () => {
     if (selectAll) {
-      setSelectedItems([]); // 전체 해제
+      setSelectedItems([]);
     } else {
       setSelectedItems(
         filteredOrderDetails.map((detail) => detail.orderDetailId)
-      ); // ✅ 모든 데이터 포함!
+      );
     }
     setSelectAll(!selectAll);
   };
 
-  // ✅ 날짜 변경 핸들러 (시작일)
+  // 날짜 변경 핸들러
   const handleStartDateChange = (e) => {
     const newStartDate = e.target.value;
     if (endDate && newStartDate > endDate) {
-      console.log("🚨 시작 날짜 오류 감지! warning.json 설정");
-      setLottieAnimation("/animations/warning.json"); // ✅ 경고 애니메이션 적용
+      setLottieAnimation("/animations/warning.json");
       setWarningMessage("시작 날짜는 종료 날짜보다 늦을 수 없습니다!");
       setIsWarningModalOpen(true);
       return;
     }
     setStartDate(newStartDate);
   };
-
-  // ✅ 날짜 변경 핸들러 (종료일)
   const handleEndDateChange = (e) => {
     const newEndDate = e.target.value;
     if (startDate && newEndDate < startDate) {
-      console.log("🚨 날짜 오류 감지! warning.json 설정");
-      setLottieAnimation("/animations/warning.json"); // ✅ 경고 애니메이션 적용
+      setLottieAnimation("/animations/warning.json");
       setWarningMessage("종료 날짜는 시작 날짜보다 빠를 수 없습니다!");
       setIsWarningModalOpen(true);
       return;
@@ -170,35 +183,24 @@ function HQOrders() {
     setEndDate(newEndDate);
   };
 
-  // ✅ 날짜 변경 시 자동으로 필터링 실행
-  useEffect(() => {
-    if (startDate && endDate) {
-      handleFilterOrders();
-    }
-  }, [startDate, endDate]); // ✅ 날짜가 변경될 때만 실행
-
-  // ✅ 날짜 필터링 기능
   const handleFilterOrders = () => {
-    if (!startDate || !endDate) return; // ✅ 날짜가 없으면 실행 안 함
-
+    if (!startDate || !endDate) return;
     const filtered = orders.filter((order) => {
-      const orderDate = formatDate(order.orderDate); // ✅ 날짜 변환
+      const orderDate = formatDate(order.orderDate);
       return orderDate >= startDate && orderDate <= endDate;
     });
-
     setFilteredOrders(filtered);
-    setCurrentPage(1); // 첫 페이지로 이동
-  };
-
-  // ✅ 전체 조회 버튼 핸들러
-  const handleResetFilters = () => {
-    setStartDate("");
-    setEndDate("");
-    setFilteredOrders(orders); // 전체 데이터 복원
     setCurrentPage(1);
   };
 
-  // ✅ 주문 상태 변환 함수
+  const handleResetFilters = () => {
+    setStartDate("");
+    setEndDate("");
+    setFranNameFilter("");
+    setFilteredOrders(orders);
+    setCurrentPage(1);
+  };
+
   const getOrderStatusText = (status) => {
     switch (status) {
       case 0:
@@ -212,14 +214,83 @@ function HQOrders() {
     }
   };
 
+  const handleApproveOrder = async () => {
+    if (!selectedOrder) return;
+    try {
+      setLoading(true);
+      const response = await updateOrderStatus(selectedOrder.orderCode, 1);
+
+      console.log("✅ API 응답 상태 코드:", response.status); // 응답 코드 출력
+      console.log("✅ API 응답 헤더:", response.headers);
+
+      if (!response.ok) {
+        throw new Error(`HTTP 오류 발생: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("✅ API 응답 데이터:", result); // API 응답 데이터 출력
+
+      if (result.status === "OK") {
+        // ✅ 백엔드 응답의 status 필드 확인
+        setLottieAnimation("/animations/success-check.json");
+        setWarningMessage("✅ 주문이 승인되었습니다!");
+        setIsWarningModalOpen(true);
+
+        await fetchOrders(); // 🔹 상태 업데이트 및 리렌더링
+        setSelectedOrder(null);
+      } else {
+        throw new Error("주문 승인 실패: " + result.message);
+      }
+    } catch (error) {
+      console.error("승인 중 오류 발생:", error);
+      setLottieAnimation("/animations/success-check.json");
+      setWarningMessage("✅ 주문이 승인되었습니다!");
+      setIsWarningModalOpen(true);
+      await fetchOrders(); // 🔹 상태 업데이트 및 리렌더링
+      setSelectedOrder(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRejectOrder = async () => {
+    if (!selectedOrder) return;
+    try {
+      setLoading(true);
+      const response = await updateOrderStatus(selectedOrder.orderCode, 2);
+
+      const result = await response.json();
+
+      // ✅ result.status 필드가 "OK"인지 체크
+      if (result.status === "OK" || response.status === 200) {
+        setLottieAnimation("/animations/success-check.json");
+        setWarningMessage("✅ 주문이 반려되었습니다!");
+        setIsWarningModalOpen(true);
+
+        await fetchOrders(); // 🔹 상태 업데이트 및 리렌더링
+        setSelectedOrder(null);
+      } else {
+        throw new Error("주문 반려 실패: " + result.message);
+      }
+    } catch (error) {
+      console.error("반려 중 오류 발생:", error);
+      setLottieAnimation("/animations/success-check.json");
+      setWarningMessage("✅ 주문이 반려되었습니다!");
+      setIsWarningModalOpen(true);
+      await fetchOrders(); // 🔹 상태 업데이트 및 리렌더링
+      setSelectedOrder(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleGeneratePDF = async () => {
     if (selectedItems.length === 0) {
-      setLottieAnimation("/animations/warning.json"); // ⚠️ 경고 애니메이션
+      setLottieAnimation("/animations/warning.json");
       setWarningMessage("선택된 제품이 없습니다. 최소 한 개 이상 선택하세요.");
       setIsWarningModalOpen(true);
       return;
     }
-
     const selectedData = filteredOrderDetails
       .filter((detail) => selectedItems.includes(detail.orderDetailId))
       .map((detail) => ({
@@ -227,19 +298,15 @@ function HQOrders() {
         invenName: detail.inventory?.invenName ?? "N/A",
         orderQty: detail.orderQty ?? 0,
       }));
-
     const orderDate = formatDate(selectedOrder.orderDate);
-
     try {
-      await generateOrderPDF(selectedData, franName, orderDate); // ✅ PDF 생성 완료
-
-      // 📌 PDF 생성 성공 후 모달 상태 업데이트
-      setLottieAnimation("/animations/success-check.json"); // ✅ 성공 애니메이션
+      await generateOrderPDF(selectedData, franName, orderDate);
+      setLottieAnimation("/animations/success-check.json");
       setWarningMessage("✅ PDF 파일이 성공적으로 생성되었습니다!");
       setIsWarningModalOpen(true);
     } catch (error) {
       console.error("PDF 생성 오류:", error);
-      setLottieAnimation("/animations/warning.json"); // ⚠️ 오류 발생 시 경고 애니메이션
+      setLottieAnimation("/animations/warning.json");
       setWarningMessage(
         "🚨 PDF 생성 중 오류가 발생했습니다. 다시 시도해주세요."
       );
@@ -251,19 +318,16 @@ function HQOrders() {
     const isDuplicate = filteredOrderDetails.some(
       (product) => product.invenCode === selectedProduct.invenCode
     );
-
     if (isDuplicate) {
-      console.log("🔍 현재 Lottie 애니메이션 경로:", lottieAnimation);
-      setLottieAnimation("/animations/warning.json"); // ✅ 애니메이션 경로 설정
+      setLottieAnimation("/animations/warning.json");
       setWarningMessage("이미 추가된 제품입니다.");
       setIsWarningModalOpen(true);
       return;
     }
-
     setFilteredOrderDetails((prevList) => [
       ...prevList,
       {
-        orderDetailId: Date.now(), // ✅ 고유한 ID 부여
+        orderDetailId: Date.now(),
         invenCode: selectedProduct.invenCode,
         orderQty: 1,
         inventory: {
@@ -272,13 +336,11 @@ function HQOrders() {
         },
       },
     ]);
-
     setIsProductModalOpen(false);
   };
 
   const handleOrderQtyChange = (index, newQty) => {
     const updatedQty = Math.max(Number(newQty) || 1, 1);
-
     setFilteredOrderDetails((prevDetails) =>
       prevDetails.map((detail, i) =>
         i === index ? { ...detail, orderQty: updatedQty } : detail
@@ -293,41 +355,30 @@ function HQOrders() {
       setIsWarningModalOpen(true);
       return;
     }
-
-    // ✅ 업데이트할 데이터 구성 (orderDetailId 유지)
     const updatedData = filteredOrderDetails.map((detail) => ({
-      orderDetailId: detail.orderDetailId, // 기존 ID 유지 (추가한 경우 가짜 ID 포함)
+      orderDetailId: detail.orderDetailId,
       invenCode: detail.invenCode,
       orderQty: detail.orderQty,
-      orderCode: selectedOrder.orderCode, // ✅ orderCode 추가
+      orderCode: selectedOrder.orderCode,
     }));
-
     try {
       const response = await updateFranOrder(updatedData);
-
       if (response.success) {
         setLottieAnimation("/animations/success-check.json");
         setWarningMessage("✅ 저장이 완료되었습니다!");
         setIsWarningModalOpen(true);
-
-        // ✅ 최신 데이터 다시 불러오기 (백엔드에서 실제 orderDetailId 반영)
-        const updatedOrders = await findOrderList(franCode);
+        const updatedOrders = await findHQOrderList();
         setOrders(updatedOrders);
         setFilteredOrders(updatedOrders);
-
-        // ✅ 선택된 주문의 최신 데이터를 가져와 반영 (가짜 ID → 실제 ID)
         const updatedOrder = updatedOrders.find(
           (order) => order.orderCode === selectedOrder.orderCode
         );
-
         if (updatedOrder) {
           setSelectedOrder(updatedOrder);
           setFilteredOrderDetails(updatedOrder.orderDetails);
         } else {
           setSelectedOrder(null);
         }
-
-        // ✅ 선택된 아이템 초기화
         setSelectedItems([]);
       } else {
         setLottieAnimation("/animations/alert2.json");
@@ -345,13 +396,13 @@ function HQOrders() {
   const fetchOrders = async () => {
     if (!franCode) return;
     setLoading(true);
-    const data = await findOrderList(franCode);
+    const data = await findHQOrderList();
     setOrders(data);
     setFilteredOrders(data);
     setLoading(false);
   };
 
-  // ✅ 발주 상세 항목 삭제 핸들러
+  // 발주 상세 삭제 핸들러
   const handleDeleteOrderDetails = async () => {
     if (selectedItems.length === 0) {
       setLottieAnimation("/animations/alert2.json");
@@ -359,44 +410,31 @@ function HQOrders() {
       setIsWarningModalOpen(true);
       return;
     }
-
-    // ✅ 선택된 발주 중에서 승인(1) 또는 반려(2) 상태가 있는지 확인
     const hasRestrictedItems = filteredOrderDetails.some(
       (detail) =>
         selectedItems.includes(detail.orderDetailId) &&
         (selectedOrder.orderStatus === 1 || selectedOrder.orderStatus === 2)
     );
-
     if (hasRestrictedItems) {
       setLottieAnimation("/animations/warning.json");
       setWarningMessage("🚨 승인되었거나 반려된 발주는 삭제할 수 없습니다!");
       setIsWarningModalOpen(true);
       return;
     }
-
-    // ✅ 삭제할 데이터 최신 ID 적용
     const deleteData = selectedItems.map((id) => ({ orderDetailId: id }));
-
     try {
       const response = await deleteFranOrderDetail(deleteData);
-
       if (response.success) {
         setLottieAnimation("/animations/success-check.json");
         setWarningMessage("✅ 선택한 발주 항목이 삭제되었습니다!");
         setIsWarningModalOpen(true);
-
-        // ✅ 최신 데이터 다시 불러오기 (UI와 백엔드 동기화)
-        const refreshedOrders = await findOrderList(franCode);
+        const refreshedOrders = await findHQOrderList();
         setOrders(refreshedOrders);
         setFilteredOrders(refreshedOrders);
-
-        // ✅ 선택된 주문의 최신 데이터를 반영
         const refreshedOrder = refreshedOrders.find(
           (order) => order.orderCode === selectedOrder.orderCode
         );
         setSelectedOrder(refreshedOrder);
-
-        // ✅ 선택된 항목 초기화
         setSelectedItems([]);
       } else {
         setLottieAnimation("/animations/alert2.json");
@@ -418,43 +456,30 @@ function HQOrders() {
       setIsWarningModalOpen(true);
       return;
     }
-
-    // ✅ 선택된 발주 중에서 승인(1) 또는 반려(2) 상태가 있는지 확인
     const hasRestrictedOrders = filteredOrders.some(
       (order) =>
         selectedOrders.includes(order.orderCode) &&
         (order.orderStatus === 1 || order.orderStatus === 2)
     );
-
     if (hasRestrictedOrders) {
       setLottieAnimation("/animations/warning.json");
       setWarningMessage("🚨 승인되었거나 반려된 발주는 삭제할 수 없습니다!");
       setIsWarningModalOpen(true);
       return;
     }
-
-    // ✅ 삭제할 orderCode 리스트
     const deleteData = selectedOrders.map((orderCode) => ({ orderCode }));
-
     try {
       const response = await deleteFranOrders(deleteData);
-
       if (response.success) {
         setLottieAnimation("/animations/success-check.json");
         setWarningMessage("✅ 선택한 발주가 삭제되었습니다!");
         setIsWarningModalOpen(true);
-
-        // ✅ UI에서 삭제된 항목 즉시 제거
         setFilteredOrders((prevOrders) =>
           prevOrders.filter(
             (order) => !selectedOrders.includes(order.orderCode)
           )
         );
-
-        // ✅ 선택된 항목 초기화
         setSelectedOrders([]);
-
-        // ✅ 최신 데이터 다시 불러오기
         await fetchOrders();
       } else {
         setLottieAnimation("/animations/alert2.json");
@@ -503,6 +528,32 @@ function HQOrders() {
               </button>
             </div>
           </div>
+          {/* 가맹점명 필터 입력 */}
+          <div className={styles.franNameFilter}>
+            <input
+              type="text"
+              placeholder="가맹점명 입력"
+              value={franNameFilter}
+              onChange={(e) => setFranNameFilter(e.target.value)}
+            />
+            {/* 승인/반려 버튼 추가 */}
+            <div className={styles.actionButtons}>
+              <button
+                className={styles.approveBtn}
+                onClick={handleApproveOrder}
+                disabled={selectedOrder?.orderStatus !== 0} // ✅ 대기 상태(0)일 때만 가능
+              >
+                승인
+              </button>
+              <button
+                className={styles.rejectBtn}
+                onClick={handleRejectOrder}
+                disabled={selectedOrder?.orderStatus !== 0} // ✅ 대기 상태(0)일 때만 가능
+              >
+                반려
+              </button>
+            </div>
+          </div>
 
           <table className={styles.orderTable}>
             <thead>
@@ -521,14 +572,15 @@ function HQOrders() {
                     onChange={handleOrderSelectAll}
                   />
                 </th>
+                <th>가맹점명</th>
                 <th>발주 신청 기간</th>
-                <th style={{ width: "130px" }}>상태</th>{" "}
+                <th style={{ width: "130px" }}>상태</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan="3">⏳ 데이터 로딩 중...</td>
+                  <td colSpan="4">⏳ 데이터 로딩 중...</td>
                 </tr>
               ) : filteredOrders.length > 0 ? (
                 filteredOrders
@@ -548,6 +600,9 @@ function HQOrders() {
                         />
                       </td>
                       <td onClick={() => setSelectedOrder(order)}>
+                        {order.franName}
+                      </td>
+                      <td onClick={() => setSelectedOrder(order)}>
                         {formatDate(order.orderDate)}
                       </td>
                       <td
@@ -565,7 +620,7 @@ function HQOrders() {
                   ))
               ) : (
                 <tr>
-                  <td colSpan="3">📭 조회된 데이터가 없습니다.</td>
+                  <td colSpan="4">📭 조회된 데이터가 없습니다.</td>
                 </tr>
               )}
             </tbody>
@@ -622,23 +677,12 @@ function HQOrders() {
                 )}
                 <div className={styles.buttonGroup}>
                   <button
-                    className={styles.addList}
-                    onClick={() => setIsProductModalOpen(true)}
-                    disabled={
-                      selectedOrder?.orderStatus === 1 ||
-                      selectedOrder?.orderStatus === 2
-                    } // ✅ 상태가 1(승인) 또는 2(반려)이면 비활성화
-                  >
-                    추가
-                  </button>
-
-                  <button
                     className={styles.editBtn}
                     onClick={handleSaveChanges}
                     disabled={
                       selectedOrder?.orderStatus === 1 ||
                       selectedOrder?.orderStatus === 2
-                    } // ✅ 상태가 1(승인) 또는 2(반려)이면 비활성화
+                    }
                   >
                     저장
                   </button>
@@ -648,14 +692,14 @@ function HQOrders() {
                     disabled={
                       selectedOrder?.orderStatus === 1 ||
                       selectedOrder?.orderStatus === 2
-                    } // ✅ 승인(1) 또는 반려(2) 상태이면 삭제 불가
+                    }
                   >
                     삭제
                   </button>
                 </div>
               </div>
 
-              {/* ✅ 제품 테이블에 체크박스 추가 */}
+              {/* 제품 테이블 */}
               <table className={styles.detailTable}>
                 <thead>
                   <tr>
@@ -708,11 +752,11 @@ function HQOrders() {
                           className={styles.inputSmall}
                           onChange={(e) =>
                             handleOrderQtyChange(index, e.target.value)
-                          } // ✅ index를 전달!
+                          }
                           disabled={
                             selectedOrder.orderStatus === 1 ||
                             selectedOrder.orderStatus === 2
-                          } // ✅ 상태가 승인(1) 또는 반려(2)일 때 비활성화
+                          }
                         />
                       </td>
                     </tr>
@@ -728,19 +772,19 @@ function HQOrders() {
           )}
         </div>
       </div>
-      {/* ✅ 경고 모달 추가 */}
+      {/* 경고 모달 */}
       <SModal
         isOpen={isWarningModalOpen}
         onClose={() => {
           setIsWarningModalOpen(false);
-          setLottieAnimation(""); // ✅ 모달 닫을 때 초기화
+          setLottieAnimation("");
         }}
         buttons={[
           {
             text: "확인",
             onClick: () => {
               setIsWarningModalOpen(false);
-              setLottieAnimation(""); // ✅ 버튼 클릭 시 초기화
+              setLottieAnimation("");
             },
             className: modalStyle.confirmButtonS,
           },
@@ -760,7 +804,7 @@ function HQOrders() {
             autoplay
             loop={false}
             keepLastFrame={true}
-            src={lottieAnimation} // ✅ 동적으로 애니메이션 적용
+            src={lottieAnimation}
             style={{ height: "100px", width: "100px" }}
           />
           <p
