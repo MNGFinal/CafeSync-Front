@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const StoreSales = () => {
+const StoreSales = ({ startDate, endDate }) => {
     const [stores, setStores] = useState([]);
 
     useEffect(() => {
-        axios.get("http://localhost:8080/api/hq/top-stores?startDate=2025-01-01&endDate=2025-12-31")
+        if (!startDate || !endDate) return;
+
+        axios.get(`http://localhost:8080/api/hq/top-stores?startDate=${startDate}&endDate=${endDate}`)
             .then(response => {
-                console.log("📌 Store Sales Data:", response.data); // 디버깅 로그
+                console.log("📌 Store Sales Data:", response.data);
                 setStores(response.data);
             })
             .catch(error => {
                 console.error("Error fetching store sales:", error);
             });
-    }, []);
+    }, [startDate, endDate]); // ✅ startDate와 endDate 변경 시 다시 API 호출
 
     return (
         <div className="store-container">

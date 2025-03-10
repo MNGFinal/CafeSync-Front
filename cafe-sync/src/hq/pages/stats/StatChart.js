@@ -1,6 +1,7 @@
 import React from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
+import styles from "./stat.module.css";
 
 // Chart.js 요소 등록
 Chart.register(ArcElement, Tooltip, Legend);
@@ -38,7 +39,7 @@ const StatChart = ({ title, data }) => {
     };
 
     return (
-        <div className="chart-container">
+        <div className={styles.container}>  {/* ✅ styles.container로 변경 */}
             <h3>{title}</h3>
             <Doughnut data={chartData} options={chartOptions} />
         </div>
