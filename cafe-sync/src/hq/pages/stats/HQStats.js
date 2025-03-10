@@ -48,9 +48,16 @@ function HQStats() {
       </div>
 
       <div className={styles.gridContainer}>
-        <StoreSales startDate={startDate} endDate={endDate} />
-        <MenuSalesChart startDate={startDate} endDate={endDate} />
-        <TodaySalesChart />
+        <div>
+          <h2 className={styles.top5}>Top 5 점포 순위</h2>
+          <div>
+            <StoreSales startDate={startDate} endDate={endDate} />
+            <div>
+              <MenuSalesChart startDate={startDate} endDate={endDate} />
+              <TodaySalesChart />
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );

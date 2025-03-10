@@ -126,28 +126,33 @@ th {
     margin: 0 5px;
 }
 
-.gridContainer {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-}
+
 
 .storeContainer {
-    width: 45%;
+    width: 850px;
+    height: 600px;
     background: #fff;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
+    margin-left: 30px;
+    border: 1px solid #ddd;
+
+    >div {
+        display: flex;
+        flex-wrap: wrap;
+    }
 }
 
 .storeBox {
     background: #f4f4f4;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 10px;
     margin: 10px;
     text-align: center;
     font-size: 14px;
+    width: 30%;
 }
 
 .salesChange {
@@ -197,4 +202,126 @@ th {
     font-weight: bold;
     padding: 6px 12px;
     border-radius: 5px;
+}
+
+.gridContainer {
+    border: solid 1px red;
+
+    >div {
+        display: flex;
+        flex-direction: column;
+
+        >div {
+            display: flex;
+
+            >div {
+                display: flex;
+            }
+        }
+    }
+}
+
+
+
+/* 가맹점통계 이미지********************************************************* */
+/* ✅ 점포 랭킹 컨테이너 */
+.store-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-top: 20px;
+}
+
+/* ✅ 2x3 그리드 정렬 (위 2개, 아래 3개) */
+.store-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* 3열 */
+    grid-template-rows: auto auto;
+    /* 두 개의 행 */
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+    max-width: 500px;
+    /* ✅ 가로 크기 제한 */
+
+    /* ✅ grid-template-areas를 활용한 배치 */
+    grid-template-areas:
+        "store1 store2 ."
+        "store3 store4 store5";
+}
+
+/* ✅ 개별 점포 박스 */
+.store-box {
+    width: 150px;
+    height: 180px;
+    background-color: #f4f4f4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-weight: bold;
+    padding: 10px;
+}
+
+/* ✅ 개별 점포의 위치 지정 */
+.store-box:nth-child(1) {
+    grid-area: store1;
+}
+
+.store-box:nth-child(2) {
+    grid-area: store2;
+}
+
+.store-box:nth-child(3) {
+    grid-area: store3;
+}
+
+.store-box:nth-child(4) {
+    grid-area: store4;
+}
+
+.store-box:nth-child(5) {
+    grid-area: store5;
+}
+
+/* ✅ 이미지 크기 */
+.store-box img {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+}
+
+/* ✅ 점포명 스타일 */
+.store-box h3 {
+    margin-top: 8px;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* ✅ 매출액 스타일 */
+.store-box p {
+    font-size: 12px;
+    color: #333;
+}
+
+/* ✅ 타이틀 스타일 */
+.top5 {
+    margin-top: 20px;
+    margin-left: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.image {
+    width: 100%;
+    padding: 10px;
 }

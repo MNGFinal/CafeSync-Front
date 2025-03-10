@@ -1,31 +1,32 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import styles from "./stat.module.css"; // ✅ CSS 모듈 추가!
 
-const StoreSales = ({ startDate, endDate }) => {
+const StoreSales = () => {
     const [stores, setStores] = useState([]);
 
     useEffect(() => {
-        if (!startDate || !endDate) return;
-
-        axios.get(`http://localhost:8080/api/hq/top-stores?startDate=${startDate}&endDate=${endDate}`)
-            .then(response => {
+        axios
+            .get("http://localhost:8080/api/hq/top-stores?startDate=2025-01-01&endDate=2025-12-31")
+            .then((response) => {
                 console.log("📌 Store Sales Data:", response.data);
                 setStores(response.data);
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error("Error fetching store sales:", error);
             });
-    }, [startDate, endDate]); // ✅ startDate와 endDate 변경 시 다시 API 호출
+    }, []);
 
-    return (
-        <div className="store-container">
-            <h2>Top 5 점포 순위</h2>
-            <div className="grid-container">
+    return (<>
+        <div className={styles.storeContainer}>
+
+            <div className={styles.storeGrid}>
                 {stores.length > 0 ? (
                     stores.slice(0, 5).map((store, index) => (
-                        <div key={store.franCode} className="store-box">
+                        <div key={store.franCode} className={styles.storeBox}>
+                            <img src={store.franImage || "/default-image.jpg"} alt={`${store.franName} 이미지`} className={styles.image} />
                             <h3>{index + 1}등 {store.franName}</h3>
-                            <p>매출액: {store.totalSales.toLocaleString()}원</p>
+                            <p>매출액: {store.totalSales?.toLocaleString()}원</p>
                         </div>
                     ))
                 ) : (
@@ -33,6 +34,7 @@ const StoreSales = ({ startDate, endDate }) => {
                 )}
             </div>
         </div>
+    </>
     );
 };
 
