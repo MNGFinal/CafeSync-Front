@@ -14,6 +14,7 @@ function HQStats() {
 
   const [startDate, setStartDate] = useState("2025-01-01");
   const [endDate, setEndDate] = useState("2025-12-31");
+  const [searchTrigger, setSearchTrigger] = useState(false); // ✅ 조회 버튼이 눌렸을 때만 변경
 
   // ✅ 날짜 변경 핸들러
   const handleStartDateChange = (e) => {
@@ -24,9 +25,10 @@ function HQStats() {
     setEndDate(e.target.value);
   };
 
-  // ✅ 조회 버튼 클릭 시 API 재요청 (데이터 새로고침)
+  // ✅ 조회 버튼 클릭 시 API 요청 실행
   const handleSearch = () => {
     console.log(`📌 검색 기간: ${startDate} ~ ${endDate}`);
+    setSearchTrigger((prev) => !prev); // ✅ 조회 버튼을 눌렀을 때만 값 변경
   };
 
   return (
@@ -49,12 +51,12 @@ function HQStats() {
 
       <div className={styles.gridContainer}>
         <div>
-          <h2 className={styles.top5}>Top 5 점포 순위</h2>
           <div>
-            <StoreSales startDate={startDate} endDate={endDate} />
-            <div>
-              <MenuSalesChart startDate={startDate} endDate={endDate} />
-              <TodaySalesChart />
+            {/* ✅ StoreSales에 searchTrigger 전달 */}
+            <StoreSales startDate={startDate} endDate={endDate} searchTrigger={searchTrigger} />
+            <div className={styles.statContainer}>
+              <MenuSalesChart startDate={startDate} endDate={endDate} searchTrigger={searchTrigger} />
+              <TodaySalesChart searchTrigger={searchTrigger} />
             </div>
           </div>
         </div>

@@ -152,7 +152,8 @@ th {
     margin: 10px;
     text-align: center;
     font-size: 14px;
-    width: 30%;
+    width: 245px;
+    height: 230px;
 }
 
 .salesChange {
@@ -198,6 +199,16 @@ th {
     background-color: #0056b3;
 }
 
+/* ✅ 버튼을 클릭했을 때 (누르는 느낌) */
+.searchButton:active {
+    background-color: #004494;
+    /* ✅ 더 진한 색 */
+    transform: scale(0.95);
+    /* ✅ 버튼이 살짝 작아지는 효과 */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2);
+    /* ✅ 안쪽으로 눌리는 느낌 */
+}
+
 .label2 {
     font-weight: bold;
     padding: 6px 12px;
@@ -212,10 +223,26 @@ th {
         flex-direction: column;
 
         >div {
+            border: solid 1px rgb(0, 136, 255);
             display: flex;
+            margin-top: 36px;
 
             >div {
+                border: solid 1px rgb(255, 196, 0);
                 display: flex;
+                width: 837px;
+                height: 600px;
+                background: #fff;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                margin-bottom: 20px;
+                margin-left: 30px;
+                border: 1px solid #ddd;
+                align-items: center;
+                justify-content: center;
+                /* 가운데 정렬 */
+                gap: 70px;
             }
         }
     }
@@ -244,12 +271,14 @@ th {
     justify-content: center;
     align-items: center;
     margin-top: 15px;
-    max-width: 500px;
+    max-width: 600px;
     /* ✅ 가로 크기 제한 */
+    margin-left: auto;
+    margin-right: auto;
 
     /* ✅ grid-template-areas를 활용한 배치 */
     grid-template-areas:
-        "store1 store2 ."
+        ". store1 store2"
         "store3 store4 store5";
 }
 
@@ -324,4 +353,17 @@ th {
 .image {
     width: 100%;
     padding: 10px;
+    height: 150px;
+}
+
+.saless {
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 6px;
+}
+
+
+
+.statContainer {
+    border: #0056b3 1px;
 }
