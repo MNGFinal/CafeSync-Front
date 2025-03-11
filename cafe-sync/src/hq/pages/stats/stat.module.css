@@ -1,0 +1,369 @@
+.dashboard-container {
+    width: 90%;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.grid-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.chart-container {
+    width: 45%;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+
+
+
+
+
+
+
+
+.dashboard-container {
+    width: 90%;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.grid-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.card {
+    width: 30%;
+    /* ✅ 3개 카드가 한 줄에 맞도록 조정 */
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+
+
+.chart-container {
+    width: 45%;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.grid-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+
+
+
+
+
+
+
+
+.pageHeader {
+    width: 100%;
+    height: 40px;
+    color: white;
+    background-color: rgba(99, 8, 72, 1);
+    padding: 8px;
+}
+
+.pageHeader2 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    margin-top: 20px;
+}
+
+.datePickerContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.datePickerContainer label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.datePickerContainer input {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 0 5px;
+}
+
+
+
+.storeContainer {
+    width: 850px;
+    height: 600px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    margin-left: 30px;
+    border: 1px solid #ddd;
+
+    >div {
+        display: flex;
+        flex-wrap: wrap;
+    }
+}
+
+.storeBox {
+    background: #f4f4f4;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px;
+    text-align: center;
+    font-size: 14px;
+    width: 245px;
+    height: 230px;
+}
+
+.salesChange {
+    margin-left: 20px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+/* 📌 dateFilter: 날짜 필터 스타일 */
+.dateFilter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: white;
+    padding: 10px 15px;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    margin: 0 auto;
+    width: calc(100% - 60px);
+}
+
+/* 📌 날짜 입력 필드 스타일 */
+.dateFilter input[type="date"] {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* 📌 조회 버튼 스타일 */
+.searchButton {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.searchButton:hover {
+    background-color: #0056b3;
+}
+
+/* ✅ 버튼을 클릭했을 때 (누르는 느낌) */
+.searchButton:active {
+    background-color: #004494;
+    /* ✅ 더 진한 색 */
+    transform: scale(0.95);
+    /* ✅ 버튼이 살짝 작아지는 효과 */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2);
+    /* ✅ 안쪽으로 눌리는 느낌 */
+}
+
+.label2 {
+    font-weight: bold;
+    padding: 6px 12px;
+    border-radius: 5px;
+}
+
+.gridContainer {
+    border: solid 1px red;
+
+    >div {
+        display: flex;
+        flex-direction: column;
+
+        >div {
+            border: solid 1px rgb(0, 136, 255);
+            display: flex;
+            margin-top: 36px;
+
+            >div {
+                border: solid 1px rgb(255, 196, 0);
+                display: flex;
+                width: 837px;
+                height: 600px;
+                background: #fff;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                margin-bottom: 20px;
+                margin-left: 30px;
+                border: 1px solid #ddd;
+                align-items: center;
+                justify-content: center;
+                /* 가운데 정렬 */
+                gap: 70px;
+            }
+        }
+    }
+}
+
+
+
+/* 가맹점통계 이미지********************************************************* */
+/* ✅ 점포 랭킹 컨테이너 */
+.store-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-top: 20px;
+}
+
+/* ✅ 2x3 그리드 정렬 (위 2개, 아래 3개) */
+.store-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* 3열 */
+    grid-template-rows: auto auto;
+    /* 두 개의 행 */
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+    max-width: 600px;
+    /* ✅ 가로 크기 제한 */
+    margin-left: auto;
+    margin-right: auto;
+
+    /* ✅ grid-template-areas를 활용한 배치 */
+    grid-template-areas:
+        ". store1 store2"
+        "store3 store4 store5";
+}
+
+/* ✅ 개별 점포 박스 */
+.store-box {
+    width: 150px;
+    height: 180px;
+    background-color: #f4f4f4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-weight: bold;
+    padding: 10px;
+}
+
+/* ✅ 개별 점포의 위치 지정 */
+.store-box:nth-child(1) {
+    grid-area: store1;
+}
+
+.store-box:nth-child(2) {
+    grid-area: store2;
+}
+
+.store-box:nth-child(3) {
+    grid-area: store3;
+}
+
+.store-box:nth-child(4) {
+    grid-area: store4;
+}
+
+.store-box:nth-child(5) {
+    grid-area: store5;
+}
+
+/* ✅ 이미지 크기 */
+.store-box img {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+}
+
+/* ✅ 점포명 스타일 */
+.store-box h3 {
+    margin-top: 8px;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* ✅ 매출액 스타일 */
+.store-box p {
+    font-size: 12px;
+    color: #333;
+}
+
+/* ✅ 타이틀 스타일 */
+.top5 {
+    margin-top: 20px;
+    margin-left: 30px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.image {
+    width: 100%;
+    padding: 10px;
+    height: 150px;
+}
+
+.saless {
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 6px;
+}
+
+
+
+.statContainer {
+    border: #0056b3 1px;
+}

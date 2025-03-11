@@ -3,30 +3,42 @@ import axios from "axios";
 import { Line } from "react-chartjs-2";
 import { Chart, LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend } from "chart.js";
 
-
 // Chart.js 요소 등록
 Chart.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend);
 
-const MonthlySalesChart = () => {
+const MonthlySalesChart = ({ startDate = "2025-01-01", endDate = "2025-12-31" }) => {
     const [monthlyData, setMonthlyData] = useState([]);
+    const [isDataLoaded, setIsDataLoaded] = useState(false);  // ✅ 데이터 로드 여부 추가
 
     useEffect(() => {
-        axios.get("http://localhost:8080/api/hq/monthly-sales?startDate=2025-01-01&endDate=2025-12-31")
+        axios.get(`http://localhost:8080/api/hq/monthly-sales?startDate=${startDate}&endDate=${endDate}`)
             .then(response => {
-                console.log("📌 월별 매출 데이터:", response.data); // ✅ 디버깅 로그
-                const formattedData = response.data.map(item => ({
-                    month: item.month,  // ✅ "YYYY-MM" 형식
-                    totalSales: item.totalSales
-                }));
-                setMonthlyData(formattedData);
+                console.log("📌 월별 매출 데이터:", response.data);
+
+                if (response.data.length === 0) {
+                    setIsDataLoaded(false);  // ✅ 데이터가 없으면 그래프 숨김
+                } else {
+                    const formattedData = response.data.map(item => ({
+                        month: item.month,
+                        totalSales: item.totalSales
+                    }));
+                    setMonthlyData(formattedData);
+                    setIsDataLoaded(true);  // ✅ 데이터가 있으면 그래프 표시
+                }
             })
             .catch(error => {
                 console.error("Error fetching monthly sales:", error);
+                setIsDataLoaded(false);  // ✅ 에러 발생 시 그래프 숨김
             });
-    }, []);
+    }, [startDate, endDate]);
+
+    // ✅ 데이터가 없을 경우 그래프를 숨김
+    if (!isDataLoaded) {
+        return null;  // 🚀 그래프를 완전히 숨김
+    }
 
     const chartData = {
-        labels: monthlyData.map(item => item.month),  // ✅ 월 정보 추가
+        labels: monthlyData.map(item => item.month),
         datasets: [
             {
                 label: "월별 매출액",
