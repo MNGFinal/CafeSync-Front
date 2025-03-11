@@ -4,6 +4,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import style from "./styles/Plan.module.css";
+import AddPlan from "./AddPlan";
 
 const Plan = () => {
   const [events, setEvents] = useState([]);
@@ -94,6 +95,11 @@ const Plan = () => {
             }
           }
         }}
+      />
+      <AddPlan 
+        isAddModalOpen={isAddModalOpen} 
+        setIsAddModalOpen={setIsAddModalOpen} 
+        onUpdatePlan={onUpdatePlan}
       />
     </div>
   )
