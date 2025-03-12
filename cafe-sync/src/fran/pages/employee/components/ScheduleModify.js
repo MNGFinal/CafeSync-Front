@@ -104,11 +104,11 @@ const ScheduleModify = ({ isModifyModalOpen, setIsModifyModalOpen, franCode, onS
   const deleteWorkHandler = async (worker) => {
     if (worker && !worker.isNew) {
       try {
-        // let token = sessionStorage.getItem("accessToken");
+        let token = sessionStorage.getItem("accessToken");
         const response = await fetch(`http://localhost:8080/api/fran/schedule/${worker.key}`, {
           method: "DELETE",
           headers: { 
-            // Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json" ,
           },
         });
@@ -116,8 +116,6 @@ const ScheduleModify = ({ isModifyModalOpen, setIsModifyModalOpen, franCode, onS
         if (!response.ok) throw new Error("삭제 실패");
   
         console.log("기존 데이터 삭제 성공!");
-        // setWorkers(workers.filter(w => w.key !== worker.key));
-        // setWorkers(prevWorkers => prevWorkers.filter(w => w.key !== worker.key));
         onScheduleUpdate((prevSchedules) => {
           prevSchedules.filter((schedule) => schedule.id !== worker.key);
         });

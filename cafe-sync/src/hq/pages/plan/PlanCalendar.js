@@ -5,12 +5,12 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import style from "./styles/Plan.module.css";
 import AddPlan from "./AddPlan";
+import DetailPlan from "./DetailPlan";
 
 const Plan = () => {
   const [events, setEvents] = useState([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [isModifyModalOpen, setIsModifyModalOpen] = useState(false);
-  const [updateTrigger, setUpdateTrigger] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   useEffect( () => {fetchPlan()}, [] );
@@ -32,16 +32,30 @@ const Plan = () => {
       const data = await response.json();
       console.log('data: ', data);
 
+      const convertUTCToKST = (utcDate, isEndDate = false) => {
+        if (!utcDate) return "";
+        const date = new Date(utcDate);
+        date.setHours(date.getHours() + 9); // ✅ UTC → KST 변환
+      
+        if (isEndDate) {
+          date.setDate(date.getDate() + 1); // ✅ FullCalendar가 end 날짜를 포함하지 않으므로 +1일 증가
+        }
+      
+        return date.toISOString().split("T")[0]; // YYYY-MM-DD 형식 반환
+      };      
+      
       const formattedEvents = data.data.map((promotion) => ({
         id: promotion.promotionCode,
         title: promotion.title,
         category: promotion.categoryName,
-        start: new Date(promotion.startDate).toISOString().split("T")[0],
-        end: new Date(promotion.endDate).toISOString().split("T")[0],
+        start: convertUTCToKST(promotion.startDate, false),  // ✅ UTC → KST 변환 후 저장
+        end: convertUTCToKST(promotion.endDate, true), // ✅ 종료일 하루 감소 처리
         memo: promotion.memo,
         viewTitle: `[${promotion.categoryName}] ${promotion.title}`,
-        color: getCategoryColor(promotion.categoryName)
-      }))
+        color: getCategoryColor(promotion.categoryName),
+        allDay: true, // ✅ 하루짜리도 상단에 고정되도록 설정
+        display: "block",
+      }));      
       
       setEvents(formattedEvents);
     } catch (error) {
@@ -79,7 +93,8 @@ const Plan = () => {
         }}
         events={events}
         eventClick={(info) => {
-            setSelectedEvent(info.event);
+          setSelectedEvent(info.event);
+          setIsDetailModalOpen(true);
         }}
         views={{
           dayGridMonth: {
@@ -101,6 +116,14 @@ const Plan = () => {
         setIsAddModalOpen={setIsAddModalOpen} 
         onUpdatePlan={onUpdatePlan}
       />
+      {isDetailModalOpen && (
+        <DetailPlan
+          isDetailModalOpen={isDetailModalOpen}
+          setIsDetailModalOpen={setIsDetailModalOpen}
+          selectedEvent={selectedEvent}
+          onUpdatePlan={onUpdatePlan}
+        />
+      )}
     </div>
   )
 }

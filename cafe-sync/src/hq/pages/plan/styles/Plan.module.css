@@ -89,3 +89,65 @@
 :global(.fc-daygrid-day-frame) {
     padding: 2px;
 }
+
+:global(.fc-daygrid-event) {
+    width: 100%;  /* ✅ 모든 이벤트가 칸을 가득 채우도록 설정 */
+    text-align: center;  /* ✅ 가운데 정렬 */
+}
+  
+:global(.fc-daygrid-event-dot) {
+    display: none; /* ✅ 하루짜리 일정의 점(dot) 제거 */
+}
+  
+:global(.fc-daygrid-block-event) {
+    width: 100% !important; /* ✅ 하루짜리 일정도 동일하게 배치 */
+}
+
+:global(.fc-event) {
+    cursor: pointer !important; /* 마우스 올리면 손가락 모양 커서 */
+}
+
+/* ************************************************************* */
+/* AddPlan.js 전용 */
+/* ************************************************************* */
+.addTable tr th,
+.addTable tr td {
+    padding-top: 10px;
+}
+
+.addTable th {
+    text-align: left;
+}
+
+.addTable td select {
+    padding-left: 10px;
+    width: 130px;
+    height: 25px;
+}
+
+.addTable td input {
+    padding-left: 10px;
+    width: 400px;
+    height: 25px;
+}
+
+.addTable td input[type="date"] {
+    padding-left: 10px;
+    width: 130px;
+    height: 25px;
+}
+
+.addTable th + td {
+    padding-left: 30px;
+}
+
+.addTextarea {
+    min-height: 362px;
+    max-height: 362px;
+    margin-top: 10px;
+    overflow-y: auto;
+    font-size: 13px;
+    padding: 20px;
+    width: 100%;
+    resize: none;
+}
