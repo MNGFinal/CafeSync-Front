@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import MenuSalesChart from "./MenuSalesChart";
 import TodaySalesChart from "./TodaySalesChart";
 import StoreSales from "./StoreSales";
-import styles from "./stat.module.css";  // ✅ CSS 모듈 적용
+import styles from "./stat.module.css"; // ✅ CSS 모듈 적용
 
 function HQStats() {
   const franCode = useSelector(
@@ -14,7 +14,7 @@ function HQStats() {
 
   const [startDate, setStartDate] = useState("2025-01-01");
   const [endDate, setEndDate] = useState("2025-12-31");
-  const [searchTrigger, setSearchTrigger] = useState(false); // ✅ 조회 버튼이 눌렸을 때만 변경
+  const [searchTrigger, setSearchTrigger] = useState(false);
 
   // ✅ 날짜 변경 핸들러
   const handleStartDateChange = (e) => {
@@ -46,16 +46,26 @@ function HQStats() {
         <input type="date" value={startDate} onChange={handleStartDateChange} />
         ~
         <input type="date" value={endDate} onChange={handleEndDateChange} />
-        <button onClick={handleSearch} className={styles.searchButton}>조회</button>
+        <button onClick={handleSearch} className={styles.searchButton}>
+          조회
+        </button>
       </div>
 
       <div className={styles.gridContainer}>
         <div>
           <div>
             {/* ✅ StoreSales에 searchTrigger 전달 */}
-            <StoreSales startDate={startDate} endDate={endDate} searchTrigger={searchTrigger} />
+            <StoreSales
+              startDate={startDate}
+              endDate={endDate}
+              searchTrigger={searchTrigger}
+            />
             <div className={styles.statContainer}>
-              <MenuSalesChart startDate={startDate} endDate={endDate} searchTrigger={searchTrigger} />
+              <MenuSalesChart
+                startDate={startDate}
+                endDate={endDate}
+                searchTrigger={searchTrigger}
+              />
               <TodaySalesChart searchTrigger={searchTrigger} />
             </div>
           </div>
