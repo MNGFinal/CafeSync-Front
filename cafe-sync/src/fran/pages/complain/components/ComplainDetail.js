@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import style from "../styles/Complain.module.css"
 import Modal from "../../../../components/Modal"
-import modalStyle from "../../../../components/ModalButton.module.css"
+// import modalStyle from "../../../../components/ModalButton.module.css"
 
 const complainDetail = ({complain, isModalOpen, setIsModalOpen}) => {
 
