@@ -216,19 +216,19 @@ th {
 }
 
 .gridContainer {
-    border: solid 1px red;
+
 
     >div {
         display: flex;
         flex-direction: column;
 
         >div {
-            border: solid 1px rgb(0, 136, 255);
+
             display: flex;
             margin-top: 36px;
 
             >div {
-                border: solid 1px rgb(255, 196, 0);
+
                 display: flex;
                 width: 837px;
                 height: 600px;

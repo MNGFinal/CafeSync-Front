@@ -28,7 +28,7 @@ const StoreSales = ({ startDate, endDate, searchTrigger }) => { // ✅ 조회 �
         <div className={styles.storeContainer}>
             <div className={styles.storeGrid}>
                 {stores.length > 0 ? (
-                    stores.slice(0, 5).map((store, index) => (
+                    stores.slice(0, 6).map((store, index) => (
                         <div key={store.franCode} className={styles.storeBox}>
                             <img src={store.franImage || "/default-image.jpg"} alt={`${store.franName} 이미지`} className={styles.image} />
                             <h3>{index + 1}등 {store.franName}</h3>
