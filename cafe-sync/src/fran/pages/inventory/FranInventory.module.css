@@ -56,9 +56,8 @@
 /* ✅ 테이블 컨테이너 */
 .tableContainer {
   margin-top: 20px;
-  max-height: 711px; /* ✅ 세로 스크롤 최대 높이 */
-  overflow-y: auto; /* ✅ 세로 스크롤 추가 */
-  overflow-x: auto; /* ✅ 가로 스크롤 추가 */
+  max-height: 720px; /* ✅ 세로 스크롤 최대 높이 */
+  overflow-x: hidden; /* ✅ 가로 스크롤 추가 */
   border: 1px solid #ddd;
   background-color: white;
   position: relative;

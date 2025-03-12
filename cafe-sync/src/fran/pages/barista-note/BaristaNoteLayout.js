@@ -564,7 +564,7 @@ function BaristaNoteLayout() {
 
       {/* ========== [삭제 확인 모달] ========== */}
       {isDeleteModalOpen && (
-        <Modal isOpen={isDeleteModalOpen} onClose={closeDeleteModal}>
+        <SModal isOpen={isDeleteModalOpen} onClose={closeDeleteModal}>
           <div className={style.modalContentContainer}>
             <Player
               autoplay
@@ -583,7 +583,7 @@ function BaristaNoteLayout() {
               </button>
             </div>
           </div>
-        </Modal>
+        </SModal>
       )}
 
       {/* ========== [공통 SModal (경고/성공 등)] ========== */}
