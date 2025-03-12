@@ -14,11 +14,10 @@
 }
 
 :global(.fc-dayGridMonth-view .fc-daygrid-day-events) { 
-    display: flex;
+    /* display: flex; */
     justify-content: center;
     align-items: center;
     gap: 2px;
-    padding-top: 20px;
 }
 
 :global(.fc-dayGridMonth-view .fc-daygrid-day-events:empty) {
@@ -105,6 +104,61 @@
 
 :global(.fc-event) {
     cursor: pointer !important; /* 마우스 올리면 손가락 모양 커서 */
+}
+
+:global(.fc-daygrid-event) {
+    display: block !important;
+    width: 100% !important;  /* ✅ 이벤트를 칸 가득 채우도록 */
+    max-width: 100% !important;
+    height: 22px !important; /* ✅ 하루짜리 일정도 칸을 꽉 채우도록 */
+    text-align: center;  /* ✅ 텍스트 중앙 정렬 */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    white-space: nowrap; /* ✅ 글자가 여러 줄로 내려가지 않도록 */
+}
+
+/* ✅ 하루짜리 일정 (1-day event) */
+:global(.fc-daygrid-event-harness .single-day) {
+    display: flex !important;  
+    flex-grow: 1 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    margin-top: 1px !important;
+}
+
+/* ✅ FullCalendar 내부의 `inline-block` 스타일 강제 제거 */
+:global(.fc-daygrid-block-event .single-day) {
+    display: flex !important;
+    flex-grow: 1 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* ✅ 멀티데이 일정 (여러 날짜에 걸친 이벤트) */
+:global(.fc-daygrid-event-harness .multi-day) {
+    width: auto !important;
+    max-width: none !important;
+}
+
+:global(.fc-daygrid-block-event) {
+    display: block !important;
+    width: 100% !important; 
+    max-width: 100% !important;
+    min-height: 22px !important;
+}
+
+:global(.fc-daygrid-event-dot) {
+    display: none !important; /* ✅ 하루짜리 일정의 점(dot) 제거 */
+}
+
+:global(.fc-event-main) {
+    text-align: center !important;
+    width: 100% !important;
 }
 
 /* ************************************************************* */

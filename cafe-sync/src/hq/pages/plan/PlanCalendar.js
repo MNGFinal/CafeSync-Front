@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-// import { useSelector } from "react-redux";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -42,20 +41,27 @@ const Plan = () => {
         }
       
         return date.toISOString().split("T")[0]; // YYYY-MM-DD 형식 반환
-      };      
+      };
       
-      const formattedEvents = data.data.map((promotion) => ({
-        id: promotion.promotionCode,
-        title: promotion.title,
-        category: promotion.categoryName,
-        start: convertUTCToKST(promotion.startDate, false),  // ✅ UTC → KST 변환 후 저장
-        end: convertUTCToKST(promotion.endDate, true), // ✅ 종료일 하루 감소 처리
-        memo: promotion.memo,
-        viewTitle: `[${promotion.categoryName}] ${promotion.title}`,
-        color: getCategoryColor(promotion.categoryName),
-        allDay: true, // ✅ 하루짜리도 상단에 고정되도록 설정
-        display: "block",
-      }));      
+      const formattedEvents = data.data.map((promotion) => {
+        const isSingleDay = promotion.startDate === promotion.endDate;
+        const eventObj = {
+          id: promotion.promotionCode,
+          title: promotion.title,
+          category: promotion.categoryName,
+          start: convertUTCToKST(promotion.startDate, false),
+          end: convertUTCToKST(promotion.endDate, true),
+          memo: promotion.memo,
+          viewTitle: `[${promotion.categoryName}] ${promotion.title}`,
+          color: getCategoryColor(promotion.categoryName),
+          allDay: true,  // ✅ 하루짜리 일정도 강제로 allDay 처리
+          display: "block",
+          // classNames: [isSingleDay ? "single-day" : "multi-day"],
+        };
+      
+        console.log("📌 이벤트 데이터:", eventObj); // ✅ 로그 확인
+        return eventObj;
+      });  
       
       setEvents(formattedEvents);
     } catch (error) {
@@ -96,10 +102,26 @@ const Plan = () => {
           setSelectedEvent(info.event);
           setIsDetailModalOpen(true);
         }}
+        eventClassNames={(arg) => {
+          const convertToKST = (utcDate) => {
+            const date = new Date(utcDate);
+            date.setHours(date.getHours() + 9);
+            return date.toISOString().split("T")[0];
+          };
+        
+          const startDate = convertToKST(arg.event.start);
+          const endDate = new Date(arg.event.end).toISOString().split("T")[0];
+        
+          console.log("📌 변환된 KST StartDate:", startDate);
+          console.log("📌 변환된 KST EndDate:", endDate);
+        
+          return startDate === endDate ? ["single-day"] : ["multi-day"];
+        }}
         views={{
           dayGridMonth: {
             dayMaxEventRows: 3,
-            eventDisplay: "list-item",
+            // eventDisplay: "list-item",
+            eventDisplay: "block",
             eventContent: (arg) => {
               return (
                 <div style={{textAlign:"center"}}>
