@@ -1,9 +1,9 @@
 import { useSelector } from "react-redux";
 import React, { useState } from "react";
 import MenuSalesChart from "./MenuSalesChart";
-import TodaySalesChart from "./TodaySalesChart";
 import StoreSales from "./StoreSales";
 import styles from "./stat.module.css"; // ✅ CSS 모듈 적용
+import TodaySalesChart2 from "./TodaySalesChart2";
 
 function HQStats() {
   const franCode = useSelector(
@@ -66,7 +66,7 @@ function HQStats() {
                 endDate={endDate}
                 searchTrigger={searchTrigger}
               />
-              <TodaySalesChart searchTrigger={searchTrigger} />
+              <TodaySalesChart2 searchTrigger={searchTrigger} />
             </div>
           </div>
         </div>
