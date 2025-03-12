@@ -14,7 +14,7 @@ function HQStats() {
 
   const [startDate, setStartDate] = useState("2025-01-01");
   const [endDate, setEndDate] = useState("2025-12-31");
-  const [searchTrigger, setSearchTrigger] = useState(false); // ✅ 조회 버튼이 눌렸을 때만 변경
+  const [searchTrigger, setSearchTrigger] = useState(false);
 
   // ✅ 날짜 변경 핸들러
   const handleStartDateChange = (e) => {
