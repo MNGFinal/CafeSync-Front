@@ -11,6 +11,13 @@ const MyCalendar = () => {
   const franCode = useSelector(
     (state) => state.auth?.user?.franchise?.franCode ?? null
   );
+
+  const jobCode = useSelector(
+    (state) => state.auth?.user?.job?.jobCode ?? null
+  );
+  
+  console.log("로그인한 직급코드", jobCode);
+
   const [events, setEvents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModifyModalOpen, setIsModifyModalOpen] = useState(false);
@@ -90,23 +97,6 @@ const MyCalendar = () => {
     return scheduleTypes[division] || "알 수 없음";
   };
 
-  // const eventClickHandler = (clickInfo) => {
-  //   setSelectedEvent({
-  //     id: clickInfo.event.id,
-  //     title: clickInfo.event.title,
-  //     date: clickInfo.event.date,
-  //     emp: clickInfo.event.extendedProps.emp,
-  //     scheduleDivision: clickInfo.event.extendedProps.scheduleDivision,
-  //   });
-  //   setIsModifyModalOpen(true);
-  //   console.log('선택한 이벤트', selectedEvent);
-  // };
-
-  // const closeModifyModal = () => {
-  //   setIsModifyModalOpen(false);
-  //   setSelectedEvent(null);
-  // }
-
   return (
     <div className={`${st.cal} test-class`}>
       <FullCalendar
@@ -118,19 +108,23 @@ const MyCalendar = () => {
         headerToolbar={{
           start: "prev next today",
           center: "title",
-          end: "addEventBtn modifyEventBtn dayGridWeek",
+          end: jobCode === 21 ? "addEventBtn modifyEventBtn dayGridWeek" : "dayGridWeek",
           // dayGridMonth
         }}
-        customButtons={{
-          addEventBtn: {
-            text: "스케줄 등록",
-            click: () => setIsModalOpen(true),
-          },
-          modifyEventBtn: {
-            text: "스케줄 수정",
-            click: () => setIsModifyModalOpen(true),
-          },
-        }}
+        customButtons={
+          jobCode === 21
+            ? {
+                addEventBtn: {
+                  text: "스케줄 등록",
+                  click: () => setIsModalOpen(true),
+                },
+                modifyEventBtn: {
+                  text: "스케줄 수정",
+                  click: () => setIsModifyModalOpen(true),
+                },
+              }
+            : undefined
+        }
         events={events}
         eventOrder="scheduleDivision"
         // eventClick={eventClickHandler}

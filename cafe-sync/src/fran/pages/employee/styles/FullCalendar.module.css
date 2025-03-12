@@ -14,19 +14,19 @@
 } */
 
 /* 월별 뷰에서 날짜 행 높이 설정 */
-:global(.fc-dayGridMonth-view .fc-daygrid-day-frame) {
+/* :global(.fc-dayGridMonth-view .fc-daygrid-day-frame) {
   height: 108px !important;
-}
+} */
 
 /* :global(.fc-dayGridMonth-view .fc-daygrid-event-harness) { width: 100px; } */
 
-:global(.fc-dayGridMonth-view .fc-daygrid-day-events) {
+/* :global(.fc-dayGridMonth-view .fc-daygrid-day-events) {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 2px;
   padding-top: 20px;
-}
+} */
 
 :global(.fc-dayGridMonth-view .fc-daygrid-day-events:empty) {
   display: none !important;
@@ -55,9 +55,6 @@
 
 :global(.mainPageScheduleSection) {
   margin-top: 20px;
-}
-
-:global(.fc-scroller) {
 }
 
 /* 날짜 숫자 위치 왼쪽 정렬 */
