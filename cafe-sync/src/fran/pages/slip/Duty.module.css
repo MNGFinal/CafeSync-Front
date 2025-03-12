@@ -92,6 +92,10 @@
   background: #fff;
 }
 
+.tableStyle th {
+  background-color: #6541f3;
+}
+
 .tableStyle th,
 .tableStyle td {
   border: 1px solid #ddd;
