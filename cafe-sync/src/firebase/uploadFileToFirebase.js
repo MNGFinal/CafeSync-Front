@@ -15,7 +15,6 @@ export const uploadFileToFirebase = async (file) => {
       uploadTask.on(
         "state_changed",
         (snapshot) => {
-          // 진행 상태 로깅 (원하는 경우)
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           console.log(`파일 업로드 진행률: ${progress}%`);
