@@ -18,7 +18,7 @@ export const ChatSocketProvider = ({ children }) => {
 
     const newClient = new Client({
       webSocketFactory: () =>
-        new SockJS("cafesync-back-production.up.railway.app/ws/chat"),
+        new SockJS("https://cafesync-back-production.up.railway.app/ws/chat"),
       connectHeaders: { Authorization: `Bearer ${token}` },
       debug: (str) => console.log(str),
       reconnectDelay: 5000,

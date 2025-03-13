@@ -125,7 +125,7 @@ const ComplainAdd = ({ franCode, onComplainUpdate }) => {
     try {
       let token = sessionStorage.getItem("accessToken");
       const resopnse = await fetch(
-        "cafesync-back-production.up.railway.app/api/fran/complain",
+        "https://cafesync-back-production.up.railway.app/api/fran/complain",
         {
           method: "POST",
           headers: {

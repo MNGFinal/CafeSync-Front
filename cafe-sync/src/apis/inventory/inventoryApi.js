@@ -7,7 +7,7 @@ export async function getFranInventoryList(franCode) {
 
   try {
     const token = sessionStorage.getItem("accessToken");
-    const apiUrl = `cafesync-back-production.up.railway.app/api/fran/inven/${franCode}`;
+    const apiUrl = `https://cafesync-back-production.up.railway.app/api/fran/inven/${franCode}`;
 
     const response = await fetch(apiUrl, {
       method: "GET",
@@ -39,7 +39,7 @@ export async function updateFranInventory(updatedData) {
 
   try {
     const token = sessionStorage.getItem("accessToken");
-    const apiUrl = `cafesync-back-production.up.railway.app/api/fran/inven/update`;
+    const apiUrl = `https://cafesync-back-production.up.railway.app/api/fran/inven/update`;
 
     const response = await fetch(apiUrl, {
       method: "PUT",
@@ -74,7 +74,7 @@ export async function deleteFranInventory(deleteData) {
 
   try {
     const token = sessionStorage.getItem("accessToken");
-    const apiUrl = `cafesync-back-production.up.railway.app/api/fran/inven/delete`;
+    const apiUrl = `https://cafesync-back-production.up.railway.app/api/fran/inven/delete`;
 
     const response = await fetch(apiUrl, {
       method: "DELETE",
@@ -109,7 +109,7 @@ export async function getInOutList(franCode) {
 
   try {
     const token = sessionStorage.getItem("accessToken");
-    const apiUrl = `cafesync-back-production.up.railway.app/api/fran/inout/list/${franCode}`; // ✅ franCode 추가
+    const apiUrl = `https://cafesync-back-production.up.railway.app/api/fran/inout/list/${franCode}`; // ✅ franCode 추가
 
     const response = await fetch(apiUrl, {
       method: "GET",
@@ -138,7 +138,7 @@ export async function insertOutRegister(outRegisterData) {
   try {
     const token = sessionStorage.getItem("accessToken");
     const response = await fetch(
-      "cafesync-back-production.up.railway.app/api/fran/inout/out-register",
+      "https://cafesync-back-production.up.railway.app/api/fran/inout/out-register",
       {
         method: "POST",
         headers: {
@@ -176,7 +176,7 @@ export async function approveInoutItems(approveData) {
   try {
     const token = sessionStorage.getItem("accessToken");
     const apiUrl =
-      "cafesync-back-production.up.railway.app/api/fran/inout/approve";
+      "https://cafesync-back-production.up.railway.app/api/fran/inout/approve";
 
     const response = await fetch(apiUrl, {
       method: "PUT",
@@ -212,7 +212,7 @@ export async function cancelInoutItems(cancelData) {
   try {
     const token = sessionStorage.getItem("accessToken");
     const apiUrl =
-      "cafesync-back-production.up.railway.app/api/fran/inout/cancel";
+      "https://cafesync-back-production.up.railway.app/api/fran/inout/cancel";
 
     const response = await fetch(apiUrl, {
       method: "PUT",
@@ -253,7 +253,7 @@ export async function insertOrderRequest(orderData) {
   try {
     const token = sessionStorage.getItem("accessToken");
     const apiUrl =
-      "cafesync-back-production.up.railway.app/api/fran/order/request";
+      "https://cafesync-back-production.up.railway.app/api/fran/order/request";
 
     const response = await fetch(apiUrl, {
       method: "POST",
@@ -283,7 +283,7 @@ export async function insertOrderRequest(orderData) {
 export async function findOrderList(franCode) {
   try {
     const token = sessionStorage.getItem("accessToken");
-    const apiUrl = `cafesync-back-production.up.railway.app/api/fran/order/${franCode}`; // ✅ Path Variable 적용
+    const apiUrl = `https://cafesync-back-production.up.railway.app/api/fran/order/${franCode}`; // ✅ Path Variable 적용
 
     const response = await fetch(apiUrl, {
       method: "GET",
@@ -316,7 +316,7 @@ export async function updateFranOrder(updatedData) {
 
   try {
     const token = sessionStorage.getItem("accessToken");
-    const apiUrl = `cafesync-back-production.up.railway.app/api/fran/order/update`;
+    const apiUrl = `https://cafesync-back-production.up.railway.app/api/fran/order/update`;
 
     // ✅ orderDetailId가 이상한 숫자거나 없으면 제거
     const refinedData = updatedData.map((item) => {
@@ -364,7 +364,7 @@ export async function deleteFranOrderDetail(deleteData) {
 
   try {
     const token = sessionStorage.getItem("accessToken");
-    const apiUrl = `cafesync-back-production.up.railway.app/api/fran/order/delete`;
+    const apiUrl = `https://cafesync-back-production.up.railway.app/api/fran/order/delete`;
 
     const response = await fetch(apiUrl, {
       method: "DELETE",
@@ -399,7 +399,7 @@ export async function deleteFranOrders(deleteData) {
 
   try {
     const token = sessionStorage.getItem("accessToken");
-    const apiUrl = `cafesync-back-production.up.railway.app/api/fran/order/fran-order`;
+    const apiUrl = `https://cafesync-back-production.up.railway.app/api/fran/order/fran-order`;
 
     const response = await fetch(apiUrl, {
       method: "DELETE",
@@ -430,7 +430,7 @@ export async function findHQOrderList() {
   try {
     const token = sessionStorage.getItem("accessToken");
     // 본사용 API 엔드포인트 (서버에서 해당 URL에 맞춰 구현되어 있어야 함)
-    const apiUrl = `cafesync-back-production.up.railway.app/api/hq/order`;
+    const apiUrl = `https://cafesync-back-production.up.railway.app/api/hq/order`;
     const response = await fetch(apiUrl, {
       method: "GET",
       headers: {
@@ -465,7 +465,7 @@ export async function updateOrderStatus(orderCode, status) {
 
   try {
     const token = sessionStorage.getItem("accessToken");
-    const apiUrl = `cafesync-back-production.up.railway.app/api/hq/orders/${orderCode}/${status}`;
+    const apiUrl = `https://cafesync-back-production.up.railway.app/api/hq/orders/${orderCode}/${status}`;
 
     const response = await fetch(apiUrl, {
       method: "PUT",

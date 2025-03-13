@@ -56,7 +56,7 @@ function RegisterTest() {
 
     try {
       const response = await fetch(
-        "cafesync-back-production.up.railway.app/api/register",
+        "https://cafesync-back-production.up.railway.app/api/register",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

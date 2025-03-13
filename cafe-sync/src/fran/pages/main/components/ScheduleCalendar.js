@@ -18,7 +18,7 @@ const ScheduleCalendar = () => {
     try {
       let token = sessionStorage.getItem("accessToken");
       const response = await fetch(
-        `cafesync-back-production.up.railway.app/api/fran/schedule/${franCode}`,
+        `https://cafesync-back-production.up.railway.app/api/fran/schedule/${franCode}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

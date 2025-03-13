@@ -28,7 +28,7 @@ function HQMenus() {
     try {
       // ✅ 검색어 추가
       const response = await fetch(
-        `cafesync-back-production.up.railway.app/api/fran/menus/${categoryCode}?query=${searchQuery}`
+        `https://cafesync-back-production.up.railway.app/api/fran/menus/${categoryCode}?query=${searchQuery}`
       );
       const res = await response.json();
 

@@ -6,7 +6,7 @@ const TodaySalesChart = ({ searchTrigger }) => {
     const [todaySalesData, setTodaySalesData] = useState([]);
 
     useEffect(() => {
-        axios.get("cafesync-back-production.up.railway.app/api/hq/today-sales?today=2025-03-06")
+        axios.get("https://cafesync-back-production.up.railway.app/api/hq/today-sales?today=2025-03-06")
             .then(response => {
                 console.log("📌 가맹점 매출 데이터:", response.data);
                 setTodaySalesData(response.data);

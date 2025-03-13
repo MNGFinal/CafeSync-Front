@@ -49,7 +49,7 @@ function DailySalesChart() {
         // dateRange의 각 날짜마다 API 호출
         const promises = dateRange.map(async (date) => {
           const dateStr = formatDate(date);
-          const apiUrl = `cafesync-back-production.up.railway.app/api/fran/sales/summary?franCode=${franCode}&startDate=${dateStr}&endDate=${dateStr}`;
+          const apiUrl = `https://cafesync-back-production.up.railway.app/api/fran/sales/summary?franCode=${franCode}&startDate=${dateStr}&endDate=${dateStr}`;
           const response = await fetch(apiUrl, {
             method: "GET",
             headers: { "Content-Type": "application/json" },

@@ -8,7 +8,7 @@ export async function getFranSlipList(franCode, startDate, endDate) {
   try {
     let token = sessionStorage.getItem("accessToken");
     const refreshToken = sessionStorage.getItem("refreshToken");
-    const apiUrl = `cafesync-back-production.up.railway.app/api/fran/slip/${franCode}?startDate=${startDate}&endDate=${endDate}`;
+    const apiUrl = `https://cafesync-back-production.up.railway.app/api/fran/slip/${franCode}?startDate=${startDate}&endDate=${endDate}`;
 
     let response = await fetch(apiUrl, {
       method: "GET",
@@ -23,7 +23,7 @@ export async function getFranSlipList(franCode, startDate, endDate) {
       console.warn("🔄 Access Token 만료됨. Refresh Token으로 갱신 시도...");
 
       const refreshResponse = await fetch(
-        "cafesync-back-production.up.railway.app/api/refresh-token",
+        "https://cafesync-back-production.up.railway.app/api/refresh-token",
         {
           method: "POST",
           headers: {
@@ -71,7 +71,7 @@ export async function getVendorList() {
     let token = sessionStorage.getItem("accessToken");
     const refreshToken = sessionStorage.getItem("refreshToken");
     // 실제 API 엔드포인트에 맞게 수정
-    const apiUrl = `cafesync-back-production.up.railway.app/api/fran/vendor`;
+    const apiUrl = `https://cafesync-back-production.up.railway.app/api/fran/vendor`;
 
     let response = await fetch(apiUrl, {
       method: "GET",
@@ -85,7 +85,7 @@ export async function getVendorList() {
     if (response.status === 403 && refreshToken) {
       console.warn("🔄 Access Token 만료됨. Refresh Token으로 갱신 시도...");
       const refreshResponse = await fetch(
-        "cafesync-back-production.up.railway.app/api/refresh-token",
+        "https://cafesync-back-production.up.railway.app/api/refresh-token",
         {
           method: "POST",
           headers: {
@@ -133,7 +133,8 @@ export async function getAccountList() {
     const refreshToken = sessionStorage.getItem("refreshToken");
 
     // 실제 API 엔드포인트(계정과목 조회용)으로 변경
-    const apiUrl = "cafesync-back-production.up.railway.app/api/fran/act";
+    const apiUrl =
+      "https://cafesync-back-production.up.railway.app/api/fran/act";
 
     let response = await fetch(apiUrl, {
       method: "GET",
@@ -148,7 +149,7 @@ export async function getAccountList() {
       console.warn("🔄 Access Token 만료됨. Refresh Token으로 갱신 시도...");
 
       const refreshResponse = await fetch(
-        "cafesync-back-production.up.railway.app/api/refresh-token",
+        "https://cafesync-back-production.up.railway.app/api/refresh-token",
         {
           method: "POST",
           headers: {
@@ -196,7 +197,8 @@ export async function getSummaryList() {
     const refreshToken = sessionStorage.getItem("refreshToken");
 
     // 실제 API 엔드포인트(적요 조회용)으로 변경
-    const apiUrl = "cafesync-back-production.up.railway.app/api/fran/summary";
+    const apiUrl =
+      "https://cafesync-back-production.up.railway.app/api/fran/summary";
 
     let response = await fetch(apiUrl, {
       method: "GET",
@@ -211,7 +213,7 @@ export async function getSummaryList() {
       console.warn("🔄 Access Token 만료됨. Refresh Token으로 갱신 시도...");
 
       const refreshResponse = await fetch(
-        "cafesync-back-production.up.railway.app/api/refresh-token",
+        "https://cafesync-back-production.up.railway.app/api/refresh-token",
         {
           method: "POST",
           headers: {
@@ -259,7 +261,8 @@ export async function saveSlipList(slipArray) {
     const refreshToken = sessionStorage.getItem("refreshToken");
 
     // 실제 API 엔드포인트 (예: POST /api/fran/slip)
-    const apiUrl = "cafesync-back-production.up.railway.app/api/fran/slip";
+    const apiUrl =
+      "https://cafesync-back-production.up.railway.app/api/fran/slip";
 
     // slipArray: [ { slipCode, slipDate, venCode, slipDivision, ... }, ... ]
     let response = await fetch(apiUrl, {
@@ -276,7 +279,7 @@ export async function saveSlipList(slipArray) {
       console.warn("🔄 Access Token 만료됨. Refresh Token으로 갱신 시도...");
 
       const refreshResponse = await fetch(
-        "cafesync-back-production.up.railway.app/api/refresh-token",
+        "https://cafesync-back-production.up.railway.app/api/refresh-token",
         {
           method: "POST",
           headers: {
@@ -325,7 +328,8 @@ export async function deleteSlipList(slipIdArray) {
     let token = sessionStorage.getItem("accessToken");
     const refreshToken = sessionStorage.getItem("refreshToken");
     // API 엔드포인트는 DELETE 메서드를 지원하는 /api/fran/slip 로 가정
-    const apiUrl = "cafesync-back-production.up.railway.app/api/fran/slip";
+    const apiUrl =
+      "https://cafesync-back-production.up.railway.app/api/fran/slip";
 
     let response = await fetch(apiUrl, {
       method: "DELETE",
@@ -341,7 +345,7 @@ export async function deleteSlipList(slipIdArray) {
     if (response.status === 403 && refreshToken) {
       console.warn("🔄 Access Token 만료됨. Refresh Token으로 갱신 시도...");
       const refreshResponse = await fetch(
-        "cafesync-back-production.up.railway.app/api/refresh-token",
+        "https://cafesync-back-production.up.railway.app/api/refresh-token",
         {
           method: "POST",
           headers: {
@@ -388,7 +392,8 @@ export async function createTaxInvoices(taxDataArray) {
   try {
     let token = sessionStorage.getItem("accessToken");
     const refreshToken = sessionStorage.getItem("refreshToken");
-    const apiUrl = "cafesync-back-production.up.railway.app/api/fran/tax"; // 실제 엔드포인트
+    const apiUrl =
+      "https://cafesync-back-production.up.railway.app/api/fran/tax"; // 실제 엔드포인트
 
     // 예: taxDataArray = [ { slipCode, taxDate, taxVal }, ... ]
     let response = await fetch(apiUrl, {
@@ -404,7 +409,7 @@ export async function createTaxInvoices(taxDataArray) {
     if (response.status === 403 && refreshToken) {
       console.warn("🔄 Access Token 만료됨. Refresh Token으로 갱신 시도...");
       const refreshResponse = await fetch(
-        "cafesync-back-production.up.railway.app/api/refresh-token",
+        "https://cafesync-back-production.up.railway.app/api/refresh-token",
         {
           method: "POST",
           headers: {
@@ -451,7 +456,8 @@ export async function createPnl(pnlData) {
   try {
     let token = sessionStorage.getItem("accessToken");
     const refreshToken = sessionStorage.getItem("refreshToken");
-    const apiUrl = "cafesync-back-production.up.railway.app/api/fran/pnl"; // 엔드포인트 수정
+    const apiUrl =
+      "https://cafesync-back-production.up.railway.app/api/fran/pnl"; // 엔드포인트 수정
 
     let response = await fetch(apiUrl, {
       method: "POST",
@@ -466,7 +472,7 @@ export async function createPnl(pnlData) {
     if (response.status === 403 && refreshToken) {
       console.warn("🔄 Access Token 만료됨. Refresh Token으로 갱신 시도...");
       const refreshResponse = await fetch(
-        "cafesync-back-production.up.railway.app/api/refresh-token",
+        "https://cafesync-back-production.up.railway.app/api/refresh-token",
         {
           method: "POST",
           headers: {
@@ -518,7 +524,7 @@ export async function getFranTaxList(franCode, startDate, endDate) {
   try {
     let token = sessionStorage.getItem("accessToken");
     const refreshToken = sessionStorage.getItem("refreshToken");
-    const apiUrl = `cafesync-back-production.up.railway.app/api/fran/tax/${franCode}?startDate=${startDate}&endDate=${endDate}`;
+    const apiUrl = `https://cafesync-back-production.up.railway.app/api/fran/tax/${franCode}?startDate=${startDate}&endDate=${endDate}`;
 
     let response = await fetch(apiUrl, {
       method: "GET",
@@ -533,7 +539,7 @@ export async function getFranTaxList(franCode, startDate, endDate) {
       console.warn("🔄 Access Token 만료됨. Refresh Token으로 갱신 시도...");
 
       const refreshResponse = await fetch(
-        "cafesync-back-production.up.railway.app/api/refresh-token",
+        "https://cafesync-back-production.up.railway.app/api/refresh-token",
         {
           method: "POST",
           headers: {
@@ -586,7 +592,8 @@ export async function deleteFranTaxList(selectedInvoices) {
     const refreshToken = sessionStorage.getItem("refreshToken");
 
     // API 엔드포인트 (삭제 요청)
-    const apiUrl = "cafesync-back-production.up.railway.app/api/fran/tax"; // ✅ 엔드포인트 맞게 변경
+    const apiUrl =
+      "https://cafesync-back-production.up.railway.app/api/fran/tax"; // ✅ 엔드포인트 맞게 변경
 
     let response = await fetch(apiUrl, {
       method: "DELETE",
@@ -601,7 +608,7 @@ export async function deleteFranTaxList(selectedInvoices) {
     if (response.status === 403 && refreshToken) {
       console.warn("🔄 Access Token 만료됨. Refresh Token으로 갱신 시도...");
       const refreshResponse = await fetch(
-        "cafesync-back-production.up.railway.app/api/refresh-token",
+        "https://cafesync-back-production.up.railway.app/api/refresh-token",
         {
           method: "POST",
           headers: {
@@ -654,7 +661,7 @@ export async function getFranPnlList(franCode, startDate, endDate) {
     const refreshToken = sessionStorage.getItem("refreshToken");
     // 실제 서버 엔드포인트에 맞게 URL을 수정하세요.
     // 예: GET /api/fran/pnl/{franCode}?startDate=2023-01-01&endDate=2023-12-31
-    const apiUrl = `cafesync-back-production.up.railway.app/api/fran/pnl/${franCode}?startDate=${startDate}&endDate=${endDate}`;
+    const apiUrl = `https://cafesync-back-production.up.railway.app/api/fran/pnl/${franCode}?startDate=${startDate}&endDate=${endDate}`;
 
     let response = await fetch(apiUrl, {
       method: "GET",
@@ -669,7 +676,7 @@ export async function getFranPnlList(franCode, startDate, endDate) {
       console.warn("🔄 Access Token 만료됨. Refresh Token으로 갱신 시도...");
 
       const refreshResponse = await fetch(
-        "cafesync-back-production.up.railway.app/api/refresh-token",
+        "https://cafesync-back-production.up.railway.app/api/refresh-token",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -720,7 +727,8 @@ export async function deleteFranPnlList(selectedPnlIds) {
     const refreshToken = sessionStorage.getItem("refreshToken");
 
     // API 엔드포인트 (삭제 요청)
-    const apiUrl = "cafesync-back-production.up.railway.app/api/fran/pnl"; // ✅ 엔드포인트 확인 필요
+    const apiUrl =
+      "https://cafesync-back-production.up.railway.app/api/fran/pnl"; // ✅ 엔드포인트 확인 필요
 
     let response = await fetch(apiUrl, {
       method: "DELETE",
@@ -735,7 +743,7 @@ export async function deleteFranPnlList(selectedPnlIds) {
     if (response.status === 403 && refreshToken) {
       console.warn("🔄 Access Token 만료됨. Refresh Token으로 갱신 시도...");
       const refreshResponse = await fetch(
-        "cafesync-back-production.up.railway.app/api/refresh-token",
+        "https://cafesync-back-production.up.railway.app/api/refresh-token",
         {
           method: "POST",
           headers: {

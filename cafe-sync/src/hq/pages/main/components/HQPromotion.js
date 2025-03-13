@@ -27,7 +27,7 @@ const HQPromotion = () => {
     try {
       let token = sessionStorage.getItem("accessToken");
       const response = await fetch(
-        `cafesync-back-production.up.railway.app/api/hq/promotions`,
+        `https://cafesync-back-production.up.railway.app/api/hq/promotions`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

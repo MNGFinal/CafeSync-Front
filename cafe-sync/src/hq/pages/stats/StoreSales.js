@@ -14,9 +14,12 @@ const StoreSales = ({ startDate, endDate, searchTrigger }) => {
     );
 
     axios
-      .get("cafesync-back-production.up.railway.app/api/hq/top-stores", {
-        params: { startDate, endDate }, // ✅ API에 날짜 전달
-      })
+      .get(
+        "https://cafesync-back-production.up.railway.app/api/hq/top-stores",
+        {
+          params: { startDate, endDate }, // ✅ API에 날짜 전달
+        }
+      )
       .then((response) => {
         console.log("📌 [DEBUG] Store Sales Data:", response.data);
         setStores(response.data);

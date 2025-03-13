@@ -73,7 +73,7 @@ const ScheduleModify = ({
     try {
       let token = sessionStorage.getItem("accessToken");
       const responseWorker = await fetch(
-        `cafesync-back-production.up.railway.app/api/fran/employee/workers/${franCode}`,
+        `https://cafesync-back-production.up.railway.app/api/fran/employee/workers/${franCode}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -135,7 +135,7 @@ const ScheduleModify = ({
       try {
         let token = sessionStorage.getItem("accessToken");
         const response = await fetch(
-          `cafesync-back-production.up.railway.app/api/fran/schedule/${worker.key}`,
+          `https://cafesync-back-production.up.railway.app/api/fran/schedule/${worker.key}`,
           {
             method: "DELETE",
             headers: {
@@ -365,7 +365,7 @@ const ScheduleModify = ({
       if (modifyScheduleData.length > 0) {
         // PUT 요청 - modifiedWorkers 배열을 한 번에 보내기
         const responseModify = fetch(
-          "cafesync-back-production.up.railway.app/api/fran/schedule",
+          "https://cafesync-back-production.up.railway.app/api/fran/schedule",
           {
             method: "PUT",
             headers: {
@@ -387,7 +387,7 @@ const ScheduleModify = ({
       if (addScheduleData.length > 0) {
         // POST 요청 - 새로운 데이터 추가
         const responseAdd = fetch(
-          "cafesync-back-production.up.railway.app/api/fran/schedule",
+          "https://cafesync-back-production.up.railway.app/api/fran/schedule",
           {
             method: "POST",
             headers: {

@@ -34,7 +34,7 @@ function Stats() {
       return;
     }
 
-    let apiUrl = `cafesync-back-production.up.railway.app/api/fran/sales/summary?franCode=${franCode}&startDate=${startDate}&endDate=${endDate}`;
+    let apiUrl = `https://cafesync-back-production.up.railway.app/api/fran/sales/summary?franCode=${franCode}&startDate=${startDate}&endDate=${endDate}`;
 
     console.log("🟢 API 요청 URL:", apiUrl);
 
