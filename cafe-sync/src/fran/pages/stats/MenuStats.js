@@ -48,7 +48,7 @@ function MenuStats() {
     setLoading(true); // ✅ 로딩 시작
     try {
       const response = await fetch(
-        `cafesync-back-production.up.railway.app/api/fran/sales/menuStat?franCode=${franCode}&startDate=${startDate}&endDate=${endDate}`
+        `https://cafesync-back-production.up.railway.app/api/fran/sales/menuStat?franCode=${franCode}&startDate=${startDate}&endDate=${endDate}`
       );
       if (!response.ok) throw new Error("데이터 로드 실패");
 

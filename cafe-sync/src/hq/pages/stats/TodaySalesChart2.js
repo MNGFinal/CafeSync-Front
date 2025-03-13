@@ -8,7 +8,7 @@ const TodaySalesChart2 = ({ searchTrigger }) => {
   useEffect(() => {
     axios
       .get(
-        "cafesync-back-production.up.railway.app/api/hq/today-sales?today=2025-03-06"
+        "https://cafesync-back-production.up.railway.app/api/hq/today-sales?today=2025-03-06"
       )
       .then((response) => {
         console.log("📌 가맹점 매출 데이터:", response.data);

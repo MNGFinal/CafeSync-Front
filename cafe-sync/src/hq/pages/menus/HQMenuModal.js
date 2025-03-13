@@ -56,7 +56,7 @@ const HQMenuModal = ({ menu, onClose, setSelectedMenu, fetchMenus }) => {
   const onModifySubmit = async () => {
     try {
       const response = await fetch(
-        `cafesync-back-production.up.railway.app/api/hq/menus/${editedMenu.menuCode}`,
+        `https://cafesync-back-production.up.railway.app/api/hq/menus/${editedMenu.menuCode}`,
         {
           method: "PUT",
           headers: {
@@ -89,7 +89,7 @@ const HQMenuModal = ({ menu, onClose, setSelectedMenu, fetchMenus }) => {
     try {
       const updatedMenu = { ...menu, disconStatus: true };
       const response = await fetch(
-        `cafesync-back-production.up.railway.app/api/hq/menus/${menu.menuCode}`,
+        `https://cafesync-back-production.up.railway.app/api/hq/menus/${menu.menuCode}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -123,7 +123,7 @@ const HQMenuModal = ({ menu, onClose, setSelectedMenu, fetchMenus }) => {
     try {
       const updatedMenu = { ...menu, disconStatus: false };
       const response = await fetch(
-        `cafesync-back-production.up.railway.app/api/hq/menus/${menu.menuCode}`,
+        `https://cafesync-back-production.up.railway.app/api/hq/menus/${menu.menuCode}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

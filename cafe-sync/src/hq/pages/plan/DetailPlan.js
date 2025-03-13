@@ -68,7 +68,7 @@ const DetailPlan = ({
     try {
       let token = sessionStorage.getItem("accessToken");
       const response = await fetch(
-        `cafesync-back-production.up.railway.app/api/hq/promotion/${event.promotionCode}`,
+        `https://cafesync-back-production.up.railway.app/api/hq/promotion/${event.promotionCode}`,
         {
           method: "DELETE",
           headers: {

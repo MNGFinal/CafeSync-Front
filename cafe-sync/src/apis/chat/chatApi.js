@@ -5,7 +5,8 @@ export async function getEmployeeList() {
   try {
     let token = sessionStorage.getItem("accessToken");
     const refreshToken = sessionStorage.getItem("refreshToken");
-    const apiUrl = "cafesync-back-production.up.railway.app/api/fran/employees"; // 백엔드 API 주소
+    const apiUrl =
+      "https://cafesync-back-production.up.railway.app/api/fran/employees"; // 백엔드 API 주소
 
     let response = await fetch(apiUrl, {
       method: "GET",
@@ -19,7 +20,7 @@ export async function getEmployeeList() {
     if (response.status === 403 && refreshToken) {
       console.warn("🔄 Access Token 만료됨. Refresh Token으로 갱신 시도...");
       const refreshResponse = await fetch(
-        "cafesync-back-production.up.railway.app/api/refresh-token",
+        "https://cafesync-back-production.up.railway.app/api/refresh-token",
         {
           method: "POST",
           headers: {
@@ -64,7 +65,8 @@ export async function getEmployeeList() {
 export async function createChatRoom(roomName, members) {
   try {
     let token = sessionStorage.getItem("accessToken");
-    const apiUrl = "cafesync-back-production.up.railway.app/api/chat/room"; // 채팅방 생성 API
+    const apiUrl =
+      "https://cafesync-back-production.up.railway.app/api/chat/room"; // 채팅방 생성 API
 
     const response = await fetch(apiUrl, {
       method: "POST",
@@ -96,7 +98,7 @@ export async function getUserChatRooms(empCode) {
   console.log("잘넘어왔니?", empCode);
   try {
     let token = sessionStorage.getItem("accessToken");
-    const apiUrl = `cafesync-back-production.up.railway.app/api/chat/rooms/${empCode}`;
+    const apiUrl = `https://cafesync-back-production.up.railway.app/api/chat/rooms/${empCode}`;
 
     const response = await fetch(apiUrl, {
       method: "GET",
@@ -126,7 +128,7 @@ export const getUnreadCount = async (roomId, empCode) => {
     let token = sessionStorage.getItem("accessToken");
     const refreshToken = sessionStorage.getItem("refreshToken");
 
-    const apiUrl = `cafesync-back-production.up.railway.app/api/chat/unread/${roomId}/${empCode}`;
+    const apiUrl = `https://cafesync-back-production.up.railway.app/api/chat/unread/${roomId}/${empCode}`;
 
     let response = await fetch(apiUrl, {
       method: "GET",
@@ -140,7 +142,7 @@ export const getUnreadCount = async (roomId, empCode) => {
     if (response.status === 403 && refreshToken) {
       console.warn("🔄 Access Token 만료됨. Refresh Token으로 갱신 시도...");
       const refreshResponse = await fetch(
-        "cafesync-back-production.up.railway.app/api/refresh-token",
+        "https://cafesync-back-production.up.railway.app/api/refresh-token",
         {
           method: "POST",
           headers: {

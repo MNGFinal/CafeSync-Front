@@ -67,7 +67,7 @@ function Header() {
     console.log("토큰 연장 요청 시작 - refreshToken:", refreshToken);
     try {
       const response = await fetch(
-        "cafesync-back-production.up.railway.app/api/refresh-token",
+        "https://cafesync-back-production.up.railway.app/api/refresh-token",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

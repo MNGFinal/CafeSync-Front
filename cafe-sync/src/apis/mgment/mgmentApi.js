@@ -2,7 +2,7 @@
 export async function fetchFrans() {
   try {
     const response = await fetch(
-      "cafesync-back-production.up.railway.app/api/hq/mgment"
+      "https://cafesync-back-production.up.railway.app/api/hq/mgment"
     ); // ✅ fetchFrans()가 아니라 fetch() 호출
     if (!response.ok) throw new Error("데이터 로드 실패");
 
@@ -20,7 +20,7 @@ export async function fetchFrans() {
 export const fetchSearchFrans = async (query) => {
   try {
     const response = await fetch(
-      `cafesync-back-production.up.railway.app/api/hq/mgment/${query}`
+      `https://cafesync-back-production.up.railway.app/api/hq/mgment/${query}`
     ); // ✅ URL 수정
     if (!response.ok) {
       throw new Error("검색 요청 실패");
@@ -37,7 +37,7 @@ export const fetchSearchFrans = async (query) => {
 export async function registFran(franData) {
   try {
     const response = await fetch(
-      "cafesync-back-production.up.railway.app/api/hq/mgment",
+      "https://cafesync-back-production.up.railway.app/api/hq/mgment",
       {
         method: "POST",
         headers: {
@@ -62,7 +62,7 @@ export async function registFran(franData) {
 export async function deleteFran(franCode) {
   try {
     const response = await fetch(
-      `cafesync-back-production.up.railway.app/api/hq/mgment/${franCode}`,
+      `https://cafesync-back-production.up.railway.app/api/hq/mgment/${franCode}`,
       {
         method: "DELETE",
       }
@@ -83,7 +83,7 @@ export async function updateFran(franCode, updateData) {
 
   try {
     const response = await fetch(
-      `cafesync-back-production.up.railway.app/api/hq/mgment/${franCode}`,
+      `https://cafesync-back-production.up.railway.app/api/hq/mgment/${franCode}`,
       {
         method: "PUT",
         headers: {

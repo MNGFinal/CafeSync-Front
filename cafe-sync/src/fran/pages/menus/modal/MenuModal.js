@@ -5,7 +5,7 @@ const MenuModal = ({ menu, onClose, setSelectedMenu, fetchMenus }) => {
   const onClickHandler = async () => {
     try {
       const response = await fetch(
-        `cafesync-back-production.up.railway.app/api/fran/menus/${menu.menuCode}`,
+        `https://cafesync-back-production.up.railway.app/api/fran/menus/${menu.menuCode}`,
         {
           method: "PUT",
           headers: {

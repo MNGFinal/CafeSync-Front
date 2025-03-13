@@ -5,7 +5,7 @@ import { fetchWithAuth } from "./fetchWithAuth"; // ✅ fetchWithAuth 추가
 export const loginUser = async (form) => {
   try {
     const response = await fetch(
-      "cafesync-back-production.up.railway.app/api/login",
+      "https://cafesync-back-production.up.railway.app/api/login",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -55,7 +55,7 @@ export const loginUser = async (form) => {
 
     // ✅ 사용자 정보 가져오기 (fetchWithAuth)
     const userInfoResponse = await fetchWithAuth(
-      "cafesync-back-production.up.railway.app/api/user-info"
+      "https://cafesync-back-production.up.railway.app/api/user-info"
     );
     // ...
 

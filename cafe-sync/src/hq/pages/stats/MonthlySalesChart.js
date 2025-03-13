@@ -31,7 +31,7 @@ const MonthlySalesChart = ({
   useEffect(() => {
     axios
       .get(
-        `cafesync-back-production.up.railway.app/api/hq/monthly-sales?startDate=${startDate}&endDate=${endDate}`
+        `https://cafesync-back-production.up.railway.app/api/hq/monthly-sales?startDate=${startDate}&endDate=${endDate}`
       )
       .then((response) => {
         console.log("📌 월별 매출 데이터:", response.data);

@@ -52,7 +52,7 @@ const ComplainList = ({ franCode, refresh }) => {
       // console.log('컴플레인 조회 시작! :', franCode);
       let token = sessionStorage.getItem("accessToken");
       const responseComplain = await fetch(
-        `cafesync-back-production.up.railway.app/api/fran/complain/${franCode}?startDate=${firstDate}&endDate=${lastDate}`,
+        `https://cafesync-back-production.up.railway.app/api/fran/complain/${franCode}?startDate=${firstDate}&endDate=${lastDate}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

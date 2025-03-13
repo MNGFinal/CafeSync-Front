@@ -129,7 +129,7 @@ const ModifyPlan = ({
       console.log("🚀 최종 전송 데이터:", formattedData);
 
       const response = await fetch(
-        `cafesync-back-production.up.railway.app/api/hq/promotion`,
+        `https://cafesync-back-production.up.railway.app/api/hq/promotion`,
         {
           method: "PUT",
           headers: {

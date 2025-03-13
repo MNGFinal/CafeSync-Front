@@ -10,7 +10,7 @@ const MenuSalesChart = ({ startDate, endDate, searchTrigger }) => {
 
     axios
       .get(
-        `cafesync-back-production.up.railway.app/api/hq/top-menus?startDate=${startDate}&endDate=${endDate}`
+        `https://cafesync-back-production.up.railway.app/api/hq/top-menus?startDate=${startDate}&endDate=${endDate}`
       )
       .then((response) => {
         console.log("📌 메뉴 판매 데이터:", response.data);

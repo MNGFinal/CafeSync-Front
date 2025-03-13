@@ -75,7 +75,7 @@ const AddPlan = ({ isAddModalOpen, setIsAddModalOpen, onUpdatePlan }) => {
         endDate: formatToUTC(promotion.endDate, true), // UTC 23:59:59 변환
       };
       const resopnse = await fetch(
-        "cafesync-back-production.up.railway.app/api/hq/promotion",
+        "https://cafesync-back-production.up.railway.app/api/hq/promotion",
         {
           method: "POST",
           headers: {

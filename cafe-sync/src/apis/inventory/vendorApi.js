@@ -2,7 +2,8 @@
 export async function insertVendor(newVendorData) {
   try {
     const token = sessionStorage.getItem("accessToken"); // 액세스 토큰
-    const apiUrl = "cafesync-back-production.up.railway.app/api/fran/vendor"; // 백엔드 POST 경로
+    const apiUrl =
+      "https://cafesync-back-production.up.railway.app/api/fran/vendor"; // 백엔드 POST 경로
 
     const response = await fetch(apiUrl, {
       method: "POST",
@@ -36,7 +37,7 @@ export async function insertVendor(newVendorData) {
 export async function updateVendor(updatedVendorData) {
   try {
     const token = sessionStorage.getItem("accessToken");
-    const apiUrl = `cafesync-back-production.up.railway.app/api/fran/vendor/${updatedVendorData.venCode}`;
+    const apiUrl = `https://cafesync-back-production.up.railway.app/api/fran/vendor/${updatedVendorData.venCode}`;
 
     const response = await fetch(apiUrl, {
       method: "PUT",

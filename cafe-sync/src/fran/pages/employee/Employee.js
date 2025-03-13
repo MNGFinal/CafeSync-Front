@@ -30,7 +30,7 @@ function Employee() {
 
     try {
       const response = await fetch(
-        `cafesync-back-production.up.railway.app/api/fran/employee/workers/${franCode}`
+        `https://cafesync-back-production.up.railway.app/api/fran/employee/workers/${franCode}`
       );
       const res = await response.json();
 
