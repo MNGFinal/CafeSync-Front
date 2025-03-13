@@ -28,7 +28,7 @@ function HQDailySalesChart() {
     // 3월 1일 ~ 3월 17일까지 매출 합산 데이터 가져오기
     axios
       .get(
-        "http://localhost:8080/api/hq/top-stores?startDate=2025-03-01&endDate=2025-03-17"
+        "cafesync-back-production.up.railway.app/api/hq/top-stores?startDate=2025-03-01&endDate=2025-03-17"
       )
       .then((response) => {
         console.log("📌 상위 10개 매장 데이터:", response.data);

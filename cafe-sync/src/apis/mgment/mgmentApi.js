@@ -1,7 +1,9 @@
 // ✅ 가맹점 조회 (GET 요청)
 export async function fetchFrans() {
   try {
-    const response = await fetch("http://localhost:8080/api/hq/mgment"); // ✅ fetchFrans()가 아니라 fetch() 호출
+    const response = await fetch(
+      "cafesync-back-production.up.railway.app/api/hq/mgment"
+    ); // ✅ fetchFrans()가 아니라 fetch() 호출
     if (!response.ok) throw new Error("데이터 로드 실패");
 
     const res = await response.json();
@@ -18,7 +20,7 @@ export async function fetchFrans() {
 export const fetchSearchFrans = async (query) => {
   try {
     const response = await fetch(
-      `http://localhost:8080/api/hq/mgment/${query}`
+      `cafesync-back-production.up.railway.app/api/hq/mgment/${query}`
     ); // ✅ URL 수정
     if (!response.ok) {
       throw new Error("검색 요청 실패");
@@ -34,13 +36,16 @@ export const fetchSearchFrans = async (query) => {
 // ✅ 가맹점 등록 (POST 요청)
 export async function registFran(franData) {
   try {
-    const response = await fetch("http://localhost:8080/api/hq/mgment", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json", // JSON으로 전송
-      },
-      body: JSON.stringify(franData),
-    });
+    const response = await fetch(
+      "cafesync-back-production.up.railway.app/api/hq/mgment",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // JSON으로 전송
+        },
+        body: JSON.stringify(franData),
+      }
+    );
 
     if (!response.ok) throw new Error("가맹점 등록 실패");
 
@@ -57,7 +62,7 @@ export async function registFran(franData) {
 export async function deleteFran(franCode) {
   try {
     const response = await fetch(
-      `http://localhost:8080/api/hq/mgment/${franCode}`,
+      `cafesync-back-production.up.railway.app/api/hq/mgment/${franCode}`,
       {
         method: "DELETE",
       }
@@ -78,7 +83,7 @@ export async function updateFran(franCode, updateData) {
 
   try {
     const response = await fetch(
-      `http://localhost:8080/api/hq/mgment/${franCode}`,
+      `cafesync-back-production.up.railway.app/api/hq/mgment/${franCode}`,
       {
         method: "PUT",
         headers: {

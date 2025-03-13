@@ -4,11 +4,14 @@ import { fetchWithAuth } from "./fetchWithAuth"; // ✅ fetchWithAuth 추가
 
 export const loginUser = async (form) => {
   try {
-    const response = await fetch("http://localhost:8080/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
+    const response = await fetch(
+      "cafesync-back-production.up.railway.app/api/login",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      }
+    );
 
     if (!response.ok) {
       throw new Error("일치하는 정보가 없습니다");
@@ -52,7 +55,7 @@ export const loginUser = async (form) => {
 
     // ✅ 사용자 정보 가져오기 (fetchWithAuth)
     const userInfoResponse = await fetchWithAuth(
-      "http://localhost:8080/api/user-info"
+      "cafesync-back-production.up.railway.app/api/user-info"
     );
     // ...
 

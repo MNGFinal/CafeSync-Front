@@ -20,7 +20,7 @@ function HQDiscontinue() {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/fran/menus/${categoryCode}?query=${searchQuery}`
+        `cafesync-back-production.up.railway.app/api/fran/menus/${categoryCode}?query=${searchQuery}`
       );
       const res = await response.json();
 

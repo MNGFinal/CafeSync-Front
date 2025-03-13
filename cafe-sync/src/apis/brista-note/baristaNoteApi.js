@@ -9,7 +9,7 @@ import {
 } from "../../modules/NoteModule.js";
 
 export const callBaristNotesAPI = () => {
-  const requestURL = `http://localhost:8080/api/fran/notes`;
+  const requestURL = `cafesync-back-production.up.railway.app/api/fran/notes`;
 
   return async (dispatch, getState) => {
     const result = await fetch(requestURL, {
@@ -26,7 +26,7 @@ export const callBaristNotesAPI = () => {
 };
 
 export const callBaristNoteDetailAPI = ({ noteCode }) => {
-  const requestURL = `http://localhost:8080/api/fran/notes/${noteCode}`;
+  const requestURL = `cafesync-back-production.up.railway.app/api/fran/notes/${noteCode}`;
 
   return async (dispatch, getState) => {
     const result = await fetch(requestURL, {
@@ -43,7 +43,7 @@ export const callBaristNoteDetailAPI = ({ noteCode }) => {
 };
 
 export const callSearchNoteAPI = ({ search }) => {
-  const requestURL = `http://localhost:8080/api/fran/notes/search?search=${search}`;
+  const requestURL = `cafesync-back-production.up.railway.app/api/fran/notes/search?search=${search}`;
 
   return async (dispatch, getState) => {
     const result = await fetch(requestURL, {
@@ -66,7 +66,7 @@ export const callNoteRegistAPI = ({
   userId,
   attachment,
 }) => {
-  const requestURL = `http://localhost:8080/api/fran/notes`;
+  const requestURL = `cafesync-back-production.up.railway.app/api/fran/notes`;
 
   return async (dispatch) => {
     const accessToken = sessionStorage.getItem("accessToken");
@@ -115,7 +115,7 @@ export const callNoteUpdateAPI = ({
   userId,
   attachment, // ✅ attachment 추가
 }) => {
-  const requestURL = `http://localhost:8080/api/fran/notes`;
+  const requestURL = `cafesync-back-production.up.railway.app/api/fran/notes`;
 
   return async (dispatch) => {
     const accessToken = sessionStorage.getItem("accessToken");
@@ -166,7 +166,7 @@ export const callNoteUpdateAPI = ({
 };
 
 export const callNoteDeleteAPI = ({ noteCode }) => {
-  const requestURL = `http://localhost:8080/api/fran/notes/${noteCode}`;
+  const requestURL = `cafesync-back-production.up.railway.app/api/fran/notes/${noteCode}`;
 
   return async (dispatch) => {
     const accessToken = sessionStorage.getItem("accessToken");

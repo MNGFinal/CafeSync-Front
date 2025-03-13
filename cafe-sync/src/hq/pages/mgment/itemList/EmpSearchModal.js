@@ -10,7 +10,7 @@ function EmpSearchModal({ onClose, onSelect }) {
     const fetchEmployees = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/api/fran/employees"
+          "cafesync-back-production.up.railway.app/api/fran/employees"
         );
         // 예: [{ empCode: 'E001', empName: '홍길동' }, ...]
 

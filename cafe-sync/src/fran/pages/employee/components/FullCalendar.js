@@ -15,7 +15,7 @@ const MyCalendar = () => {
   const jobCode = useSelector(
     (state) => state.auth?.user?.job?.jobCode ?? null
   );
-  
+
   console.log("로그인한 직급코드", jobCode);
 
   const [events, setEvents] = useState([]);
@@ -25,7 +25,9 @@ const MyCalendar = () => {
   // const [selectedEvent, setSelectedEvent] = useState(null);
   const calendarRef = useRef();
 
-  useEffect( () => { fetchSchedules(); }, [] );
+  useEffect(() => {
+    fetchSchedules();
+  }, []);
 
   const onScheduleUpdate = async () => {
     await fetchSchedules(); // 리랜더링으로 항상 최신 데이터 유지
@@ -42,7 +44,7 @@ const MyCalendar = () => {
   //     },
   //     classNames: [`division-${schedule.scheduleDivision}`],
   //   }));
-  
+
   //   setEvents((prevEvents) => [...prevEvents, ...formattedNewEvents]);
   //   // setEvents(formattedNewEvents);
   //   // setEvents((prevSchedules) => newSchedules(prevSchedules));
@@ -59,11 +61,14 @@ const MyCalendar = () => {
 
     try {
       let token = sessionStorage.getItem("accessToken");
-      const response = await fetch(`http://localhost:8080/api/fran/schedule/${franCode}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `cafesync-back-production.up.railway.app/api/fran/schedule/${franCode}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
+      );
 
       if (!response.ok) {
         throw new Error("서버 응답 실패");
@@ -75,18 +80,19 @@ const MyCalendar = () => {
 
       const formattedEvents = data.data.map((schedule) => ({
         id: schedule.scheduleCode,
-        title: `${getScheduleType(schedule.scheduleDivision)} - ${schedule.empName}`,
+        title: `${getScheduleType(schedule.scheduleDivision)} - ${
+          schedule.empName
+        }`,
         date: schedule.scheduleDate,
         emp: schedule.empCode,
         extendedProps: {
           scheduleDivision: schedule.scheduleDivision,
         },
         classNames: [`division-${schedule.scheduleDivision}`],
-      }))
+      }));
       // .sort((a, b) => sortOrder[a.extendedProps.scheduleDivision] - sortOrder[b.extendedProps.scheduleDivision]);
 
       setEvents(formattedEvents);
-      
     } catch (error) {
       console.error("조회 오류!!", error);
     }
@@ -108,7 +114,10 @@ const MyCalendar = () => {
         headerToolbar={{
           start: "prev next today",
           center: "title",
-          end: jobCode === 21 ? "addEventBtn modifyEventBtn dayGridWeek" : "dayGridWeek",
+          end:
+            jobCode === 21
+              ? "addEventBtn modifyEventBtn dayGridWeek"
+              : "dayGridWeek",
           // dayGridMonth
         }}
         customButtons={
@@ -161,16 +170,16 @@ const MyCalendar = () => {
         }}
       />
       {/* 스케줄 등록 모달 */}
-      <ScheduleAdd 
-        isModalOpen={isModalOpen} 
-        setIsModalOpen={setIsModalOpen} 
+      <ScheduleAdd
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
         franCode={franCode}
         onScheduleUpdate={onScheduleUpdate}
         existingSchedules={events}
       />
       {/* 스케줄 수정 모달 */}
       {isModifyModalOpen && (
-        <ScheduleModify 
+        <ScheduleModify
           isModifyModalOpen={isModifyModalOpen}
           setIsModifyModalOpen={setIsModifyModalOpen}
           franCode={franCode}

@@ -41,7 +41,7 @@ function Room() {
     if (!chatId) return;
     try {
       await axios.post(
-        `http://localhost:8080/api/chat/read/${chatId}/${empCode}`
+        `cafesync-back-production.up.railway.app/api/chat/read/${chatId}/${empCode}`
       );
       console.log(
         `✅ 메시지(chatId=${chatId}) 읽음 처리 완료 for empCode=${empCode}`
@@ -66,7 +66,7 @@ function Room() {
       for (let i = 0; i < fetchedRooms.length; i++) {
         const room = fetchedRooms[i];
         const res = await axios.get(
-          `http://localhost:8080/api/chat/history/${room.roomId}`,
+          `cafesync-back-production.up.railway.app/api/chat/history/${room.roomId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const messagesData = res.data.data || res.data || [];
@@ -126,7 +126,7 @@ function Room() {
     if (selectedRoom && selectedRoom.roomId !== newRoom.roomId) {
       try {
         await axios.post(
-          `http://localhost:8080/api/chat/presence/${selectedRoom.roomId}/${empCode}?online=false`
+          `cafesync-back-production.up.railway.app/api/chat/presence/${selectedRoom.roomId}/${empCode}?online=false`
         );
         console.log(`Presence OFF for room ${selectedRoom.roomId}`);
       } catch (error) {
@@ -136,7 +136,7 @@ function Room() {
     // 새 방 ON 업데이트
     try {
       await axios.post(
-        `http://localhost:8080/api/chat/presence/${newRoom.roomId}/${empCode}?online=true`
+        `cafesync-back-production.up.railway.app/api/chat/presence/${newRoom.roomId}/${empCode}?online=true`
       );
       console.log(`Presence ON for room ${newRoom.roomId}`);
     } catch (error) {

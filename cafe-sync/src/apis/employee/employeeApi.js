@@ -9,7 +9,7 @@ export async function updateEmployee(updatedData) {
 
   try {
     const token = sessionStorage.getItem("accessToken");
-    const apiUrl = "http://localhost:8080/api/fran/employee"; // API URL
+    const apiUrl = "cafesync-back-production.up.railway.app/api/fran/employee"; // API URL
 
     const response = await fetch(apiUrl, {
       method: "PUT",
@@ -43,7 +43,7 @@ export async function createEmployee(employeeData) {
 
   try {
     const token = sessionStorage.getItem("accessToken");
-    const apiUrl = "http://localhost:8080/api/fran/employee"; // 백엔드 API 주소
+    const apiUrl = "cafesync-back-production.up.railway.app/api/fran/employee"; // 백엔드 API 주소
 
     const response = await fetch(apiUrl, {
       method: "POST",

@@ -28,7 +28,7 @@ export const fetchWithAuth = async (url, options = {}) => {
       console.warn("🔄 Access Token 만료됨, 자동 갱신 요청");
 
       const refreshResponse = await fetch(
-        "http://localhost:8080/api/refresh-token",
+        "cafesync-back-production.up.railway.app/api/refresh-token",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

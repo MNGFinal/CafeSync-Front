@@ -114,7 +114,7 @@ function Chatting() {
     if (!roomId) return;
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/chat/history/${roomId}`,
+        `cafesync-back-production.up.railway.app/api/chat/history/${roomId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -165,7 +165,7 @@ function Chatting() {
     if (!chatId) return;
     try {
       await axios.post(
-        `http://localhost:8080/api/chat/read/${chatId}/${loggedInEmpCode}`
+        `cafesync-back-production.up.railway.app/api/chat/read/${chatId}/${loggedInEmpCode}`
       );
       console.log(`메시지 ${chatId} 읽음 처리 완료`);
     } catch (error) {
@@ -222,7 +222,7 @@ function Chatting() {
     if (!selectedRoom) return;
     try {
       await axios.delete(
-        `http://localhost:8080/api/chat/room/${selectedRoom.roomId}/participants/${loggedInEmpCode}`
+        `cafesync-back-production.up.railway.app/api/chat/room/${selectedRoom.roomId}/participants/${loggedInEmpCode}`
       );
       console.log("채팅방에서 나갔습니다.");
 

@@ -2,7 +2,7 @@
 export async function findFranList() {
   try {
     const response = await fetch(
-      "http://localhost:8080/api/find-id/findFranList"
+      "cafesync-back-production.up.railway.app/api/find-id/findFranList"
     );
 
     // 응답 상태 확인
@@ -26,7 +26,7 @@ export async function findFranList() {
 export async function verifyUser(franCode, empCode, email) {
   try {
     const response = await fetch(
-      "http://localhost:8080/api/find-id/verifyUser",
+      "cafesync-back-production.up.railway.app/api/find-id/verifyUser",
       {
         method: "POST",
         headers: {
@@ -58,7 +58,7 @@ export async function verifyUser(franCode, empCode, email) {
 export async function HQverifyUser(empCode, email) {
   try {
     const response = await fetch(
-      "http://localhost:8080/api/find-id/verifyUser",
+      "cafesync-back-production.up.railway.app/api/find-id/verifyUser",
       {
         method: "POST",
         headers: {
@@ -89,7 +89,7 @@ export async function HQverifyUser(empCode, email) {
 export async function requestAuthCode(userId, email) {
   try {
     const response = await fetch(
-      "http://localhost:8080/api/find-pass/request-auth",
+      "cafesync-back-production.up.railway.app/api/find-pass/request-auth",
       {
         method: "POST",
         headers: {
@@ -114,7 +114,7 @@ export async function requestAuthCode(userId, email) {
 export async function verifyAuthCode(userId, email, authenticationNumber) {
   try {
     const response = await fetch(
-      "http://localhost:8080/api/find-pass/verify-auth",
+      "cafesync-back-production.up.railway.app/api/find-pass/verify-auth",
       {
         method: "POST",
         headers: {
@@ -141,10 +141,13 @@ export async function updatePassword(userId, userPass) {
   formData.append("userPass", userPass);
 
   try {
-    const response = await fetch("http://localhost:8080/api/find-pass/update", {
-      method: "POST",
-      body: formData, // ✅ FormData 사용 (JSON 아님)
-    });
+    const response = await fetch(
+      "cafesync-back-production.up.railway.app/api/find-pass/update",
+      {
+        method: "POST",
+        body: formData, // ✅ FormData 사용 (JSON 아님)
+      }
+    );
 
     console.log("📢 updatePassword 응답 상태:", response.status);
 
