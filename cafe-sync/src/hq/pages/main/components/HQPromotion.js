@@ -9,12 +9,15 @@ import "tippy.js/dist/tippy.css";
 
 const HQPromotion = () => {
   const [events, setEvents] = useState([]);
-  useEffect( () => {fetchPlan()}, [] );
+  useEffect(() => {
+    fetchPlan();
+  }, []);
 
   useEffect(() => {
     setTimeout(() => {
-      document.querySelectorAll(".fc-daygrid-body-unbalanced .fc-daygrid-day-events")
-        .forEach(el => {
+      document
+        .querySelectorAll(".fc-daygrid-body-unbalanced .fc-daygrid-day-events")
+        .forEach((el) => {
           el.style.minHeight = "1em";
         });
     }, 10); // FullCalendar가 로딩된 후 적용되도록 지연 추가
@@ -23,31 +26,34 @@ const HQPromotion = () => {
   const fetchPlan = async () => {
     try {
       let token = sessionStorage.getItem("accessToken");
-      const response = await fetch(`http://localhost:8080/api/hq/promotions`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `cafesync-back-production.up.railway.app/api/hq/promotions`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
-    
-      if(!response.ok) {
+      );
+
+      if (!response.ok) {
         throw new Error("서버 응답 실패");
       }
-    
+
       const data = await response.json();
-      console.log('data: ', data);
+      console.log("data: ", data);
 
       const convertUTCToKST = (utcDate, isEndDate = false) => {
         if (!utcDate) return "";
         const date = new Date(utcDate);
         date.setHours(date.getHours() + 9); // ✅ UTC → KST 변환
-      
+
         if (isEndDate) {
-          date.setDate(date.getDate()); 
+          date.setDate(date.getDate());
         }
-      
+
         return date.toISOString().split("T")[0]; // YYYY-MM-DD 형식 반환
       };
-      
+
       const formattedEvents = data.data.map((promotion) => {
         const isSingleDay = promotion.startDate === promotion.endDate;
         const eventObj = {
@@ -59,29 +65,33 @@ const HQPromotion = () => {
           memo: promotion.memo,
           viewTitle: `[${promotion.categoryName}] ${promotion.title}`,
           color: getCategoryColor(promotion.categoryName),
-          allDay: true,  // ✅ 하루짜리 일정도 강제로 allDay 처리
+          allDay: true, // ✅ 하루짜리 일정도 강제로 allDay 처리
           display: "block",
           // classNames: [isSingleDay ? "single-day" : "multi-day"],
         };
-      
+
         console.log("📌 이벤트 데이터:", eventObj); // ✅ 로그 확인
         return eventObj;
-      });  
-      
+      });
+
       setEvents(formattedEvents);
     } catch (error) {
       console.log("조회 오류", error);
     }
-  }
+  };
 
   const getCategoryColor = (category) => {
     switch (category) {
-        case "콜라보": return "#BDC0F1";
-        case "이벤트": return "#bde5f1";
-        case "시즌": return "#C9F1BD";
-        default: return "#F1BDBD";
+      case "콜라보":
+        return "#BDC0F1";
+      case "이벤트":
+        return "#bde5f1";
+      case "시즌":
+        return "#C9F1BD";
+      default:
+        return "#F1BDBD";
     }
-  }
+  };
 
   return (
     <div className={`${st.mainPagePromotionSection}`}>
@@ -95,7 +105,7 @@ const HQPromotion = () => {
         aspectRatio={1.0}
         slotHeight={1}
         dayCellDidMount={(info) => {
-            info.el.style.height = "30px"; // ✅ 직접 DOM 조작으로 높이 줄이기
+          info.el.style.height = "30px"; // ✅ 직접 DOM 조작으로 높이 줄이기
         }}
         headerToolbar={false}
         events={events}
@@ -105,13 +115,13 @@ const HQPromotion = () => {
             date.setHours(date.getHours() + 9);
             return date.toISOString().split("T")[0];
           };
-        
+
           const startDate = convertToKST(arg.event.start);
           const endDate = new Date(arg.event.end).toISOString().split("T")[0];
-        
+
           console.log("📌 변환된 KST StartDate:", startDate);
           console.log("📌 변환된 KST EndDate:", endDate);
-        
+
           return startDate === endDate ? ["single-day"] : ["multi-day"];
         }}
         eventContent={(arg) => {
@@ -126,7 +136,7 @@ const HQPromotion = () => {
               }}
             ></div>
           );
-        }}          
+        }}
         views={{
           dayGridMonth: {
             dayMaxEventRows: 3,
@@ -160,7 +170,7 @@ const HQPromotion = () => {
         }}
       />
     </div>
-  )
-}
+  );
+};
 
-export default HQPromotion
+export default HQPromotion;

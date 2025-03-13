@@ -5,7 +5,7 @@ import { Player } from "@lottiefiles/react-lottie-player";
 import modalStyle from "../../../components/ModalButton.module.css";
 import style from "./styles/Plan.module.css";
 
-const AddPlan = ({isAddModalOpen, setIsAddModalOpen, onUpdatePlan}) => {
+const AddPlan = ({ isAddModalOpen, setIsAddModalOpen, onUpdatePlan }) => {
   const initialPromotionState = {
     title: "",
     categoryName: "",
@@ -21,7 +21,7 @@ const AddPlan = ({isAddModalOpen, setIsAddModalOpen, onUpdatePlan}) => {
 
   const promotionChangeHandler = (e) => {
     const { name, value } = e.target;
-  
+
     if (name === "startDate" || name === "endDate") {
       setPromotion((prev) => ({
         ...prev,
@@ -48,7 +48,12 @@ const AddPlan = ({isAddModalOpen, setIsAddModalOpen, onUpdatePlan}) => {
   };
 
   const confirmHandler = async () => {
-    if (!promotion.title || !promotion.categoryName || !promotion.startDate || !promotion.endDate) {
+    if (
+      !promotion.title ||
+      !promotion.categoryName ||
+      !promotion.startDate ||
+      !promotion.endDate
+    ) {
       setLottieAnimation("/animations/warning.json");
       setModalMessage("모든 항목을 입력해주세요.");
       setIsSModalOpen(true);
@@ -69,17 +74,20 @@ const AddPlan = ({isAddModalOpen, setIsAddModalOpen, onUpdatePlan}) => {
         startDate: formatToUTC(promotion.startDate, false), // UTC 00:00:00 변환
         endDate: formatToUTC(promotion.endDate, true), // UTC 23:59:59 변환
       };
-      const resopnse = await fetch("http://localhost:8080/api/hq/promotion", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formattedData)
-      });
+      const resopnse = await fetch(
+        "cafesync-back-production.up.railway.app/api/hq/promotion",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formattedData),
+        }
+      );
 
       const savedPromotion = await resopnse.json();
-      console.log('savedPromotion? :', savedPromotion)
+      console.log("savedPromotion? :", savedPromotion);
 
       if (!resopnse.ok) {
         throw new Error("프로모션 저장 실패");
@@ -90,13 +98,13 @@ const AddPlan = ({isAddModalOpen, setIsAddModalOpen, onUpdatePlan}) => {
       setModalMessage("프로모션을 정상 등록하였습니다.");
       setIsSModalOpen(true);
       onUpdatePlan();
-    } catch(error) {
+    } catch (error) {
       console.log("프로모션 등록 실 패 !", error);
       setLottieAnimation("/animations/warning.json");
       setModalMessage("프로모션 등록에 실패하였습니다.");
       setIsSModalOpen(true);
     }
-  }
+  };
 
   const closeHandler = () => {
     setPromotion(initialPromotionState);
@@ -113,13 +121,13 @@ const AddPlan = ({isAddModalOpen, setIsAddModalOpen, onUpdatePlan}) => {
           {
             text: "등록",
             onClick: confirmHandler,
-            className: modalStyle.confirmButtonB
+            className: modalStyle.confirmButtonB,
           },
-          { 
-            text: "취소", 
-            onClick: closeHandler, 
-            className: modalStyle.cancelButtonB 
-          }
+          {
+            text: "취소",
+            onClick: closeHandler,
+            className: modalStyle.cancelButtonB,
+          },
         ]}
       >
         <h2 className={style.schH2}>일정 프로모션 등록</h2>
@@ -127,7 +135,10 @@ const AddPlan = ({isAddModalOpen, setIsAddModalOpen, onUpdatePlan}) => {
         <div className={style.addTable}>
           <table>
             <tr>
-              <th>프로모션 명<span style={{ color: "red", marginLeft: "2px" }}>*</span></th>
+              <th>
+                프로모션 명
+                <span style={{ color: "red", marginLeft: "2px" }}>*</span>
+              </th>
               <td>
                 <input
                   type="text"
@@ -138,9 +149,12 @@ const AddPlan = ({isAddModalOpen, setIsAddModalOpen, onUpdatePlan}) => {
               </td>
             </tr>
             <tr>
-              <th>프로모션 종류<span style={{ color: "red", marginLeft: "2px" }}>*</span></th>
+              <th>
+                프로모션 종류
+                <span style={{ color: "red", marginLeft: "2px" }}>*</span>
+              </th>
               <td>
-                <select 
+                <select
                   name="categoryName"
                   value={promotion.categoryName}
                   onChange={promotionChangeHandler}
@@ -153,16 +167,20 @@ const AddPlan = ({isAddModalOpen, setIsAddModalOpen, onUpdatePlan}) => {
               </td>
             </tr>
             <tr>
-              <th>프로모션 기간<span style={{ color: "red", marginLeft: "2px" }}>*</span></th>
+              <th>
+                프로모션 기간
+                <span style={{ color: "red", marginLeft: "2px" }}>*</span>
+              </th>
               <td>
-                <input 
-                  type="date" 
+                <input
+                  type="date"
                   name="startDate"
                   value={promotion.startDate}
                   onChange={promotionChangeHandler}
-                /> ~ {" "}
-                <input 
-                  type="date" 
+                />{" "}
+                ~{" "}
+                <input
+                  type="date"
                   name="endDate"
                   value={promotion.endDate}
                   onChange={promotionChangeHandler}
@@ -172,7 +190,16 @@ const AddPlan = ({isAddModalOpen, setIsAddModalOpen, onUpdatePlan}) => {
             {addError && (
               <tr>
                 <td colSpan="2">
-                  <p style={{ display: "inline-block", color: "red", marginLeft: "10px", fontSize: "12px" }}>{addError}</p>
+                  <p
+                    style={{
+                      display: "inline-block",
+                      color: "red",
+                      marginLeft: "10px",
+                      fontSize: "12px",
+                    }}
+                  >
+                    {addError}
+                  </p>
                 </td>
               </tr>
             )}
@@ -180,9 +207,9 @@ const AddPlan = ({isAddModalOpen, setIsAddModalOpen, onUpdatePlan}) => {
               <th>프로모션 내용</th>
             </tr>
           </table>
-          <textarea 
-            className={style.addTextarea} 
-            name="memo" 
+          <textarea
+            className={style.addTextarea}
+            name="memo"
             value={promotion.memo}
             onChange={promotionChangeHandler}
           />
@@ -195,7 +222,7 @@ const AddPlan = ({isAddModalOpen, setIsAddModalOpen, onUpdatePlan}) => {
               text: "확인",
               onClick: closeHandler,
               className: modalStyle.confirmButtonS,
-            }
+            },
           ]}
         >
           <div style={{ textAlign: "center" }}>
@@ -207,12 +234,14 @@ const AddPlan = ({isAddModalOpen, setIsAddModalOpen, onUpdatePlan}) => {
               style={{ height: "100px", width: "100px", margin: "0 auto" }}
             />
             <br />
-            <span style={{marginTop: "15px", whiteSpace: "pre-line"}}>{modalMessage}</span>
+            <span style={{ marginTop: "15px", whiteSpace: "pre-line" }}>
+              {modalMessage}
+            </span>
           </div>
         </SModal>
       </Modal>
     </div>
-  )
-}
+  );
+};
 
-export default AddPlan
+export default AddPlan;

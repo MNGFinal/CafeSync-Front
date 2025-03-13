@@ -9,7 +9,7 @@ import {
 } from "../../modules/NoticeModule.js";
 
 export const callNoticesAPI = () => {
-  const requestURL = `http://localhost:8080/api/fran/notices`;
+  const requestURL = `cafesync-back-production.up.railway.app/api/fran/notices`;
 
   return async (dispatch, getState) => {
     const result = await fetch(requestURL, {
@@ -33,7 +33,7 @@ export const callNoticesAPI = () => {
 };
 
 export const callNoticeDetailAPI = ({ noticeCode }) => {
-  const requestURL = `http://localhost:8080/api/fran/notices/${noticeCode}`;
+  const requestURL = `cafesync-back-production.up.railway.app/api/fran/notices/${noticeCode}`;
 
   return async (dispatch, getState) => {
     const result = await fetch(requestURL, {
@@ -50,7 +50,7 @@ export const callNoticeDetailAPI = ({ noticeCode }) => {
 };
 
 export const callIncreaseViewCountAPI = (noticeCode) => {
-  const requestURL = `http://localhost:8080/api/fran/notices/${noticeCode}/increase-view`;
+  const requestURL = `cafesync-back-production.up.railway.app/api/fran/notices/${noticeCode}/increase-view`;
 
   return async (dispatch) => {
     const result = await fetch(requestURL, {
@@ -67,7 +67,7 @@ export const callIncreaseViewCountAPI = (noticeCode) => {
 };
 
 export const callSearchNoticeAPI = ({ search }) => {
-  const requestURL = `http://localhost:8080/api/fran/notices/search?search=${search}`;
+  const requestURL = `cafesync-back-production.up.railway.app/api/fran/notices/search?search=${search}`;
 
   return async (dispatch, getState) => {
     const result = await fetch(requestURL, {
@@ -88,7 +88,7 @@ export const callNoticeRegistAPI = ({
   userId,
   attachment,
 }) => {
-  const requestURL = `http://localhost:8080/api/fran/notices`;
+  const requestURL = `cafesync-back-production.up.railway.app/api/fran/notices`;
 
   return async (dispatch) => {
     const accessToken = sessionStorage.getItem("accessToken"); // 세션에서 토큰 가져오기
@@ -142,7 +142,7 @@ export const callNoticeUpdateAPI = ({
   attachment,
   noticeCode,
 }) => {
-  const requestURL = `http://localhost:8080/api/fran/notices`;
+  const requestURL = `cafesync-back-production.up.railway.app/api/fran/notices`;
 
   return async (dispatch) => {
     const accessToken = sessionStorage.getItem("accessToken"); // 세션에서 토큰 가져오기
@@ -193,7 +193,7 @@ export const callNoticeUpdateAPI = ({
 };
 
 export const callNoticeDeleteAPI = ({ noticeCode }) => {
-  const requestURL = `http://localhost:8080/api/fran/notices/${noticeCode}`;
+  const requestURL = `cafesync-back-production.up.railway.app/api/fran/notices/${noticeCode}`;
 
   return async (dispatch) => {
     const accessToken = sessionStorage.getItem("accessToken");

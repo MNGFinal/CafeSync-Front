@@ -17,7 +17,8 @@ export const ChatSocketProvider = ({ children }) => {
     if (!empCode) return;
 
     const newClient = new Client({
-      webSocketFactory: () => new SockJS("http://localhost:8080/ws/chat"),
+      webSocketFactory: () =>
+        new SockJS("cafesync-back-production.up.railway.app/ws/chat"),
       connectHeaders: { Authorization: `Bearer ${token}` },
       debug: (str) => console.log(str),
       reconnectDelay: 5000,

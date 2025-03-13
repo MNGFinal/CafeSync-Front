@@ -1,16 +1,22 @@
 import { useState, useEffect } from "react";
 import SModal from "../../../../components/SModal";
-import style from "../styles/Complain.module.css"
-import modalStyle from "../../../../components/ModalButton.module.css"
+import style from "../styles/Complain.module.css";
+import modalStyle from "../../../../components/ModalButton.module.css";
 import useFetchWorkers from "../../employee/hooks/useFetchWorkers";
 import { Player } from "@lottiefiles/react-lottie-player";
 
-const ComplainAdd = ({franCode, onComplainUpdate}) => {
+const ComplainAdd = ({ franCode, onComplainUpdate }) => {
   const today = new Date().toISOString().split("T")[0];
   const workerList = useFetchWorkers(franCode);
-  const [complain, setComplain] = useState(
-    { complainDate: today, complainDivision: "", empCode: "", empName: "", customerPhone: "", complainDetail: "", franCode: franCode },
-  );
+  const [complain, setComplain] = useState({
+    complainDate: today,
+    complainDivision: "",
+    empCode: "",
+    empName: "",
+    customerPhone: "",
+    complainDetail: "",
+    franCode: franCode,
+  });
   const [addError, setAddError] = useState("");
   const [lottieAnimation, setLottieAnimation] = useState("");
   const [isSModalOpen, setIsSModalOpen] = useState(false);
@@ -18,24 +24,38 @@ const ComplainAdd = ({franCode, onComplainUpdate}) => {
 
   const divisionOption = [
     { label: "서비스", value: 1 },
-    { label: "위생", value: 2 }, 
+    { label: "위생", value: 2 },
     { label: "기타", value: 3 },
-  ]
+  ];
 
   // 전화번호 포멧 설정
   const formatPhoneNumber = (number) => {
     if (number.startsWith("02")) {
       if (number.length <= 2) return number;
       if (number.length <= 6) return `${number.slice(0, 2)}-${number.slice(2)}`;
-      if (number.length <= 9) return `${number.slice(0, 2)}-${number.slice(2, 5)}-${number.slice(5, 9)}`;
-      return `${number.slice(0, 2)}-${number.slice(2, 6)}-${number.slice(6, 10)}`;
+      if (number.length <= 9)
+        return `${number.slice(0, 2)}-${number.slice(2, 5)}-${number.slice(
+          5,
+          9
+        )}`;
+      return `${number.slice(0, 2)}-${number.slice(2, 6)}-${number.slice(
+        6,
+        10
+      )}`;
     } else {
       if (number.length <= 3) return number;
       if (number.length <= 7) return `${number.slice(0, 3)}-${number.slice(3)}`;
-      if (number.length <= 10) return `${number.slice(0, 3)}-${number.slice(3, 6)}-${number.slice(6, 10)}`;
-      return `${number.slice(0, 3)}-${number.slice(3, 7)}-${number.slice(7, 11)}`;
+      if (number.length <= 10)
+        return `${number.slice(0, 3)}-${number.slice(3, 6)}-${number.slice(
+          6,
+          10
+        )}`;
+      return `${number.slice(0, 3)}-${number.slice(3, 7)}-${number.slice(
+        7,
+        11
+      )}`;
     }
-  }
+  };
 
   const complainChangeHandler = (e) => {
     const { name, value } = e.target;
@@ -55,29 +75,43 @@ const ComplainAdd = ({franCode, onComplainUpdate}) => {
     if (name === "customerPhone") {
       const onlyNumbers = value.replace(/\D/g, "");
       setComplain((prev) => ({
-        ...prev, [name]: formatPhoneNumber(onlyNumbers),
+        ...prev,
+        [name]: formatPhoneNumber(onlyNumbers),
       }));
     } else {
       setComplain((prev) => ({
-        ...prev, [name]: value,
+        ...prev,
+        [name]: value,
       }));
     }
-  }
+  };
 
   const resetComplainHandler = () => {
-    setComplain(
-      { complainDate: today, complainDivision: "", empCode: "", empName: "", customerPhone: "", complainDetail: "", franCode: complain.franCode }
-    );
-  }
+    setComplain({
+      complainDate: today,
+      complainDivision: "",
+      empCode: "",
+      empName: "",
+      customerPhone: "",
+      complainDetail: "",
+      franCode: complain.franCode,
+    });
+  };
 
   const confirmHandler = async () => {
-    console.log('confirmHandler 실행됨');
-    if (!complain.complainDate || !complain.complainDivision || !complain.empCode || !complain.customerPhone || !complain.complainDetail) {
+    console.log("confirmHandler 실행됨");
+    if (
+      !complain.complainDate ||
+      !complain.complainDivision ||
+      !complain.empCode ||
+      !complain.customerPhone ||
+      !complain.complainDetail
+    ) {
       setLottieAnimation("/animations/warning.json");
       setModalMessage("모든 항목을 입력해주세요.");
       setIsSModalOpen(true);
       return;
-    };
+    }
 
     if (addError) {
       setLottieAnimation("/animations/warning.json");
@@ -85,22 +119,25 @@ const ComplainAdd = ({franCode, onComplainUpdate}) => {
       setIsSModalOpen(true);
       return;
     }
-    
-    console.log('confirmHandler에 저장된 complain: ', complain);
+
+    console.log("confirmHandler에 저장된 complain: ", complain);
 
     try {
       let token = sessionStorage.getItem("accessToken");
-      const resopnse = await fetch("http://localhost:8080/api/fran/complain", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(complain)
-      });
+      const resopnse = await fetch(
+        "cafesync-back-production.up.railway.app/api/fran/complain",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(complain),
+        }
+      );
 
       const savedComplain = await resopnse.json();
-      console.log('세이브 된 컴플레인: ', savedComplain);
+      console.log("세이브 된 컴플레인: ", savedComplain);
 
       if (!resopnse.ok) {
         throw new Error("컴플레인 저장 실패ㅠ");
@@ -120,9 +157,9 @@ const ComplainAdd = ({franCode, onComplainUpdate}) => {
       setModalMessage("컴플레인 등록에 실패하였습니다.");
       setIsSModalOpen(true);
     }
-  }
-  
-  return(
+  };
+
+  return (
     <>
       <h1 className={style.comH1}>컴플레인 등록</h1>
       <div className={style.addTable}>
@@ -130,19 +167,34 @@ const ComplainAdd = ({franCode, onComplainUpdate}) => {
           <tr>
             <th>컴플레인 접수 일자</th>
             <td>
-              <input 
-                type="datetime-local" 
-                name="complainDate" 
+              <input
+                type="datetime-local"
+                name="complainDate"
                 value={complain.complainDate}
                 onChange={complainChangeHandler}
               />
-              {addError && <p style={{ display: "inline-block", color: "red", marginLeft: "10px", fontSize: "12px" }}>{addError}</p>}
+              {addError && (
+                <p
+                  style={{
+                    display: "inline-block",
+                    color: "red",
+                    marginLeft: "10px",
+                    fontSize: "12px",
+                  }}
+                >
+                  {addError}
+                </p>
+              )}
             </td>
           </tr>
           <tr>
             <th>컴플레인 구분</th>
             <td>
-              <select name="complainDivision" value={complain.complainDivision} onChange={complainChangeHandler}>
+              <select
+                name="complainDivision"
+                value={complain.complainDivision}
+                onChange={complainChangeHandler}
+              >
                 <option value="">선택</option>
                 {divisionOption.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -159,7 +211,9 @@ const ComplainAdd = ({franCode, onComplainUpdate}) => {
                 name="empCode"
                 value={complain.empCode}
                 onChange={(e) => {
-                  const seletedEmp = workerList?.find(worker => String(worker.empCode) === e.target.value);
+                  const seletedEmp = workerList?.find(
+                    (worker) => String(worker.empCode) === e.target.value
+                  );
                   setComplain((prev) => ({
                     ...prev,
                     empCode: e.target.value,
@@ -168,7 +222,7 @@ const ComplainAdd = ({franCode, onComplainUpdate}) => {
                 }}
               >
                 <option value="">선택</option>
-                {workerList?.map(({empCode, empName}) => (
+                {workerList?.map(({ empCode, empName }) => (
                   <option key={empCode} value={empCode}>
                     {empName}
                   </option>
@@ -179,10 +233,10 @@ const ComplainAdd = ({franCode, onComplainUpdate}) => {
           <tr>
             <th>컴플레인 제출자 연락처</th>
             <td>
-              <input 
-                type="text" 
-                name="customerPhone" 
-                value={complain.customerPhone} 
+              <input
+                type="text"
+                name="customerPhone"
+                value={complain.customerPhone}
                 onChange={complainChangeHandler}
                 placeholder="010-0000-0000"
               />
@@ -192,14 +246,23 @@ const ComplainAdd = ({franCode, onComplainUpdate}) => {
             <th>컴플레인 내용</th>
           </tr>
         </table>
-        <textarea className={style.addTextarea} name="complainDetail" value={complain.complainDetail} onChange={complainChangeHandler}/>
+        <textarea
+          className={style.addTextarea}
+          name="complainDetail"
+          value={complain.complainDetail}
+          onChange={complainChangeHandler}
+        />
       </div>
       <div className={style.btnSection}>
-        <button className={modalStyle.confirmButtonS} onClick={confirmHandler}>등록</button>
-        <button 
-          className={modalStyle.cancelButtonS} 
+        <button className={modalStyle.confirmButtonS} onClick={confirmHandler}>
+          등록
+        </button>
+        <button
+          className={modalStyle.cancelButtonS}
           onClick={resetComplainHandler}
-        >취소</button>
+        >
+          취소
+        </button>
       </div>
       <SModal
         isOpen={isSModalOpen}
@@ -209,7 +272,7 @@ const ComplainAdd = ({franCode, onComplainUpdate}) => {
             text: "확인",
             onClick: () => setIsSModalOpen(false),
             className: modalStyle.confirmButtonS,
-          }
+          },
         ]}
       >
         <div style={{ textAlign: "center" }}>
@@ -221,11 +284,13 @@ const ComplainAdd = ({franCode, onComplainUpdate}) => {
             style={{ height: "100px", width: "100px", margin: "0 auto" }}
           />
           <br />
-          <span style={{marginTop: "15px", whiteSpace: "pre-line"}}>{modalMessage}</span>
+          <span style={{ marginTop: "15px", whiteSpace: "pre-line" }}>
+            {modalMessage}
+          </span>
         </div>
       </SModal>
     </>
-  )
+  );
 };
 
 export default ComplainAdd;

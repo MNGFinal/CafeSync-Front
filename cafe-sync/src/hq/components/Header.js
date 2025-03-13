@@ -66,11 +66,14 @@ function Header() {
   const handleExtendSession = async () => {
     console.log("토큰 연장 요청 시작 - refreshToken:", refreshToken);
     try {
-      const response = await fetch("http://localhost:8080/api/refresh-token", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ refreshToken }),
-      });
+      const response = await fetch(
+        "cafesync-back-production.up.railway.app/api/refresh-token",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ refreshToken }),
+        }
+      );
 
       console.log("Refresh Token 응답 상태:", response.status);
       if (!response.ok) {

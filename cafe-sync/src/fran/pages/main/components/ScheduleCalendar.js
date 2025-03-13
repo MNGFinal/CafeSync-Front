@@ -17,11 +17,14 @@ const ScheduleCalendar = () => {
 
     try {
       let token = sessionStorage.getItem("accessToken");
-      const response = await fetch(`http://localhost:8080/api/fran/schedule/${franCode}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `cafesync-back-production.up.railway.app/api/fran/schedule/${franCode}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("서버 응답 실패");
@@ -30,10 +33,12 @@ const ScheduleCalendar = () => {
       const data = await response.json();
 
       const formattedEvents = data.data.map((schedule) => ({
-        title: `${getScheduleType(schedule.scheduleDivision)} - ${schedule.empName}`,
+        title: `${getScheduleType(schedule.scheduleDivision)} - ${
+          schedule.empName
+        }`,
         start: schedule.scheduleDate,
         allDay: true,
-        division: schedule.scheduleDivision
+        division: schedule.scheduleDivision,
       }));
 
       setSchedule(formattedEvents);
@@ -53,32 +58,33 @@ const ScheduleCalendar = () => {
 
   return (
     <div className="mainPageScheduleSection">
-        <FullCalendar
-          plugins={[dayGridPlugin, interactionPlugin]}
-          initialView="dayGridWeek"
-          headerToolbar={false}
-          locale={"ko"}
-          events={schedule}
-          eventOrder="division"
-          editable={false}
-          selectable={true}
-          height="auto"
-          contentHeight="auto"
-          dayMaxEventRows={10}
-          views={{
-            dayGridWeek: {
-              dayMaxEventRows: 10,
-              eventContent: (arg) => {
-                const divisionKey = `division-${arg.event.extendedProps?.division}`;
-                return (
-                  <div className={divisionKey}>
-                    <span className={style.eventFont}>{arg.event.title}</span> {/* ✅ CSS 모듈 적용 */}
-                  </div>
-                );
-              },
+      <FullCalendar
+        plugins={[dayGridPlugin, interactionPlugin]}
+        initialView="dayGridWeek"
+        headerToolbar={false}
+        locale={"ko"}
+        events={schedule}
+        eventOrder="division"
+        editable={false}
+        selectable={true}
+        height="auto"
+        contentHeight="auto"
+        dayMaxEventRows={10}
+        views={{
+          dayGridWeek: {
+            dayMaxEventRows: 10,
+            eventContent: (arg) => {
+              const divisionKey = `division-${arg.event.extendedProps?.division}`;
+              return (
+                <div className={divisionKey}>
+                  <span className={style.eventFont}>{arg.event.title}</span>{" "}
+                  {/* ✅ CSS 모듈 적용 */}
+                </div>
+              );
             },
-          }}
-        />
+          },
+        }}
+      />
     </div>
   );
 };

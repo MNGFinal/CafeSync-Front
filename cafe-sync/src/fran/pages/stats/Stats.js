@@ -34,7 +34,7 @@ function Stats() {
       return;
     }
 
-    let apiUrl = `http://localhost:8080/api/fran/sales/summary?franCode=${franCode}&startDate=${startDate}&endDate=${endDate}`;
+    let apiUrl = `cafesync-back-production.up.railway.app/api/fran/sales/summary?franCode=${franCode}&startDate=${startDate}&endDate=${endDate}`;
 
     console.log("🟢 API 요청 URL:", apiUrl);
 
@@ -109,8 +109,6 @@ function Stats() {
         <h3>매출 현황</h3>
       </div>
 
-
-
       {/* ✅ 매출 통계 카드 */}
       <div className={styles.salesSummary}>
         <div className={styles.salesCard}>
@@ -149,7 +147,11 @@ function Stats() {
         {/* ✅ 기간 선택 필터 */}
         <div className={styles.dateFilter}>
           <label>기간 선택</label>
-          <input type="date" value={startDate} onChange={handleStartDateChange} />
+          <input
+            type="date"
+            value={startDate}
+            onChange={handleStartDateChange}
+          />
           ~
           <input type="date" value={endDate} onChange={handleEndDateChange} />
           <button onClick={fetchSalesSummary}>조회</button>

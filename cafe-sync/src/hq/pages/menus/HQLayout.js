@@ -6,7 +6,9 @@ function HQLayout() {
 
   async function fetchMenus() {
     try {
-      const response = await fetch("http://localhost:8080/api/fran/menus");
+      const response = await fetch(
+        "cafesync-back-production.up.railway.app/api/fran/menus"
+      );
       const res = await response.json();
       setList(res.data || []);
     } catch (error) {

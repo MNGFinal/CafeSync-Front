@@ -6,7 +6,12 @@ import modalStyle from "../../../components/ModalButton.module.css";
 import style from "./styles/Plan.module.css";
 import ModifyPlan from "./ModifyPlan";
 
-const DetailPlan = ({isDetailModalOpen, setIsDetailModalOpen, selectedEvent, onUpdatePlan}) => {
+const DetailPlan = ({
+  isDetailModalOpen,
+  setIsDetailModalOpen,
+  selectedEvent,
+  onUpdatePlan,
+}) => {
   const [isModifyModalOpen, setIsModifyModalOpen] = useState(false);
   const [isSModalOpen, setIsSModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -20,20 +25,22 @@ const DetailPlan = ({isDetailModalOpen, setIsDetailModalOpen, selectedEvent, onU
     endDate: selectedEvent?.end || "",
     memo: selectedEvent?.extendedProps?.memo || "",
   }));
-  
-  console.log('selectedEvent!!!', selectedEvent);
-  
+
+  console.log("selectedEvent!!!", selectedEvent);
+
   useEffect(() => {
     if (!selectedEvent) return null;
     if (selectedEvent) {
       setEvent((prev) => ({
         ...prev,
         promotionCode:
-          selectedEvent._def?.publicId !== undefined && selectedEvent._def?.publicId !== null
+          selectedEvent._def?.publicId !== undefined &&
+          selectedEvent._def?.publicId !== null
             ? Number(selectedEvent._def.publicId) // ✅ _def 내부에서 가져오기
             : prev.promotionCode,
         title: selectedEvent.title || prev.title,
-        categoryName: selectedEvent.extendedProps?.category || prev.categoryName,
+        categoryName:
+          selectedEvent.extendedProps?.category || prev.categoryName,
         startDate: selectedEvent.start || prev.startDate,
         endDate: selectedEvent.end || prev.endDate,
         memo: selectedEvent.extendedProps?.memo || prev.memo,
@@ -44,7 +51,7 @@ const DetailPlan = ({isDetailModalOpen, setIsDetailModalOpen, selectedEvent, onU
   const closeHandler = () => {
     setIsDetailModalOpen(false);
     onUpdatePlan();
-  }
+  };
 
   const openModifyModal = () => {
     setIsModifyModalOpen(true); // ✅ 수정 모달 열기
@@ -60,13 +67,16 @@ const DetailPlan = ({isDetailModalOpen, setIsDetailModalOpen, selectedEvent, onU
   const deleteHandler = async () => {
     try {
       let token = sessionStorage.getItem("accessToken");
-      const response = await fetch(`http://localhost:8080/api/hq/promotion/${event.promotionCode}`, {
-        method: "DELETE",
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json" ,
-        },
-      });
+      const response = await fetch(
+        `cafesync-back-production.up.railway.app/api/hq/promotion/${event.promotionCode}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (!response.ok) throw new Error("삭제 실패");
 
       console.log("기존 데이터 삭제 성공!");
@@ -81,13 +91,13 @@ const DetailPlan = ({isDetailModalOpen, setIsDetailModalOpen, selectedEvent, onU
       setIsSModalOpen(true);
       setIsDeleteModalOpen(false);
     }
-  }
+  };
 
   const rmPromotionHandler = () => {
     setIsDeleteModalOpen(true);
     setLottieAnimation("/animations/identify.json");
-    setModalMessage("해당 프로모션을 정말로 삭제하시겠습니까?" );
-  }
+    setModalMessage("해당 프로모션을 정말로 삭제하시겠습니까?");
+  };
 
   const closeSmodalHandler = () => {
     setIsSModalOpen(false);
@@ -95,7 +105,7 @@ const DetailPlan = ({isDetailModalOpen, setIsDetailModalOpen, selectedEvent, onU
       closeHandler(); // ✅ 성공한 경우만 기존 모달 닫기
     }
   };
-  
+
   return (
     <div>
       <Modal
@@ -105,13 +115,13 @@ const DetailPlan = ({isDetailModalOpen, setIsDetailModalOpen, selectedEvent, onU
           {
             text: "수정",
             onClick: openModifyModal,
-            className: modalStyle.modifyButtonB
+            className: modalStyle.modifyButtonB,
           },
-          { 
-            text: "삭제", 
-            onClick: rmPromotionHandler, 
-            className: modalStyle.deleteButtonB 
-          }
+          {
+            text: "삭제",
+            onClick: rmPromotionHandler,
+            className: modalStyle.deleteButtonB,
+          },
         ]}
       >
         <h2 className={style.schH2}>일정 프로모션 상세</h2>
@@ -129,7 +139,8 @@ const DetailPlan = ({isDetailModalOpen, setIsDetailModalOpen, selectedEvent, onU
             <tr>
               <th>프로모션 기간</th>
               <td>
-                {formatToKST(selectedEvent.start)} ~ {selectedEvent.end.toISOString().split("T")[0]}
+                {formatToKST(selectedEvent.start)} ~{" "}
+                {selectedEvent.end.toISOString().split("T")[0]}
               </td>
             </tr>
             <tr>
@@ -166,7 +177,9 @@ const DetailPlan = ({isDetailModalOpen, setIsDetailModalOpen, selectedEvent, onU
               src={lottieAnimation}
               style={{ height: "100px", width: "100px", margin: "0 auto" }}
             />
-            <span style={{marginTop: "15px", whiteSpace: "pre-line"}}>{modalMessage}</span>
+            <span style={{ marginTop: "15px", whiteSpace: "pre-line" }}>
+              {modalMessage}
+            </span>
             <br />
           </div>
         </SModal>
@@ -190,7 +203,9 @@ const DetailPlan = ({isDetailModalOpen, setIsDetailModalOpen, selectedEvent, onU
               style={{ height: "100px", width: "100px", margin: "0 auto" }}
             />
             {/* <br /> */}
-            <span style={{marginTop: "15px", whiteSpace: "pre-line"}}>{modalMessage}</span>
+            <span style={{ marginTop: "15px", whiteSpace: "pre-line" }}>
+              {modalMessage}
+            </span>
             <br />
           </div>
         </SModal>
@@ -205,7 +220,7 @@ const DetailPlan = ({isDetailModalOpen, setIsDetailModalOpen, selectedEvent, onU
         />
       )}
     </div>
-  )
-}
+  );
+};
 
-export default DetailPlan
+export default DetailPlan;
