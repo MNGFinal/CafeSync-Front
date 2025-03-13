@@ -3,31 +3,6 @@
   min-height: 800px;
 }
 
-/* 일요일 빨간색 */
-/* :global(.fc-daygrid-day.fc-day-sun a) {
-    color: red !important;
-} */
-
-/* 토요일 파란색 */
-/* :global(.fc-daygrid-day.fc-day-sat a) {
-    color: blue !important;
-} */
-
-/* 월별 뷰에서 날짜 행 높이 설정 */
-/* :global(.fc-dayGridMonth-view .fc-daygrid-day-frame) {
-  height: 108px !important;
-} */
-
-/* :global(.fc-dayGridMonth-view .fc-daygrid-event-harness) { width: 100px; } */
-
-/* :global(.fc-dayGridMonth-view .fc-daygrid-day-events) {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 2px;
-  padding-top: 20px;
-} */
-
 :global(.fc-dayGridMonth-view .fc-daygrid-day-events:empty) {
   display: none !important;
 }
@@ -53,8 +28,41 @@
   height: 322px !important;
 }
 
+:global(.mainPagePromotionSection .fc-dayGridMonth-view .fc-daygrid-day-frame) {
+  height: 340px !important;
+}
+
 :global(.mainPageScheduleSection) {
   margin-top: 20px;
+}
+
+:global(.mainPagePromotionSection .fc-daygrid-event) {
+  height: 3px !important;
+  min-height: 3px !important;
+  line-height: 3px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+}
+
+:global(.mainPagePromotionSection .fc-daygrid-day-frame),
+:global(.mainPagePromotionSection .fc-daygrid-day-frame *) {
+  height: 30px !important;
+  min-height: 30px !important;
+  max-height: 30px !important;
+  line-height: 30px !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+:global(.mainPagePromotionSection .fc-daygrid-event-harness) {
+  height: 3px !important;
+  min-height: 3px !important;
+  line-height: 3px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
 }
 
 /* 날짜 숫자 위치 왼쪽 정렬 */
