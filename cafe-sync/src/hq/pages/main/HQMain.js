@@ -5,6 +5,7 @@ import { callNoticesAPI } from "../../../apis/notice/noticeApi";
 import { RESET_NOTICE_DETAIL } from "../../../modules/NoticeModule";
 import HQNoticeList from "./components/HQNoticeList";
 import HQDailySalesChart from "./components/HQDailySalesChart";
+import HQPromotion from "./components/HQPromotion";
 import React, { useEffect, useState } from "react";
 
 function HQMain() {
@@ -39,6 +40,7 @@ function HQMain() {
           이벤트 일정
         </Link>
         <hr />
+        <HQPromotion />
       </div>
       <div className={`statsSection ${st.sec}`}>
         <Link to="/hq/stats" className={st.title}>

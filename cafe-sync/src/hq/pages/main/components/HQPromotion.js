@@ -2,18 +2,23 @@ import React, { useEffect, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import style from "./styles/Plan.module.css";
-import AddPlan from "./AddPlan";
-import DetailPlan from "./DetailPlan";
+import style from "../../plan/styles/Plan.module.css";
+import st from "./HQPromotion.module.css";
+import tippy from "tippy.js";
+import "tippy.js/dist/tippy.css";
 
-const Plan = () => {
+const HQPromotion = () => {
   const [events, setEvents] = useState([]);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState(null);
-
   useEffect( () => {fetchPlan()}, [] );
-  const onUpdatePlan = async () => { await fetchPlan(); };
+
+  useEffect(() => {
+    setTimeout(() => {
+      document.querySelectorAll(".fc-daygrid-body-unbalanced .fc-daygrid-day-events")
+        .forEach(el => {
+          el.style.minHeight = "1em";
+        });
+    }, 10); // FullCalendar가 로딩된 후 적용되도록 지연 추가
+  }, []);
 
   const fetchPlan = async () => {
     try {
@@ -37,7 +42,7 @@ const Plan = () => {
         date.setHours(date.getHours() + 9); // ✅ UTC → KST 변환
       
         if (isEndDate) {
-          date.setDate(date.getDate());
+          date.setDate(date.getDate()); 
         }
       
         return date.toISOString().split("T")[0]; // YYYY-MM-DD 형식 반환
@@ -79,29 +84,21 @@ const Plan = () => {
   }
 
   return (
-    <div className={`${style.promotionSection}`}>
+    <div className={`${st.mainPagePromotionSection}`}>
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         locale={"ko"}
         dayCellContent={(arg) => arg.date.getDate()}
-        height="730px"
-        headerToolbar={{
-          start: "prev next today",
-          center: "title",
-          end: "addEventBtn"
+        height={350}
+        contentHeight={350}
+        aspectRatio={1.0}
+        slotHeight={1}
+        dayCellDidMount={(info) => {
+            info.el.style.height = "30px"; // ✅ 직접 DOM 조작으로 높이 줄이기
         }}
-        customButtons={{
-          addEventBtn: {
-            text: "일정 등록",
-            click: () => setIsAddModalOpen(true),
-          },
-        }}
+        headerToolbar={false}
         events={events}
-        eventClick={(info) => {
-          setSelectedEvent(info.event);
-          setIsDetailModalOpen(true);
-        }}
         eventClassNames={(arg) => {
           const convertToKST = (utcDate) => {
             const date = new Date(utcDate);
@@ -117,37 +114,53 @@ const Plan = () => {
         
           return startDate === endDate ? ["single-day"] : ["multi-day"];
         }}
+        eventContent={(arg) => {
+          return (
+            <div
+              style={{
+                height: "0px",
+                // borderTop: `1px solid ${arg.event.backgroundColor}`,
+                overflow: "hidden",
+                display: "inline-block",
+                width: "100%",
+              }}
+            ></div>
+          );
+        }}          
         views={{
           dayGridMonth: {
             dayMaxEventRows: 3,
-            // eventDisplay: "list-item",
-            eventDisplay: "block",
+            eventDisplay: "list-item",
             eventContent: (arg) => {
               return (
-                <div style={{textAlign:"center"}}>
-                  <b>[{arg.event.extendedProps.category}] </b>
-                  <span>{arg.event.title}</span>
-                </div>
-              )
-            }
-          }
+                <div
+                  style={{
+                    height: "0px",
+                    // borderTop: `1px solid ${arg.event.backgroundColor}`,
+                    overflow: "hidden",
+                    display: "inline-block",
+                    width: "100%",
+                  }}
+                ></div>
+              );
+            },
+          },
+        }}
+        eventDidMount={(info) => {
+          tippy(info.el, {
+            content: `[${info.event.extendedProps.category}] ${info.event.title}`,
+            placement: "top",
+            arrow: true,
+            animation: "scale",
+          });
+          info.el.style.height = "0px"; // ✅ 블록 요소의 높이를 없애고 border만 표시
+          // info.el.style.borderTop = `1px solid ${info.event.backgroundColor}`; // ✅ 테두리로 줄을 표시
+          info.el.style.display = "inline-block"; // ✅ 블록이 아닌 인라인 요소로 변경
+          info.el.style.width = "100%";
         }}
       />
-      <AddPlan 
-        isAddModalOpen={isAddModalOpen} 
-        setIsAddModalOpen={setIsAddModalOpen} 
-        onUpdatePlan={onUpdatePlan}
-      />
-      {isDetailModalOpen && (
-        <DetailPlan
-          isDetailModalOpen={isDetailModalOpen}
-          setIsDetailModalOpen={setIsDetailModalOpen}
-          selectedEvent={selectedEvent}
-          onUpdatePlan={onUpdatePlan}
-        />
-      )}
     </div>
   )
 }
 
-export default Plan;
+export default HQPromotion
