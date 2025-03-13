@@ -1,10 +1,10 @@
 .promotionSection {
     padding: 30px;
-    max-height: 600px;
+    max-height: 590px;
 }
 
 :global(.fc-dayGridMonth-view .fc-daygrid-day-frame) {
-    height: 105px !important;
+    /* height: 105px !important; */
 }
 
 .promotionSection .fc-dayGridMonth-view .fc-daygrid-event-harness { 
@@ -110,7 +110,8 @@
     display: block !important;
     width: 100% !important;  /* ✅ 이벤트를 칸 가득 채우도록 */
     max-width: 100% !important;
-    height: 22px !important; /* ✅ 하루짜리 일정도 칸을 꽉 채우도록 */
+    min-height: 5px !important;
+    max-height: 25px !important;
     text-align: center;  /* ✅ 텍스트 중앙 정렬 */
     display: flex !important;
     align-items: center !important;
@@ -149,7 +150,8 @@
     display: block !important;
     width: 100% !important; 
     max-width: 100% !important;
-    min-height: 22px !important;
+    min-height: 5px !important;
+    max-height: 25px !important;
 }
 
 :global(.fc-daygrid-event-dot) {
