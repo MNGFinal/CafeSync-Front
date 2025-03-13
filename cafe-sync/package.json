@@ -38,7 +38,7 @@
     "web-vitals": "^4.2.4"
   },
   "scripts": {
-    "start": "NODE_OPTIONS='--max-old-space-size=6144' FAST_REFRESH=false craco start",
+    "start": "serve -s build",
     "build": "NODE_OPTIONS='--max-old-space-size=6144' CI=false craco build",
     "test": "craco test",
     "eject": "react-scripts eject"
@@ -63,6 +63,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@craco/craco": "^7.1.0"
+    "@craco/craco": "^7.1.0",
+    "serve": "^14.2.4"
   }
 }
