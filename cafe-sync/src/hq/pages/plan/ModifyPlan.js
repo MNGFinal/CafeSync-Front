@@ -107,12 +107,12 @@ const ModifyPlan = ({
 
       // ✅ 날짜 변환 시 undefined 체크 후 변환
       const formatDateToUTC = (date, isEndDate = false) => {
-        if (!date) return ""; // 빈 값 방지
+        if (!date) return "";
         const newDate = new Date(date);
         if (isEndDate) {
-          newDate.setHours(23, 59, 59, 999);
+          newDate.setUTCHours(23, 59, 59, 999);
         } else {
-          newDate.setHours(0, 0, 0, 0);
+          newDate.setUTCHours(0, 0, 0, 0);
         }
         return newDate.toISOString();
       };

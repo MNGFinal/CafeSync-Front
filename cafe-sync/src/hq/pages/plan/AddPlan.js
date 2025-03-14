@@ -39,9 +39,9 @@ const AddPlan = ({ isAddModalOpen, setIsAddModalOpen, onUpdatePlan }) => {
     if (!dateString) return "";
     const date = new Date(dateString);
     if (isEndDate) {
-      date.setHours(23, 59, 59, 999);
+      date.setUTCHours(23, 59, 59, 999);
     } else {
-      date.setHours(0, 0, 0, 0);
+      date.setUTCHours(0, 0, 0, 0);
     }
 
     return date.toISOString();
